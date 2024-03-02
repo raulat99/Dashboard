@@ -54,7 +54,7 @@ var midata = {
 // Opciones del gráfico ()
 var misoptions = {
   responsive: true,   
-  maintainAspectRatio: false,
+  maintainAspectRatio: true,
   scales: {
     y: {
       min: 0, // Mínimo valor del eje Y en 0

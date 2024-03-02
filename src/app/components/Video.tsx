@@ -31,7 +31,7 @@ export default function Video(props:any){
           <b>Video:</b>
         </p>
         <div
-          className="bg-light mx-auto border border-2 border-black bg-black"
+          className="bg-light mx-2 border border-2 border-black bg-black"
           style={{ width: "450px", height: "250px" }}
         >
           <video ref={videoRef} controls className='w-full h-full'>

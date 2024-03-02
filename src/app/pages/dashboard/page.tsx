@@ -18,18 +18,19 @@ export default function Index() {
   }
 
   return (
-    <main className="flex flex-col">
+    <main className="flex flex-col items-center">
       <div>
         <h1 className="text-4xl p-2 py-4 text-center"> Dashboard page </h1>
-      </div>
-      <div className="flex-col">
-        
         <button onClick={playAllVideos} className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           PlayAllVideos
         </button>
-        <button onClick={pauseAllVideos} className="inline-flex items-center rounded-md bg-gray px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+        <button onClick={pauseAllVideos} className="inline-flex items-center rounded-md bg-gray px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"g>
           PauseAllVideos
         </button>
+      </div>
+      <div className="flex-col">
+        
+        
 
         <div className="display flex w-full flex-wrap">
           <Video src="//vjs.zencdn.net/v/oceans.mp4" syncVideo={videoSync}/>
