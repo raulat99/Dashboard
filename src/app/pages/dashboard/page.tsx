@@ -7,7 +7,8 @@ import { useState } from "react";
 
 export default function Index() {
 
-  const [videoSync, setVideoSync] = useState(true)
+  const [videoSync, setVideoSync] = useState(false)
+
 
   const playAllVideos = ()=>{
     setVideoSync(true)
@@ -24,14 +25,12 @@ export default function Index() {
         <button onClick={playAllVideos} className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           PlayAllVideos
         </button>
-        <button onClick={pauseAllVideos} className="inline-flex items-center rounded-md bg-gray px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"g>
+        <button onClick={pauseAllVideos} className="inline-flex items-center rounded-md bg-gray px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
           PauseAllVideos
         </button>
       </div>
       <div className="flex-col">
         
-        
-
         <div className="display flex w-full flex-wrap">
           <Video src="//vjs.zencdn.net/v/oceans.mp4" syncVideo={videoSync}/>
           <Video src="//vjs.zencdn.net/v/oceans.mp4" syncVideo={videoSync}/>
@@ -43,6 +42,7 @@ export default function Index() {
           <h2 className="text-lg m-2"> Components: </h2>
           <div className="w-full space-y-4 display flex flex-col">
             {/* Aquí incluiré las gráficas (un componente por cada ejemplo). */}
+            
                   <LinesChart />
                   <LinesChart />
             </div>

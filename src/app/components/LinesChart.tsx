@@ -12,6 +12,9 @@ import {
   Legend,
   Filler,
 } from "chart.js";
+import { use, useEffect, useRef, useState } from "react";
+import { getRelativePosition } from "chart.js/helpers";
+import Statistics from "./Statistics";
 
 ChartJS.register(
   CategoryScale,
@@ -24,14 +27,18 @@ ChartJS.register(
   Filler
 );
 
+var dataX: number;
+var label: number;
+var dataY: number;
+var value: number;
+
 var pulsaciones = [
   72, 75, 78, 82, 85, 88, 90, 92, 91, 89, 86, 84, 82, 79, 76, 74, 72, 70, 68,
-  66, 64, 62, 60, 63, 66, 70, 74, 78, 82,72, 75, 78, 82, 85, 88, 90, 92, 91, 89, 86, 84, 82, 79, 76, 74, 72, 70, 68,
   66, 64, 62, 60, 63, 66, 70, 74, 78, 82,
 ];
 var minutos = [
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-  23, 24, 25, 26, 27, 28, 29, 30,31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+  22, 23, 24, 25, 26, 27, 28, 29, 30,
 ];
 
 var midata = {
@@ -53,29 +60,60 @@ var midata = {
 
 // Opciones del gráfico ()
 var misoptions = {
-  responsive: true,   
-  maintainAspectRatio: true,
+  responsive: true,
+  maintainAspectRatio: false,
   scales: {
     y: {
       min: 0, // Mínimo valor del eje Y en 0
     },
     x: {
+      min: 0,
       ticks: { color: "rgb(255, 99, 132)" },
     },
+  },
+  onClick: (e: any) => {
+    console.log(e);
+
+    var chart = e.chart;
+
+    const canvasPosition = getRelativePosition(e, chart);
+
+    // Substitute the appropriate scale IDs
+    dataX = chart.scales.x.getValueForPixel(canvasPosition.x);
+    dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
+
+    label = chart.config.data.labels[dataX];
+    value = chart.config.data.datasets[0].data[dataX];
+
+    console.log({
+      dataX: dataX,
+      label: label,
+      dataY: dataY,
+      value: value,
+    });
+
+    dataX = label;
+    dataY = value;
   },
 };
 
 export default function LinesChart() {
+  const chartRef = useRef(null);
+  
+
   return (
-    <div
-      className="bg-light mx-16 border border-1 border-black h-[28vh] "
-
-      // className="w-full md:col-span-2 relative lg:h-[25vh] h-[50vh] m-auto p-4 border rounded-lg bg-white"
-    >
-      <p className="p-2" ><b>Ejemplo #1: </b>Gráfico de líneas básico</p>
-
-        <Line className="pb-10" data={midata} options={misoptions} />
+    <div className="display flex flex row h-[28vh] mx-6">
       
+      {/* <Statistics dataX={dataX} dataY={dataY} /> */}
+
+      <div className="w-full">
+        <Line
+          className="pb-10 w-full"
+          ref={chartRef}
+          data={midata}
+          options={misoptions}
+        />
+      </div>
     </div>
   );
-}
+  }

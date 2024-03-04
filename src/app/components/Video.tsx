@@ -7,22 +7,24 @@ export default function Video(props:any){
 
   const PlayVideo = ()=>{
     const currentVideo = videoRef.current
+    if (currentVideo) {
     currentVideo.play()
+    }
   }
 
   const PauseVideo = ()=>{
-    const currentVideo = videoRef.current
-    currentVideo.pause()
+    const currentVideo = videoRef.current;
+    if (currentVideo) {
+      currentVideo.pause();
+    }
   }
 
   useEffect(()=>{
-
     if(props.syncVideo){
-      PlayVideo()
+      PlayVideo();
     }else{
-      PauseVideo()
+      PauseVideo();
     }
-
   },[props.syncVideo])
 
     return (
