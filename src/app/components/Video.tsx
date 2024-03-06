@@ -1,8 +1,9 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
+import { DashboardGraphsContext } from '../providers/DashboardProvider';
 
 export default function Video(props:any){
-
+  const {percentajeX} = useContext(DashboardGraphsContext)
   const videoRef = useRef(null)
 
   const PlayVideo = ()=>{
@@ -20,12 +21,15 @@ export default function Video(props:any){
   }
 
   useEffect(()=>{
+    if(percentajeX && videoRef.current){
+      videoRef.current.currentTime = videoRef.current.duration * percentajeX;
+    }
     if(props.syncVideo){
       PlayVideo();
     }else{
       PauseVideo();
     }
-  },[props.syncVideo])
+  },[props.syncVideo, percentajeX])
 
     return (
       <div className="mx-auto">

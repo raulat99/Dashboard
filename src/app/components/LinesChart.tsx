@@ -44,7 +44,7 @@ export default function LinesChart() {
   const chartRef = useRef(null);
   var id = null;
 
-  const {dataX, updateDataX} = useContext(DashboardGraphsContext);
+  const {dataX, updateDataX, updatePercentajeX} = useContext(DashboardGraphsContext);
 
   var midata = {
     labels: minutos,
@@ -101,6 +101,14 @@ export default function LinesChart() {
         value: value,
       });
   
+      //console.log(chart)
+
+      console.log({percentajeX: e.x/ chart.width})
+
+      updatePercentajeX(e.x / chart.width)
+      
+      
+      
       updateDataX(label);
       dataY = value;
       id = chart.id;

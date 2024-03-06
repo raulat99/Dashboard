@@ -16,6 +16,8 @@ import { Graph } from "../models/Graph";
 interface IDashboardGraphsContext {
     graphs: Graph[];
     dataX: number | null;
+    percentajeX: number | null;
+    updatePercentajeX: (n: number) => void;
     updateGraphs: (NewGraph: Graph) => void;
     updateDataX: (n: number) => void;
   }
@@ -23,6 +25,8 @@ interface IDashboardGraphsContext {
   export const DashboardGraphsContext = createContext<IDashboardGraphsContext>({
     graphs: [],
     dataX: null,
+    percentajeX: null,
+    updatePercentajeX: () => {},
     updateGraphs: () => {},
     updateDataX: () => {},
   });
@@ -33,6 +37,12 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
     const [dataX, setDataX] = useState<number>(null);
     const updateGraphs = (graph : Graph) => {
         setGraphs((prevGraphs: Graph[]) => [...prevGraphs, graph]);
+    }
+
+    const [percentajeX, setPercentajeX] = useState<number>(null);
+
+    const updatePercentajeX = (n: number) => {
+        setPercentajeX(n)
     }
 
     const updateDataX = (n: number)=>{
@@ -55,7 +65,7 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
     //   }, []);
 
     return(
-        <DashboardGraphsContext.Provider value={{graphs, dataX, updateGraphs, updateDataX}}>
+        <DashboardGraphsContext.Provider value={{graphs, dataX, percentajeX, updatePercentajeX,updateGraphs, updateDataX}}>
             {children}
         </DashboardGraphsContext.Provider>
     );
