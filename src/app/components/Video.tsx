@@ -1,49 +1,54 @@
-'use client';
-import React, { useContext, useEffect, useRef } from 'react';
+'use client'
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { DashboardGraphsContext } from '../providers/DashboardProvider';
+import ReactPlayer from 'react-player';
+import dynamic from "next/dynamic";
 
-export default function Video(props:any){
+//export default function Video(props:any){
+
+const Video = (props:any) => {
   const {percentajeX} = useContext(DashboardGraphsContext)
+  const [isPlaying, setIsPlaying] = useState<boolean>(false)
+  const [volume, setVolume] = useState<number>(0.5)
   const videoRef = useRef(null)
 
-  const PlayVideo = ()=>{
-    const currentVideo = videoRef.current
-    if (currentVideo) {
-    currentVideo.play()
-    }
-  }
+  const play = ()=>{
+    setIsPlaying(true)
+  } 
 
-  const PauseVideo = ()=>{
-    const currentVideo = videoRef.current;
-    if (currentVideo) {
-      currentVideo.pause();
-    }
+  const pause = ()=>{
+    setIsPlaying(false)
   }
 
   useEffect(()=>{
-    if(percentajeX && videoRef.current){
-      videoRef.current.currentTime = videoRef.current.duration * percentajeX;
+    if (percentajeX && videoRef.current !== null) {
+      (videoRef.current as any).seekTo((videoRef.current as any).getDuration() * percentajeX, 'seconds');
     }
-    if(props.syncVideo){
-      PlayVideo();
-    }else{
-      PauseVideo();
+    if (props.syncVideo) {
+      play();
+    } else {
+      pause();
     }
   },[props.syncVideo, percentajeX])
 
     return (
       <div className="mx-auto">
-        <p className="my-5">
-          <b>Video:</b>
-        </p>
-        <div
-          className="bg-light mx-2 border border-2 border-black bg-black"
-          style={{ width: "450px", height: "250px" }}
-        >
-          <video ref={videoRef} controls className='w-full h-full'>
-            <source src={props.src} type="video/mp4"/>
-          </video>
+        <div className="my-5">
+          <p><b>Video:</b></p>
+        </div>
+        <div className="bg-light mx-2 border border-2 border-black bg-black">
+          <ReactPlayer 
+            
+            url={props.src} 
+            controls={true}
+            playing={isPlaying}
+            volume={volume}
+            ref = {videoRef}
+          />
         </div>
       </div>
     );
 }
+
+
+export default dynamic (() => Promise.resolve(Video), {ssr: false})

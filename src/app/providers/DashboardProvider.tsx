@@ -1,17 +1,6 @@
+'use client'
 import React, { createContext, useContext, useState } from "react";
 import { Graph } from "../models/Graph";
-
-// const DashboardGraphsContext = React.createContext([] as Graph[]);
-
-// export function useDashboardGraphsContext (){
-//     return useContext(DashboardGraphsContext);
-// } 
-
-// const DashboardToggleGraphContext = React.createContext((graph: Graph) => {});
-
-// export function useDashboardToggleGraphContext (){
-//     return useContext(DashboardToggleGraphContext);
-// } 
 
 interface IDashboardGraphsContext {
     graphs: Graph[];
@@ -49,23 +38,15 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
         setDataX(n);
     }
 
-    // const updateCartItems = useCallback((newCartItems: CartItem[]) => {
-    //     setCartItems((prevCartItems: CartItem[]) =>
-    //       newCartItems.map((newCartItem) => {
-    //         const prevCartItem = prevCartItems.find(
-    //           (cartItem) => cartItem.product._id === newCartItem.product._id
-    //         );
-    //         if (prevCartItem && prevCartItem.qty === newCartItem.qty) {
-    //           return prevCartItem;
-    //         } else {
-    //           return newCartItem;
-    //         }
-    //       })
-    //     );
-    //   }, []);
-
     return(
-        <DashboardGraphsContext.Provider value={{graphs, dataX, percentajeX, updatePercentajeX,updateGraphs, updateDataX}}>
+        <DashboardGraphsContext.Provider value={
+            {graphs, 
+            dataX, 
+            percentajeX, 
+            updatePercentajeX,
+            updateGraphs, 
+            updateDataX}}>
+            
             {children}
         </DashboardGraphsContext.Provider>
     );

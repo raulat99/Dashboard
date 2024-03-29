@@ -127,6 +127,7 @@ export default function LinesChart() {
           ref={chartRef}
           data={midata}
           options={misoptions}
+          
         />
       </div>
 
@@ -137,7 +138,7 @@ export default function LinesChart() {
         </div>
         {/* <div className="display flex flex col">
           <p> DataY value: </p>
-          {dashboardContext && <p> {dashboardContext[id || 0].MousePointerY} </p>}
+          {dataY && <p> {dataY} </p>}
         </div> */}
       </div>
     </div>
