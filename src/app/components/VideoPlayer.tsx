@@ -26,11 +26,15 @@ export default function VideoPlayer(props: Props) {
   const {percentajeX} = useContext(DashboardGraphsContext)
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const progressEl = useRef<HTMLProgressElement>(null)
+  const volumeEl = useRef<HTMLProgressElement>(null)
 
   const [currentTime, setCurrentTime] = useState<number>(0)
   const [duration, setVideoDuration] = useState<number>(0)
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+
+  const [volume, setVolume] = useState<number>(0.5)
+  const [muted, setMuted] = useState<boolean>(false)
 
   const {
     url,
@@ -90,11 +94,7 @@ export default function VideoPlayer(props: Props) {
   const onLastFrameClick = () => {
     const frameTime = 1 / fps;
     if (videoRef.current){
-      videoRef.current.currentTime = Math.max(
-        0,
-        videoRef.current.currentTime - frameTime
-      );
-      setTimeNow(videoRef.current.currentTime)
+      setTimeNow(Math.max(0,videoRef.current.currentTime - frameTime))
       console.log(videoRef.current?.currentTime);
     }
   };
@@ -103,11 +103,7 @@ export default function VideoPlayer(props: Props) {
     const frameTime = 1 / fps;
     if (videoRef.current)
     {
-      videoRef.current.currentTime = Math.min(
-        videoRef.current.duration,
-        videoRef.current.currentTime + frameTime
-      );
-      setTimeNow(videoRef.current.currentTime)
+      setTimeNow(Math.min(videoRef.current.duration,videoRef.current.currentTime + frameTime))
       console.log(videoRef.current?.currentTime);
     }
       
@@ -187,8 +183,7 @@ export default function VideoPlayer(props: Props) {
     const x =
       e['clientX'] - progressEl.current.getBoundingClientRect().left + document.body.scrollLeft
     const percentage = (x * progressEl.current.max) / progressEl.current.offsetWidth
-    videoRef.current.currentTime = (percentage / 100) * videoRef.current.duration
-    setTimeNow(videoRef.current.currentTime)
+    setTimeNow((percentage / 100) * videoRef.current.duration)
   }
 
   const onDuration = (duration: number) => {
@@ -212,9 +207,33 @@ export default function VideoPlayer(props: Props) {
 
   const handleMarkerClick = (marker: Marker) => {
     if (!videoRef.current) return
-    videoRef.current.currentTime = marker['time']
-    setTimeNow(videoRef.current.currentTime)
+    setTimeNow(marker['time'])
     onMarkerClick(marker)
+  }
+
+
+  const handleVolumeClick = (e: React.MouseEvent<HTMLProgressElement, MouseEvent>) => {
+    if(!volumeEl.current || !videoRef.current) return
+    const y =
+      volumeEl.current.offsetWidth -
+      (e['clientY'] - volumeEl.current.getBoundingClientRect().top + document.body.scrollTop)
+    const percentage = (y * volumeEl.current.max) / volumeEl.current.offsetWidth
+    videoRef.current.muted = false
+    setVolume(percentage / 100)
+  }
+
+  const handleMuteClick = () => {
+    if(!videoRef.current) return
+
+    if (muted) {
+      videoRef.current.muted = false
+      setVolume(volume)
+      setMuted(false)
+    } else {
+      videoRef.current.muted = true
+      setVolume(0)
+      setMuted(true)
+    }
   }
 
   useEffect(() => {
@@ -281,7 +300,9 @@ export default function VideoPlayer(props: Props) {
         markers={markers}
         selectedMarker={selectedMarker}
         markerConfiguration={markerConfiguration}
-
+        volumeEl={volumeEl as any}
+        volume={volume}
+        muted={muted}
         onPlayClick={onPlay}
         onPauseClick={onPause}
         onLastFrameClick={onLastFrameClick}
@@ -291,6 +312,8 @@ export default function VideoPlayer(props: Props) {
         onDeleteAllMarkersClick={onDeleteAllMarkersClick}
         onProgressClick={handleProgressClick}
         onMarkerClick={handleMarkerClick}
+        onVolumeClick={handleVolumeClick}
+        onMuteClick={handleMuteClick}
       />
     </div>
   );

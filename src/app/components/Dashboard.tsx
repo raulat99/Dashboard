@@ -20,8 +20,8 @@ export default function Dashboard () {
     const videoConfig = {
       url: "//vjs.zencdn.net/v/oceans.mp4",
       id: "1",
-      height: 400,
-      width: 600,
+      height: 450,
+      width: 700,
       videoSync: videoSync,
       fps: 30,
       markers: markers,

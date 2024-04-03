@@ -11,6 +11,9 @@ interface Props {
     markers: Marker[],
     selectedMarker?: Marker,
     markerConfiguration?: MarkerConfiguration,
+    volumeEl: React.MutableRefObject<HTMLProgressElement>,
+    volume: number,
+    muted: boolean,
     onPlayClick: () => void,
     onPauseClick: () => void,
     onLastFrameClick: () => void,
@@ -20,7 +23,8 @@ interface Props {
     onDeleteAllMarkersClick: () => void
     onProgressClick: (event: React.MouseEvent<HTMLProgressElement, MouseEvent>) => void
     onMarkerClick: (marker: Marker) => void
-
+    onVolumeClick: (event: React.MouseEvent<HTMLProgressElement, MouseEvent>) => void
+    onMuteClick: () => void
 }
 
 
@@ -33,6 +37,9 @@ export default function ControlsVideo(props: Props) {
       markers,
       selectedMarker,
       markerConfiguration,
+      volumeEl,
+      volume,
+      muted,
       onPauseClick,
       onPlayClick,
       onLastFrameClick,
@@ -42,6 +49,8 @@ export default function ControlsVideo(props: Props) {
       onDeleteAllMarkersClick,
       onProgressClick,
       onMarkerClick,
+      onVolumeClick,
+      onMuteClick,
     } = props;
 
     const getTimeCode = (secs: number): string => {
@@ -137,7 +146,7 @@ export default function ControlsVideo(props: Props) {
             >
               Export
             </button>
-
+*/}
             <div className="volume-wrap">
               <progress ref={volumeEl} max="100" value={volume * 100} onClick={onVolumeClick}>
                 {volume * 100}% volume
@@ -146,7 +155,7 @@ export default function ControlsVideo(props: Props) {
                 Volume
               </button>
             </div>
-
+{/*}
             <button className="full-screen" onClick={onFullScreenClick}>
               FullScreen
             </button> */}
