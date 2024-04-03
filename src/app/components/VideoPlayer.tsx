@@ -1,7 +1,8 @@
 "use client";
-import { useRef, useState, useEffect, use } from "react";
+import { useRef, useState, useEffect, use, useContext } from "react";
 import ControlsVideo from "./ControlsVideo";
 import { Marker, MarkerConfiguration } from "../models/Market";
+import { DashboardGraphsContext } from "../providers/DashboardProvider";
 
 interface Props {
   url: string;
@@ -22,6 +23,8 @@ interface Props {
 }
 
 export default function VideoPlayer(props: Props) {
+  const {percentajeX} = useContext(DashboardGraphsContext)
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const progressEl = useRef<HTMLProgressElement>(null)
@@ -248,6 +251,12 @@ export default function VideoPlayer(props: Props) {
     }
 
   }, [timeNow])
+
+  useEffect(() => {
+    if (percentajeX && videoRef.current) {
+      setTimeNow(videoRef.current.duration * percentajeX)
+    }
+  }, [percentajeX])
 
   useEffect(() => {
     videoSync ? onPlay() : onPause();
