@@ -116,10 +116,10 @@ export default function VideoPlayer(props: Props) {
 
   const onDeleteMarker = (markerToDelete: Marker) => {
     const remainingMarkers = markers.filter(
-      (m) => m.id !== markerToDelete.id && m.time !== markerToDelete.time
+      (m) => m.id !== markerToDelete.id //&& m.time !== markerToDelete.time
     );
     setAllMarkers(remainingMarkers);
-    console.log({ markers: markers });
+    console.log({ remainingMarkers: remainingMarkers });
   };
 
   const onDeleteMarkerClick = () => {

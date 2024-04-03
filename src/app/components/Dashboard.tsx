@@ -24,6 +24,7 @@ export default function Dashboard () {
       videoSync: videoSync,
       fps: 30,
       markers: markers,
+      selectedMarker: selectedMarker,
       setAllMarkers: (markers: Marker[]) => setMarkers(markers),
       onMarkerClick: onHandleMarkerClick
     }
