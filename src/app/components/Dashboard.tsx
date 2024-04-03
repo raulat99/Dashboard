@@ -2,11 +2,31 @@
 import React, { useState } from 'react';
 import { DashboardProvider } from '../providers/DashboardProvider';
 import LinesChart from './LinesChart';
-import Video from './Video';
+import VideoPlayer from './VideoPlayer';
+import { Marker } from '../models/Market';
+
 
 
 export default function Dashboard () {
-    const [videoSync, setVideoSync] = useState<Boolean>(false)
+    const [videoSync, setVideoSync] = useState<boolean>(false)
+    const [markers, setMarkers] = useState<Marker[]>([])
+    const [selectedMarker, setSelectedMarker] = useState(undefined)
+
+    const onHandleMarkerClick = (marker : Marker) => {
+      setSelectedMarker(marker)
+    }
+
+    const videoConfig = {
+      url: "//vjs.zencdn.net/v/oceans.mp4",
+      id: "1",
+      height: 400,
+      width: 600,
+      videoSync: videoSync,
+      fps: 30,
+      markers: markers,
+      setAllMarkers: (markers: Marker[]) => setMarkers(markers),
+      onMarkerClick: onHandleMarkerClick
+    }
 
   const playAllVideos = ()=>{
     setVideoSync(true)
@@ -15,6 +35,8 @@ export default function Dashboard () {
   const pauseAllVideos = ()=>{
     setVideoSync(false)
   }
+
+ 
 
   return (
     <DashboardProvider>
@@ -36,11 +58,13 @@ export default function Dashboard () {
         </div>
         <div className="flex-col">
           <div className="display flex w-full flex-wrap">
+            {/* <Video src="//vjs.zencdn.net/v/oceans.mp4" syncVideo={videoSync} />
             <Video src="//vjs.zencdn.net/v/oceans.mp4" syncVideo={videoSync} />
             <Video src="//vjs.zencdn.net/v/oceans.mp4" syncVideo={videoSync} />
-            <Video src="//vjs.zencdn.net/v/oceans.mp4" syncVideo={videoSync} />
-            <Video src="//vjs.zencdn.net/v/oceans.mp4" syncVideo={videoSync} />
+            <Video src="//vjs.zencdn.net/v/oceans.mp4" syncVideo={videoSync} /> */}
             
+
+            <VideoPlayer {...videoConfig} />
             
           </div>
           <div className="z-10 w-full flex-col items-center font-mono text-md display flex ">
