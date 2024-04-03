@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, use } from "react";
 import ControlsVideo from "./ControlsVideo";
 import { Marker, MarkerConfiguration } from "../models/Market";
 
@@ -14,9 +14,11 @@ interface Props {
   markers: Marker[];
   timeStart?: number;
   markerConfiguration?: MarkerConfiguration;
+  timeNow: number;
   setAllMarkers: (markers: Marker[]) => void;
   onMarkerClick?: (marker: Marker) => void
-
+  setTimeNow: (timeNow: number) => void
+  setVideoSync: (videoSync: boolean) => void
 }
 
 export default function VideoPlayer(props: Props) {
@@ -38,8 +40,11 @@ export default function VideoPlayer(props: Props) {
     markers,
     timeStart = 0,
     markerConfiguration,
+    timeNow,
     setAllMarkers,
     onMarkerClick = () => {} ,
+    setTimeNow = () => {},
+    setVideoSync = () => {}
   } = props;
 
   //const [allMarkers, setAllMarkers] = useState<Marker[]>(markers)
@@ -47,11 +52,13 @@ export default function VideoPlayer(props: Props) {
   const onPlay = () => {
     setIsPlaying(true);
     videoRef.current?.play();
+    setVideoSync(true)
   };
 
   const onPause = () => {
     setIsPlaying(false);
     videoRef.current?.pause();
+    setVideoSync(false)
   };
 
   const handlePlayerClick = () => {
@@ -79,22 +86,28 @@ export default function VideoPlayer(props: Props) {
 
   const onLastFrameClick = () => {
     const frameTime = 1 / fps;
-    if (videoRef.current)
+    if (videoRef.current){
       videoRef.current.currentTime = Math.max(
         0,
         videoRef.current.currentTime - frameTime
       );
-    console.log(videoRef.current?.currentTime);
+      setTimeNow(videoRef.current.currentTime)
+      console.log(videoRef.current?.currentTime);
+    }
   };
 
   const onNextFrameClick = () => {
     const frameTime = 1 / fps;
     if (videoRef.current)
+    {
       videoRef.current.currentTime = Math.min(
         videoRef.current.duration,
         videoRef.current.currentTime + frameTime
       );
-    console.log(videoRef.current?.currentTime);
+      setTimeNow(videoRef.current.currentTime)
+      console.log(videoRef.current?.currentTime);
+    }
+      
   };
 
   const getMarker = (currentTime: number): Marker => {
@@ -172,6 +185,7 @@ export default function VideoPlayer(props: Props) {
       e['clientX'] - progressEl.current.getBoundingClientRect().left + document.body.scrollLeft
     const percentage = (x * progressEl.current.max) / progressEl.current.offsetWidth
     videoRef.current.currentTime = (percentage / 100) * videoRef.current.duration
+    setTimeNow(videoRef.current.currentTime)
   }
 
   const onDuration = (duration: number) => {
@@ -196,6 +210,7 @@ export default function VideoPlayer(props: Props) {
   const handleMarkerClick = (marker: Marker) => {
     if (!videoRef.current) return
     videoRef.current.currentTime = marker['time']
+    setTimeNow(videoRef.current.currentTime)
     onMarkerClick(marker)
   }
 
@@ -226,6 +241,13 @@ export default function VideoPlayer(props: Props) {
       }
     }
   }, [url])//isFullScreen])
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = timeNow
+    }
+
+  }, [timeNow])
 
   useEffect(() => {
     videoSync ? onPlay() : onPause();

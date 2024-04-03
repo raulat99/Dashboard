@@ -11,6 +11,7 @@ export default function Dashboard () {
     const [videoSync, setVideoSync] = useState<boolean>(false)
     const [markers, setMarkers] = useState<Marker[]>([])
     const [selectedMarker, setSelectedMarker] = useState(undefined)
+    const [timeNow, setTimeNow] = useState<number>(0)
 
     const onHandleMarkerClick = (marker : Marker) => {
       setSelectedMarker(marker)
@@ -25,8 +26,11 @@ export default function Dashboard () {
       fps: 30,
       markers: markers,
       selectedMarker: selectedMarker,
+      timeNow: timeNow,
       setAllMarkers: (markers: Marker[]) => setMarkers(markers),
-      onMarkerClick: onHandleMarkerClick
+      onMarkerClick: onHandleMarkerClick,
+      setTimeNow: (timeNow: number) => setTimeNow(timeNow),
+      setVideoSync: (videoSync: boolean) => setVideoSync(videoSync),
     }
 
   const playAllVideos = ()=>{
@@ -66,7 +70,9 @@ export default function Dashboard () {
             
 
             <VideoPlayer {...videoConfig} />
-            
+            <VideoPlayer {...videoConfig} />
+            <VideoPlayer {...videoConfig} />
+            <VideoPlayer {...videoConfig} />
           </div>
           <div className="z-10 w-full flex-col items-center font-mono text-md display flex ">
             <h2 className="text-lg m-2"> Components: </h2>
