@@ -28,7 +28,7 @@ export default function VideoPlayer(props: Props) {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressEl = useRef<HTMLProgressElement>(null)
-  const volumeEl = useRef<HTMLProgressElement>(null)
+  const volumeEl = useRef<HTMLInputElement>(null)
 
   const [currentTime, setCurrentTime] = useState<number>(0)
   const [duration, setVideoDuration] = useState<number>(0)
@@ -213,15 +213,25 @@ export default function VideoPlayer(props: Props) {
   }
 
 
-  const handleVolumeClick = (e: React.MouseEvent<HTMLProgressElement, MouseEvent>) => {
+  const handleVolumeClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // if(!volumeEl.current || !videoRef.current) return
+    // const x =(e['clientX'] - volumeEl.current.getBoundingClientRect().left)  + document.body.scrollLeft
+
+    // const percentage = (x * volumeEl.current.max) / volumeEl.current.offsetWidth
+
     if(!volumeEl.current || !videoRef.current) return
-    const x =(e['clientX'] - volumeEl.current.getBoundingClientRect().left)  + document.body.scrollLeft
-      // volumeEl.current.offsetWidth +
-      
-    const percentage = (x * volumeEl.current.max) / volumeEl.current.offsetWidth
-    videoRef.current.muted = false
-    setMuted(false)
-    setVolume(percentage / 100)
+
+    const volumeX = e.target.value
+    console.log({volumeX})
+    
+
+    if(volumeX === '0') {
+      setMuted(true)
+    } else {
+      setMuted(false)
+    }
+    
+    setVolume(volumeX)
   }
 
   const handleMuteClick = () => {
@@ -290,17 +300,25 @@ export default function VideoPlayer(props: Props) {
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.volume = Math.max(volume, 0);
+      //videoRef.current.volume = Math.max(volume, 0);
+      videoRef.current.volume = volume;
     }
   }, [volume])
 
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = muted;
+    }
+  }, [muted])
+
   return (
-    <div className="flex flex-row">
-    <div className="m-6 w-auto h-auto" >
+    <div className="flex flex-row" >
+    <div className="m-6 w-auto h-auto" style={{ height, width }}>
       <video
         ref={videoRef}
         key={id}
         className="react-video-player"
+        
         onClick={handlePlayerClick}
         onEnded={onHandleVideoEnded}
       >

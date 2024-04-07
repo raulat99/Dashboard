@@ -16,7 +16,7 @@ interface Props {
   markers: Marker[];
   selectedMarker?: Marker;
   markerConfiguration?: MarkerConfiguration;
-  volumeEl: React.MutableRefObject<HTMLProgressElement>;
+  volumeEl: React.MutableRefObject<HTMLInputElement>;
   volume: number;
   muted: boolean;
   onPlayClick: () => void;
@@ -31,7 +31,7 @@ interface Props {
   ) => void;
   onMarkerClick: (marker: Marker) => void;
   onVolumeClick: (
-    event: React.MouseEvent<HTMLProgressElement, MouseEvent>
+    event: React.ChangeEvent<HTMLInputElement>
   ) => void;
   onMuteClick: () => void;
 }
@@ -120,10 +120,7 @@ export default function ControlsVideo(props: Props) {
           </div>
         </button>
 
-        <button
-          onClick={isPlaying ? onPauseClick : onPlayClick}
-          className="play-pause"
-        >
+        <button onClick={isPlaying ? onPauseClick : onPlayClick} className="play-pause">
           {isPlaying ? (
             <div className="w-10 h-8 ">
               <BsPauseFill size={24} />
@@ -141,23 +138,19 @@ export default function ControlsVideo(props: Props) {
           </div>
         </button>
 
-        <div className="mx-48 mt-2">
+        <div className="mx-8 mt-2">
           <button className="add-marker" onClick={onAddMarkerClick}>
             <div className="w-10 h-8">
               <IoMdAdd size={24} />
             </div>
           </button>
-
           <button className="delete-marker" onClick={onDeleteMarkerClick}>
             <div className="w-10 h-8">
               <TiDeleteOutline size={24} />
             </div>
           </button>
 
-          <button
-            className="delete-all-markers"
-            onClick={onDeleteAllMarkersClick}
-          >
+          <button className="delete-all-markers" onClick={onDeleteAllMarkersClick}>
             <div className="w-10 h-8">
               <MdDeleteForever size={24} />
             </div>
@@ -190,16 +183,28 @@ export default function ControlsVideo(props: Props) {
         </div> */}
 
         <div className="w-30 h-8 mx-2 mt-2 flex flex-row">
-          <progress
+          {/* <progress
             ref={volumeEl}
             max="100"
             value={volume}
-            onClick={onVolumeClick}
+            onClick={onVolumeClick}>
+          </progress> */}
 
-          >
-          </progress>
+          <input
+						type='range'
+            ref={volumeEl}
+						className='w-40 h-4.5 bg-gray-600 rounded-full mr-2'
+						min={0}
+						max={1}
+						step={0.05}
+						value={volume}
+						onChange={onVolumeClick}
+					/>
+
           <div className="w-22 h-8 mx-1">
-          {Math.round(Math.max((parseFloat(volume.toFixed(2))) * 100 ,0))} % volume
+          {/* {Math.round(Math.max((parseFloat(volume.toFixed(2))) * 100 ,0))}  */}
+          
+          {(volume * 100).toFixed(0)} % volume
           </div>
         </div>
         <button
