@@ -3,6 +3,7 @@ import { useRef, useState, useEffect, use, useContext } from "react";
 import ControlsVideo from "./ControlsVideo";
 import { Marker, MarkerConfiguration } from "../models/Market";
 import { DashboardGraphsContext } from "../providers/DashboardProvider";
+import MarkerView from "./MakerView";
 
 interface Props {
   url: string;
@@ -214,11 +215,12 @@ export default function VideoPlayer(props: Props) {
 
   const handleVolumeClick = (e: React.MouseEvent<HTMLProgressElement, MouseEvent>) => {
     if(!volumeEl.current || !videoRef.current) return
-    const y =
-      volumeEl.current.offsetWidth -
-      (e['clientY'] - volumeEl.current.getBoundingClientRect().top + document.body.scrollTop)
-    const percentage = (y * volumeEl.current.max) / volumeEl.current.offsetWidth
+    const x =(e['clientX'] - volumeEl.current.getBoundingClientRect().left)  + document.body.scrollLeft
+      // volumeEl.current.offsetWidth +
+      
+    const percentage = (x * volumeEl.current.max) / volumeEl.current.offsetWidth
     videoRef.current.muted = false
+    setMuted(false)
     setVolume(percentage / 100)
   }
 
@@ -235,6 +237,7 @@ export default function VideoPlayer(props: Props) {
       setMuted(true)
     }
   }
+
 
   useEffect(() => {
     const instance = videoRef.current
@@ -281,8 +284,19 @@ export default function VideoPlayer(props: Props) {
     videoSync ? onPlay() : onPause();
   }, [videoSync]);
 
+  useEffect(() => {
+    
+  }, [markers]);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.volume = Math.max(volume, 0);
+    }
+  }, [volume])
+
   return (
-    <div className="react-video-wrap m-6" style={{ height, width }}>
+    <div className="flex flex-row">
+    <div className="m-6 w-auto h-auto" >
       <video
         ref={videoRef}
         key={id}
@@ -315,6 +329,22 @@ export default function VideoPlayer(props: Props) {
         onVolumeClick={handleVolumeClick}
         onMuteClick={handleMuteClick}
       />
+      </div>
+      <div className="flex flex-col overflow-y-auto py-4 mt-6 {}`max-h-[${videoRef.current.height}`}]" >  {/* style={{maxHeight: parent.height, maxWidth: parent.width }} */}
+      {markers &&
+          markers.map((marker, index) => {
+            return (
+              <MarkerView
+                key={index}
+                marker={marker}
+                duration={duration}
+                onMarkerClick={handleMarkerClick}
+                selectedMarker={selectedMarker}
+                configuration={markerConfiguration}
+              />
+            );
+          })}
+    </div>
     </div>
   );
 }

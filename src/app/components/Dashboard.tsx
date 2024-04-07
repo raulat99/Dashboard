@@ -20,8 +20,8 @@ export default function Dashboard () {
     const videoConfig = {
       url: "//vjs.zencdn.net/v/oceans.mp4",
       id: "1",
-      height: 450,
-      width: 700,
+      height: 350,
+      width: 650,
       videoSync: videoSync,
       fps: 30,
       markers: markers,
@@ -61,8 +61,8 @@ export default function Dashboard () {
             PauseAllVideos
           </button>
         </div>
-        <div className="flex-col">
-          <div className="display flex w-full flex-wrap">
+        <div className="flex flex-col">
+          <div className="flex flex-wrap justify-center gap-4">
             {/* <Video src="//vjs.zencdn.net/v/oceans.mp4" syncVideo={videoSync} />
             <Video src="//vjs.zencdn.net/v/oceans.mp4" syncVideo={videoSync} />
             <Video src="//vjs.zencdn.net/v/oceans.mp4" syncVideo={videoSync} />
