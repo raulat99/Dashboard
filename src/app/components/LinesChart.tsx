@@ -44,7 +44,7 @@ export default function LinesChart() {
   const chartRef = useRef(null);
   var id = null;
 
-  const {dataX, updateDataX, updatePercentajeX} = useContext(DashboardGraphsContext);
+  const {dataX, updateDataX, updatePercentageX} = useContext(DashboardGraphsContext);
 
   var midata = {
     labels: minutos,
@@ -56,7 +56,7 @@ export default function LinesChart() {
         tension: 0.5,
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
-        pointRadius: 1,
+        pointRadius: 5,
         pointBorderColor: "rgba(255, 99, 132)",
         pointBackgroundColor: "rgba(255, 99, 132)",
       },
@@ -103,9 +103,9 @@ export default function LinesChart() {
   
       //console.log(chart)
 
-      console.log({percentajeX: e.x/ chart.width})
+      console.log({percentageX: e.x/ chart.width})
 
-      updatePercentajeX(e.x / chart.width)
+      updatePercentageX(e.x / chart.width)
       
       
       
