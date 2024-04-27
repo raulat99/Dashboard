@@ -69,7 +69,6 @@ const ReactVideoPlayer = ( props: Props) => {
 
    useEffect(() => {
     if (videoRef.current) {
-      //videoRef.current.volume = Math.max(volume, 0);
       videoRef.current.volume = volume;
     }
   }, [volume])
@@ -85,7 +84,6 @@ const ReactVideoPlayer = ( props: Props) => {
             playing={isPlaying}
             volume={volume}
             ref = {videoRef}
-            onClick = {OnPlayerClick}
           />
         </div>
       </div>

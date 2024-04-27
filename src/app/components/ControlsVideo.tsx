@@ -1,5 +1,5 @@
 "use client";
-
+import { IoSyncOutline } from "react-icons/io5";
 import { BsFillPlayFill, BsPauseFill } from "react-icons/bs";
 import { Marker, MarkerConfiguration } from "../models/Market";
 import MarkerView from "./MakerView";
@@ -7,12 +7,13 @@ import { IoIosArrowBack, IoIosArrowForward, IoMdAdd } from "react-icons/io";
 import { TiDeleteOutline } from "react-icons/ti";
 import { MdDeleteForever } from "react-icons/md";
 import { FaVolumeMute, FaVolumeUp } from "react-icons/fa";
-import { useContext, useRef, useState } from "react";
+import { use, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { DashboardGraphsContext } from "../providers/DashboardProvider";
+import { INFINITY } from "chart.js/helpers";
 
 export default function ControlsVideo() {
 
-  const {percentageX, videoSync, videoRefs,  volume,  updateVolume, updateVideoSync, updatePercentageX,  updateCurrentTime} = useContext(DashboardGraphsContext)
+  const {percentageX, videoSync, videoRefs,  volume, currentTime,  updateVolume, updateVideoSync, updatePercentageX,  updateCurrentTime} = useContext(DashboardGraphsContext)
 
   const progressEl = useRef<HTMLProgressElement>(null)
   const volumeEl = useRef<HTMLInputElement>(null)
@@ -20,28 +21,8 @@ export default function ControlsVideo() {
   const [markers, setMarkers] = useState<Marker[]>([])
   const [selectedMarker, setSelectedMarker] = useState<Marker | undefined>(undefined)
   const [markerConfiguration, setMarkerConfiguration] = useState<MarkerConfiguration | undefined>(undefined)
-
-  const handleProgressClick = (e: React.MouseEvent<HTMLProgressElement, MouseEvent>) => {
-    if(!progressEl.current ) return
-    const player = videoRefs[0].videoRef.current
-    if(!player) return
-
-    const x = e['clientX'] - progressEl.current.getBoundingClientRect().left + document.body.scrollLeft
-    const percentage = (x * progressEl.current.max) / progressEl.current.offsetWidth
-    progressEl.current.value = percentage
-
-    const percentageInSeconds = player.getDuration() * (percentage/100)
-    //updatePercentageX((percentage / 100))
-      updateCurrentTime(percentageInSeconds)
-  }
-
-  const onPlayClick = ()=>{
-    updateVideoSync(true)
-  } 
-
-  const onPauseClick = ()=>{
-    updateVideoSync(false)
-  }
+  const [duration, setVideoDuration] = useState<number>(0)
+  const [currentTimeProgressBar, setCurrentTimeProgressBar] = useState<number>(0)
 
   const getTimeCode = (secs: number): string => {
     let secondsNumber = secs ? parseInt(String(secs), 10) : 0;
@@ -66,6 +47,55 @@ export default function ControlsVideo() {
       hoursStr !== "00" ? hoursStr + ":" : ""
     }${minutesStr}:${secondsStr}`;
   };
+
+  const durationTimeCode = getTimeCode(Math.ceil(duration));
+  const currentTimeCode = currentTime !== duration ? getTimeCode(currentTime) : durationTimeCode;
+
+  const handleProgressClick = (e: React.MouseEvent<HTMLProgressElement, MouseEvent>) => {
+    if(!progressEl.current ) return
+    const player = videoRefs[0].videoRef.current
+    if(!player) return
+
+    const x = e['clientX'] - progressEl.current.getBoundingClientRect().left + document.body.scrollLeft
+    const percentage = (x * progressEl.current.max) / progressEl.current.offsetWidth
+    progressEl.current.value = percentage
+
+    const percentageInSeconds = player.getDuration() * (percentage/100)
+    //updatePercentageX((percentage / 100))
+      updateCurrentTime(percentageInSeconds)
+      setCurrentTimeProgressBar(percentageInSeconds)
+  }
+
+  const getDuration = useCallback(() =>{
+    if(videoRefs.length === 0) return 0
+
+    const player = videoRefs[0].videoRef.current
+    if(player)
+    {
+      return player.getDuration()
+    }
+    return 0
+  },[videoRefs])
+
+  const onClickSynchronize = () =>{
+    setTimeout(() => {
+    updateVideoSync(false)
+  },100);
+  setTimeout(() => {
+    updateCurrentTime(getCurrentTime())
+  },500);
+    setTimeout(() => {
+      updateVideoSync(true)
+    },1000);
+  }
+
+  const onPlayClick = ()=>{
+    updateVideoSync(true)
+  } 
+
+  const onPauseClick = ()=>{
+    updateVideoSync(false)
+  }
 
   const onNextFrameClick = () => {
     const player = videoRefs[0].videoRef.current;
@@ -109,15 +139,16 @@ export default function ControlsVideo() {
     }
   }
 
-  const getCurrentTime = ()=>
+  const getCurrentTime = useCallback(()=>
     {
+      if(videoRefs.length === 0) return 0
       if(videoRefs[0].videoRef.current)
       {
         return videoRefs[0].videoRef.current.getCurrentTime()
       }
 
       return 0
-    }
+    }, [videoRefs])
 
    const getMarker = (currentTime: number): Marker => {
     return {
@@ -154,7 +185,7 @@ export default function ControlsVideo() {
   };
 
   const onDeleteMarkerClick = () => {
-    if (selectedMarker) {
+    if (selectedMarker && selectedMarker.time == getCurrentTime()) {
       onDeleteMarker(selectedMarker);
     } else {
       //const newErrors = this.state.errors.concat('No Marker is selected')
@@ -167,78 +198,29 @@ export default function ControlsVideo() {
     setMarkers([]);
   };
 
-    // const durationTimeCode = getTimeCode(Math.ceil(duration));
-    // const currentTimeCode = currentTime !== duration ? getTimeCode(currentTime) : durationTimeCode;
-
   const handleOnMarkerSelection = (selectedMarker: Marker): void => {
     setSelectedMarker(selectedMarker);
   };
 
+  useEffect(() => {
+    //console.log(getCurrentTime())
+    setTimeout(()=>{
+      if (progressEl && progressEl.current) {
+        const timeNow = getCurrentTime()
+        setCurrentTimeProgressBar(timeNow)
+        let percentage = (timeNow / getDuration()) * 100
+        if(percentage === Infinity || Number.isNaN(percentage)) percentage = 0
+        progressEl.current.value = percentage;
+        progressEl.current.innerHTML = percentage + "% played";
+      }
+    }, 500)
   
-  // const handleProgress = (e: any) => {
-  //   const { currentTarget } = e;
-  //   // tslint:disable-next-line: no-shadowed-variable
-  //   const currentTime = currentTarget["currentTime"];
-  //   const duration = currentTarget["duration"];
-  //   let percentage = 0;
-  //   if (duration) {
-  //     setCurrentTime(currentTime);
-  //     percentage = (100 / duration) * currentTime;
-  //     if (progressEl && progressEl.current) {
-  //       progressEl.current.value = percentage;
-  //       progressEl.current.innerHTML = percentage + "% played";
-  //     } else {
-  //       console.warn(`Progress bar element is not available in DOM`);
-  //     }
-  //     if (currentTime === duration) {
-  //       onPause();
-  //     }
-  //   //   if (onContinuousMarkerReceived) {
-  //   //     handleContinuousMarker(currentTime);
-  //   //   }
-  //   // }
-  //   // const progressProps: ProgressProps = {
-  //   //   currentTime,
-  //   //   duration,
-  //   //   percentage,
-  //    };
-  //   // onProgress(e, progressProps);
-  // };
-
-    // useEffect(() => {
-  //   const instance = videoRef.current
-
-  //   if(!instance) return
-  //   instance.addEventListener('timeupdate', handleProgress)
-  //   instance.addEventListener('durationchange', handleDurationLoaded)
-
-  //   // document.addEventListener('fullscreenchange', () => {
-  //   //   if (isFullScreen && document.fullscreenElement === null) {
-  //   //     handleFullScreenClick()
-  //   //   }
-  //   // })
-
-  //   if (timeStart) {
-  //     seekToPlayer()
-  //   }
-  //   if (isPlaying) {
-  //     instance.play()
-  //   }
-
-  //   return () => {
-  //     if (instance) {
-  //       instance.removeEventListener('timeupdate', handleProgress)
-  //       instance.removeEventListener('durationchange', handleDurationLoaded)
-  //     }
-  //   }
-  // }, [url])//isFullScreen])
-
-  //https://www.svgrepo.com/collection/xnix-circular-interface-icons/11
-
+  },[videoRefs, !videoSync, currentTimeProgressBar,  getCurrentTime, getDuration])
+// videoRefs[0]?.videoRef.current?.getCurrentTime(),
   return (
     <div className="w-[85vw] my-16">
       <div className="flex flex-row bg-gray-200 dark:bg-gray-700 ">
-         {/* <div className="mt-1 mx-2 text-white">{currentTimeCode}</div> */}
+         <div className="mt-1 mx-2 text-white">{getTimeCode(currentTimeProgressBar)}</div>
         <div className="w-full bg-gray-200 dark:bg-gray-700 mt-1">
           <progress
             ref={progressEl}
@@ -246,11 +228,10 @@ export default function ControlsVideo() {
             onClick={handleProgressClick}
             className="bg-blue-600 w-full text-xs font-medium text-blue-100 text-center "
           >
-            0% played
           </progress>
         </div>
 
-        {/* <div className="mt-1 mx-2 text-white">{durationTimeCode}</div>  */}
+        <div className="mt-1 mx-2 text-white">{getTimeCode(getDuration())}</div> 
       </div>
 
       <div className="diplay flex flex row w-full pt-1 bg-black bg-opacity-15">
@@ -272,10 +253,15 @@ export default function ControlsVideo() {
           )}
         </button>
 
-        
         <button className="next-frame" onClick={onNextFrameClick}>
           <div className="w-10 h-8">
             <IoIosArrowForward size={24} />
+          </div>
+        </button>
+
+        <button className="synchronize" onClick={onClickSynchronize}>
+          <div className="w-10 h-8">
+            <IoSyncOutline  size={24} />
           </div>
         </button>
 
