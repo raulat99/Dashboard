@@ -62,9 +62,13 @@ export default function ControlsVideo() {
 
     const percentageInSeconds = player.getDuration() * (percentage/100)
     //updatePercentageX((percentage / 100))
+      
+      console.log("percentageInSeconds", percentageInSeconds)
       updateCurrentTime(percentageInSeconds)
       setCurrentTimeProgressBar(percentageInSeconds)
   }
+
+
 
   const getDuration = useCallback(() =>{
     if(videoRefs.length === 0) return 0
@@ -150,6 +154,17 @@ export default function ControlsVideo() {
       return 0
     }, [videoRefs])
 
+    const getCurrentTimeNow = ()=>
+      {
+        if(videoRefs.length === 0) return 0
+      if(videoRefs[0].videoRef.current)
+      {
+        return videoRefs[0].videoRef.current.getCurrentTime()
+      }
+
+      return 0
+      }
+
    const getMarker = (currentTime: number): Marker => {
     return {
       id: Math.random(),
@@ -162,7 +177,7 @@ export default function ControlsVideo() {
     const videoRef = videoRefs[0].videoRef.current
     if (!videoRef) return;
 
-    const newMarker: Marker = getMarker(videoRef.getCurrentTime());
+    const newMarker: Marker = getMarker(getCurrentTimeNow());
     markers.push(newMarker);
     setMarkers(markers);
     console.log({ markers: markers });
@@ -208,6 +223,14 @@ export default function ControlsVideo() {
       if (progressEl && progressEl.current) {
         const timeNow = getCurrentTime()
         setCurrentTimeProgressBar(timeNow)
+
+        if(selectedMarker !== undefined && (((timeNow - 2) > selectedMarker.time) || (selectedMarker.time > (timeNow+2)))) setSelectedMarker(undefined)
+          
+        markers.map((marker: Marker) => { 
+            if(((timeNow - 2) < marker.time) && (marker.time < (timeNow+2)))
+              {
+                setSelectedMarker(marker)
+          }})
         let percentage = (timeNow / getDuration()) * 100
         if(percentage === Infinity || Number.isNaN(percentage)) percentage = 0
         progressEl.current.value = percentage;
@@ -215,22 +238,39 @@ export default function ControlsVideo() {
       }
     }, 500)
   
-  },[videoRefs, !videoSync, currentTimeProgressBar,  getCurrentTime, getDuration])
+  },[videoRefs, !videoSync, currentTimeProgressBar, selectedMarker, getCurrentTime, getDuration])
 // videoRefs[0]?.videoRef.current?.getCurrentTime(),
   return (
     <div className="w-[85vw] my-16">
       <div className="flex flex-row bg-gray-200 dark:bg-gray-700 ">
-         <div className="mt-1 mx-2 text-white">{getTimeCode(currentTimeProgressBar)}</div>
+         <div className="mt-1 h-12 mx-2 text-white">{getTimeCode(currentTimeProgressBar)}</div>
         <div className="w-full bg-gray-200 dark:bg-gray-700 mt-1">
           <progress
             ref={progressEl}
             max="100"
             onClick={handleProgressClick}
-            className="bg-blue-600 w-full text-xs font-medium text-blue-100 text-center "
+            
+            className="bg-red-900 w-full text-xs font-medium text-red-100 text-center "
           >
+           
           </progress>
-        </div>
-
+          <div className="flex relative bg-gray-200 dark:bg-gray-700 mt-1">
+          {markers &&
+          markers.map((marker, index) => {
+            return (
+              <MarkerView
+                key={index}
+                marker={marker}
+                duration={getDuration()}
+                onMarkerClick={handleMarkerClick}
+                selectedMarker={selectedMarker}
+                configuration={markerConfiguration}
+              />
+            );
+          })}
+          </div>
+          </div>
+   
         <div className="mt-1 mx-2 text-white">{getTimeCode(getDuration())}</div> 
       </div>
 
@@ -318,19 +358,7 @@ export default function ControlsVideo() {
         </div>
         
         <div className="flex flex-row overflow-x-auto py-4 mt-6 ]" >  
-      {markers &&
-          markers.map((marker, index) => {
-            return (
-              <MarkerView
-                key={index}
-                marker={marker}
-                duration={getCurrentTime()}
-                onMarkerClick={handleMarkerClick}
-                selectedMarker={selectedMarker}
-                configuration={markerConfiguration}
-              />
-            );
-          })}
+     
     </div> 
 
         </div>

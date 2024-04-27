@@ -1,4 +1,5 @@
 import { Marker, MarkerConfiguration } from "../models/Market"
+import { MdArrowDropUp } from "react-icons/md";
 
 
 
@@ -15,10 +16,18 @@ interface Props {
           const { marker, duration } = props
           const { time } = marker
           if (duration) {
-              const percent = time <= duration ? time / duration : 1
-              return `calc(${percent * 100}% - 2px)`
+              //console.log("time", time)
+              //console.log("duration", duration)
+              const percent = (time <= duration ? time/duration : 1) * 100
+              //console.log("time/duration",time/duration)
+              //console.log("percent", percent*100)
+              //console.log("calculation", `calc(${percent * 100}% - 2px)` )
+              //return `${percent * 100}`
+              //return `${percent * 100}%`
+              return `calc(${percent}% - 14px)`;
+              //return `calc(${percent * 100}% - 2px)`
           }
-          return '-9999px'
+          return '0%'
       }
   
           const { marker, configuration, onMarkerClick } = props
@@ -35,28 +44,28 @@ interface Props {
                   : '#F44336'
   
           return ( 
-            <div>
-                <p>{title}</p>
-                <i
-                  id={id}
+           
+                <button 
+                    id={id}
                   className="react-video-marker"
                   title={title}
-                style={{ 
-                    backgroundColor: "#666666",
-                    cursor: "pointer",
+                  onClick={() => onMarkerClick(marker)}>
+
+                   {/* <div style={{ 
+                    
                     display: "block",
                     height: "8px",
-                    width: "4px",
-                    //position: "absolute",
-                    top: "9px",
-                    left: "50%",
+                    width: "8px",
+                    left: getPosition(),
+                    position: "absolute",
                     background: selectedColor,
-                    transform: `translateX(-50%)`,
                 }}
-                  onClick={() => onMarkerClick(marker)}
-              />
+                > */}
+                     <MdArrowDropUp style={{cursor: "pointer", height: "28px", width:"28px", color: selectedColor || "white", fontSize: "20px", position: "absolute", top: "-20px", left: getPosition(), }}/>
+                   {/* </div> */}
 
-            </div>
-              
+               </button>
+                 
+
           )
       }

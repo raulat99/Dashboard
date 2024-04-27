@@ -6,7 +6,7 @@ import ControlsVideo from "./ControlsVideo";
 export default function Dashboard() {
   //const url = "//vjs.zencdn.net/v/oceans.mp4";
   //const url = "https://www.youtube.com/watch?v=OlL1bDImVkM";
-  const url = "https://www.youtube.com/watch?v=19fOoC8tcmY";
+  const url = "https://www.youtube.com/watch?v=2FOYmlLW1bw";
   const height = 350;
   const width = 700;
   const fps = 30;
@@ -21,7 +21,6 @@ export default function Dashboard() {
   return (
     <main className="flex flex-col items-center">
       <h1 className="text-4xl p-2 py-4 text-center"> Dashboard page </h1>
-      <div className="flex flex-col">
         <div className="flex flex-wrap justify-center gap-4">
           {configArray.map((videoConfigItem) => {
             return (
@@ -38,7 +37,6 @@ export default function Dashboard() {
             <LinesChart />
           </div>
         </div>
-      </div>
     </main>
   );
 }

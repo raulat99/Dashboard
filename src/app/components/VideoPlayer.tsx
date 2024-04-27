@@ -174,8 +174,7 @@ export default function VideoPlayer(props: Props) {
   //       onPause();
   //     }
   //   //   if (onContinuousMarkerReceived) {
-  //   //     handleContinuousMarker(currentTime);
-  //   //   }
+   //   //   }
   //   // }
   //   // const progressProps: ProgressProps = {
   //   //   currentTime,
