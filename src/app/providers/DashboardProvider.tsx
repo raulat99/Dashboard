@@ -2,6 +2,7 @@
 import React, { RefObject, createContext, useContext, useState } from "react";
 import { Graph } from "../models/Graph";
 import ReactPlayer from "react-player";
+import { Marker } from "../models/Market";
 
 
 interface videoRefProp
@@ -17,6 +18,10 @@ interface IDashboardGraphsContext {
     videoSync: boolean;
     currentTime: number;
     volume: number;
+    uploadedData: null;
+    markers: Marker[];
+    updateMarkers: (markers: Marker[]) => void;
+    updateUploadedData: (e : React.ChangeEvent<HTMLInputElement>) => void;
     updateVolume: (n: number) => void;
     updateVideoSync: (videoSync: boolean) => void;
     updatePercentageX: (n: number) => void;
@@ -34,6 +39,10 @@ interface IDashboardGraphsContext {
     videoSync: false,
     currentTime: 0,
     volume: 0,
+    uploadedData: null,
+    markers: [],
+    updateMarkers: () => {},
+    updateUploadedData: () => {},
     updateVolume: () => {},
     updateVideoSync: () => {},
     updatePercentageX: () => {},
@@ -54,7 +63,8 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
     const [currentTime, setCurrentTime] = useState<number>(0);
 
     const [volume, setVolume] = useState<number>(0.5)
-    
+    const [uploadedData, setUploadedData] = useState<any>(null)
+    const [markers, setMarkers] = useState<Marker[]>([])
 
     const updateCurrentTime = (currentTime: number) => { setCurrentTime(currentTime);}
     const updateVideoSync = (videoSync: boolean) => {setVideoSync(videoSync);}
@@ -62,6 +72,7 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
     const updatePercentageX = (n: number) => {setPercentageX(n)}
     const updateDataX = (n: number)=>{setDataX(n);}
     const updateVolume = (n: number) => {setVolume(n)}
+    const updateMarkers = (markers: Marker[]) => {setMarkers(markers)}
 
     const updateVideoRefs = (videoRefProp : videoRefProp) => {
         const videoRefFound = videoRefs.find((v) => v.id === videoRefProp.id )
@@ -71,6 +82,33 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
             aux.push(videoRefProp)
             setvideoRefs(aux)
         }
+    }
+    
+
+    const updateUploadedData = async (e: React.ChangeEvent<HTMLInputElement>) =>{
+        if (e.target.files && e.target.files[0]) {
+            const updatedJSON = e.target.files[0]
+            if (updatedJSON.type === 'application/json') {
+              const fileReader = new FileReader()
+              fileReader.readAsText(e.target.files[0])
+              fileReader.onload = (ev: ProgressEvent<FileReader>) => {
+                const target = ev.target
+                if (target) {
+                  const result = JSON.parse(target.result as any)
+                
+                  
+                    console.log(result)
+                    console.log(result.session.signals[0])
+                    console.log(result.session.signals[0].labels[0])
+                    updateMarkers(result.session.markers)
+                    setUploadedData(result)
+                }
+                 else {
+                  console.warn(`Unable to read the uploaded file`)
+                }
+              }
+            }
+          }
     }
 
     return(
@@ -82,6 +120,10 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
             videoSync,
             currentTime,
             volume,
+            uploadedData,
+            markers,
+            updateMarkers,
+            updateUploadedData,
             updateVolume,
             updatePercentageX,
             updateGraphs, 

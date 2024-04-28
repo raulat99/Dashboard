@@ -17,12 +17,11 @@ import { markersValidationSchema } from "../models/import-markers-validation";
 
 export default function ControlsVideo() {
 
-  const {percentageX, videoSync, videoRefs,  volume, currentTime,  updateVolume, updateVideoSync, updatePercentageX,  updateCurrentTime} = useContext(DashboardGraphsContext)
+  const {percentageX, videoSync, videoRefs,  volume, currentTime, markers, updateMarkers,  updateVolume, updateVideoSync, updatePercentageX,  updateCurrentTime} = useContext(DashboardGraphsContext)
 
   const progressEl = useRef<HTMLProgressElement>(null)
   const volumeEl = useRef<HTMLInputElement>(null)
   const [muted, updateMuted] = useState<boolean>(false)
-  const [markers, setMarkers] = useState<Marker[]>([])
   const [selectedMarker, setSelectedMarker] = useState<Marker | undefined>(undefined)
   const [markerConfiguration, setMarkerConfiguration] = useState<MarkerConfiguration | undefined>(undefined)
   const [duration, setVideoDuration] = useState<number>(0)
@@ -183,7 +182,7 @@ export default function ControlsVideo() {
 
     const newMarker: Marker = getMarker(getCurrentTimeNow());
     markers.push(newMarker);
-    setMarkers(markers);
+    updateMarkers(markers);
     console.log({ markers: markers });
   };
 
@@ -199,7 +198,7 @@ export default function ControlsVideo() {
     const remainingMarkers = markers.filter(
       (m) => m.id !== markerToDelete.id //&& m.time !== markerToDelete.time
     );
-    setMarkers(remainingMarkers);
+    updateMarkers(remainingMarkers);
     console.log({ remainingMarkers: remainingMarkers });
   };
 
@@ -214,7 +213,7 @@ export default function ControlsVideo() {
   };
 
   const onDeleteAllMarkersClick = () => {
-    setMarkers([]);
+    updateMarkers([]);
   };
 
   const handleOnMarkerSelection = (selectedMarker: Marker): void => {
@@ -242,7 +241,7 @@ export default function ControlsVideo() {
 
   const onMarkerImported = (importedMarkers: Marker[]) => {
       const completeMarkers = markers.slice().concat(importedMarkers)
-      setMarkers(completeMarkers)
+      updateMarkers(completeMarkers)
     }
   
 
@@ -296,7 +295,7 @@ export default function ControlsVideo() {
 // videoRefs[0]?.videoRef.current?.getCurrentTime(),
   return (
     <div className="w-[95vw] min-w-[70vw] my-8 ">
-      <div className="flex flex-row bg-gray-200 dark:bg-gray-700 ">
+      <div className="flex flex-row bg-gray-200 dark:bg-gray-700 rounded-t-lg">
          <div className="mt-1 h-12 mx-2 text-white">{getTimeCode(currentTimeProgressBar)}</div>
         <div className="w-full bg-gray-200 dark:bg-gray-700 mt-1">
           <progress
@@ -328,7 +327,7 @@ export default function ControlsVideo() {
         <div className="mt-1 mx-2 text-white">{getTimeCode(getDuration())}</div> 
       </div>
 
-      <div className="diplay flex flex row pt-1 bg-black min-w-fi bg-opacity-15">
+      <div className="diplay flex flex row pt-1 bg-black min-w-fi bg-opacity-15 rounded-b-lg">
         <button className="last-frame" onClick={onLastFrameClick}>
           <div className="w-10 h-8 ">
             <IoIosArrowBack size={24} />

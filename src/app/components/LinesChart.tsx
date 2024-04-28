@@ -42,25 +42,44 @@ var minutos = [
 export default function LinesChart() {
   
   const chartRef = useRef(null);
+
   var id = null;
 
-  const {dataX, updateDataX, updatePercentageX} = useContext(DashboardGraphsContext);
+  const {uploadedData, dataX, updateDataX, updatePercentageX} = useContext(DashboardGraphsContext);
+
+  // var midata = {
+  //   labels: minutos,
+  //   datasets: [
+  //     // Cada una de las líneas del gráfico
+  //     {
+  //       label: "Pulsaciones",
+  //       data: pulsaciones,
+  //       tension: 0.5,
+  //       borderColor: "rgb(255, 99, 132)",
+  //       backgroundColor: "rgba(255, 99, 132, 0.5)",
+  //       pointRadius: 5,
+  //       pointBorderColor: "rgba(255, 99, 132)",
+  //       pointBackgroundColor: "rgba(255, 99, 132)",
+  //     },
+  //   ],
+  // };
+
+  //console.log(uploadedData?.session?.signals[0].labels[0])
 
   var midata = {
+    //labels: uploadedData !== null && uploadedData.session.signals[0].labels[0] ? uploadedData.session.signals[0].labels[0] : minutos,
     labels: minutos,
-    datasets: [
-      // Cada una de las líneas del gráfico
-      {
-        label: "Pulsaciones",
-        data: pulsaciones,
-        tension: 0.5,
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-        pointRadius: 5,
-        pointBorderColor: "rgba(255, 99, 132)",
-        pointBackgroundColor: "rgba(255, 99, 132)",
-      },
-    ],
+    datasets: [{
+      label: "Pulsaciones",
+      data: pulsaciones,
+      tension: 0.5,
+      borderColor: "rgb(255, 99, 132)",
+      backgroundColor: "rgba(255, 99, 132, 0.5)",
+      pointRadius: 5,
+      pointBorderColor: "rgba(255, 99, 132)",
+      pointBackgroundColor: "rgba(255, 99, 132)",
+    },
+  ],
   };
   
   // Opciones del gráfico ()

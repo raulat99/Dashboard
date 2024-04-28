@@ -2,6 +2,8 @@
 import LinesChart from "./LinesChart";
 import ReactVideoPlayer from "./ReactVideoPlayer";
 import ControlsVideo from "./ControlsVideo";
+import { useContext } from "react";
+import { DashboardGraphsContext } from "../providers/DashboardProvider";
 
 export default function Dashboard() {
   //const url = "//vjs.zencdn.net/v/oceans.mp4";
@@ -17,6 +19,7 @@ export default function Dashboard() {
   const videoConfig4 = { id: "4", url, height, width, fps };
 
   var configArray = [videoConfig1, videoConfig2, videoConfig3, videoConfig4];
+  const {updateUploadedData} = useContext(DashboardGraphsContext)
 
   return (
     <main className="flex flex-col items-center">
@@ -31,6 +34,19 @@ export default function Dashboard() {
         <div className="z-10 w-full flex-col items-center font-mono text-md display flex ">
           <ControlsVideo />
           <h2 className="text-lg m-2"> Components: </h2>
+          <label htmlFor="newdata" style={{
+            backgroundColor: "indigo",
+            color: "white",
+            padding: "0.5rem",
+            fontFamily: "sans-serif",
+            borderRadius: "0.3rem",
+            cursor: "pointer",
+            marginTop: "1rem",
+          }}>Upload new data
+          </label>
+
+          <input type="file" id="newdata" accept=".json" onChange={updateUploadedData} hidden/>
+
           <div className="w-full space-y-4 display flex flex-col ">
             {/* Aquí incluiré las gráficas (un componente por cada ejemplo). */}
             <LinesChart />
