@@ -10,6 +10,10 @@ import { FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 import { use, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { DashboardGraphsContext } from "../providers/DashboardProvider";
 import { INFINITY } from "chart.js/helpers";
+import { FaFileDownload } from "react-icons/fa";
+import { IoCloudUpload } from "react-icons/io5";
+import { ValidationResult } from 'joi'
+import { markersValidationSchema } from "../models/import-markers-validation";
 
 export default function ControlsVideo() {
 
@@ -217,6 +221,56 @@ export default function ControlsVideo() {
     setSelectedMarker(selectedMarker);
   };
 
+  const downloadAttachment = (data: string, fileName: string) => {
+    const url = window.URL.createObjectURL(new Blob([data]))
+    downloadAttachmentFromUrl(url, fileName)
+  }
+  
+  const downloadAttachmentFromUrl = (url: string, fileName: string) => {
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', fileName)
+    link.click()
+  }
+
+  const onExportMarkersClick = () => {  
+      downloadAttachment(
+        JSON.stringify(markers, null, 2),
+        `Markers_${new Date().toISOString().substring(0, 10)}.json`,
+      )
+    }
+
+  const onMarkerImported = (importedMarkers: Marker[]) => {
+      const completeMarkers = markers.slice().concat(importedMarkers)
+      setMarkers(completeMarkers)
+    }
+  
+
+  const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const updatedJSON = e.target.files[0]
+      if (updatedJSON.type === 'application/json') {
+        const fileReader = new FileReader()
+        fileReader.readAsText(e.target.files[0])
+        fileReader.onload = (ev: ProgressEvent<FileReader>) => {
+          const target = ev.target
+          if (target) {
+            const result: Marker[] = JSON.parse(target.result as any)
+            const { error }: ValidationResult = markersValidationSchema.validate(result)
+            if (error) {
+              //this.setState({ errors: error.details.map((m) => m.message) })
+              console.warn(`Invalid file`)
+            } else {
+              onMarkerImported(result)
+            }
+          } else {
+            console.warn(`Unable to read the uploaded file`)
+          }
+        }
+      }
+    }
+  }
+
   useEffect(() => {
     //console.log(getCurrentTime())
     setTimeout(()=>{
@@ -224,10 +278,10 @@ export default function ControlsVideo() {
         const timeNow = getCurrentTime()
         setCurrentTimeProgressBar(timeNow)
 
-        if(selectedMarker !== undefined && (((timeNow - 2) > selectedMarker.time) || (selectedMarker.time > (timeNow+2)))) setSelectedMarker(undefined)
+        if(selectedMarker !== undefined && (((timeNow - 1) > selectedMarker.time) || (selectedMarker.time > (timeNow+1)))) setSelectedMarker(undefined)
           
         markers.map((marker: Marker) => { 
-            if(((timeNow - 2) < marker.time) && (marker.time < (timeNow+2)))
+            if(((timeNow - 1) < marker.time) && (marker.time < (timeNow+1)))
               {
                 setSelectedMarker(marker)
           }})
@@ -241,7 +295,7 @@ export default function ControlsVideo() {
   },[videoRefs, !videoSync, currentTimeProgressBar, selectedMarker, getCurrentTime, getDuration])
 // videoRefs[0]?.videoRef.current?.getCurrentTime(),
   return (
-    <div className="w-[85vw] my-16">
+    <div className="w-[95vw] min-w-[70vw] my-8 ">
       <div className="flex flex-row bg-gray-200 dark:bg-gray-700 ">
          <div className="mt-1 h-12 mx-2 text-white">{getTimeCode(currentTimeProgressBar)}</div>
         <div className="w-full bg-gray-200 dark:bg-gray-700 mt-1">
@@ -274,7 +328,7 @@ export default function ControlsVideo() {
         <div className="mt-1 mx-2 text-white">{getTimeCode(getDuration())}</div> 
       </div>
 
-      <div className="diplay flex flex row w-full pt-1 bg-black bg-opacity-15">
+      <div className="diplay flex flex row pt-1 bg-black min-w-fi bg-opacity-15">
         <button className="last-frame" onClick={onLastFrameClick}>
           <div className="w-10 h-8 ">
             <IoIosArrowBack size={24} />
@@ -305,7 +359,7 @@ export default function ControlsVideo() {
           </div>
         </button>
 
-        <div className="mx-8 mt-2">
+        <div className="flex flex-row mx-auto mt-2 space-x-1">
           <button className="add-marker" onClick={onAddMarkerClick}>
             <div className="w-10 h-8">
               <IoMdAdd size={24} />
@@ -322,9 +376,35 @@ export default function ControlsVideo() {
               <MdDeleteForever size={24} />
             </div>
           </button>
+          <button className="download-markers" onClick={onExportMarkersClick}>
+            <div className="w-10 h-8">
+              <FaFileDownload size={22} />
+            </div>
+          </button>
+          <div className="w-10 h-8">
+          <IoCloudUpload size={24} />
+          </div>
+          <div className="import-markers h-8 w-14">
+            <label htmlFor="input_json"> Import </label>
+          <input  type="file"
+                id="input_json"
+                accept=".json"
+                style={{ visibility: 'hidden',
+                 
+                 }}
+                onChange={onChangeFile}
+                onClick={(event) => {
+                  event.currentTarget.value = null
+                }}
+                />
+          </div>
+          <div className="import-markers h-8 w-20">
+            <label htmlFor="input_json"> markers </label>
+          </div>
+
         </div>
 
-        <div className="w-30 h-8 mx-2 mt-2 flex flex-row">
+        <div className="w-30 h-8 mx-2 mt-1 flex flex-row">
         <input
 						type='range'
             ref={volumeEl}
@@ -336,7 +416,7 @@ export default function ControlsVideo() {
 						onChange={onVolumeClick}
 					/>
 
-          <div className="w-22 h-8 mx-1">
+          <div className="w-22 h-8 mt-1 mx-1">
           {/* {Math.round(Math.max((parseFloat(volume.toFixed(2))) * 100 ,0))}  */}
           
           {(volume * 100).toFixed(0)} % volume
@@ -356,10 +436,7 @@ export default function ControlsVideo() {
         </button>
 
         </div>
-        
-        <div className="flex flex-row overflow-x-auto py-4 mt-6 ]" >  
-     
-    </div> 
+
 
         </div>
   );

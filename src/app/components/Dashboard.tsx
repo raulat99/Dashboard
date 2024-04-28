@@ -8,7 +8,7 @@ export default function Dashboard() {
   //const url = "https://www.youtube.com/watch?v=OlL1bDImVkM";
   const url = "https://www.youtube.com/watch?v=2FOYmlLW1bw";
   const height = 350;
-  const width = 700;
+  const width = 750;
   const fps = 30;
 
   const videoConfig1 = { id: "1", url, height, width, fps };
@@ -31,7 +31,7 @@ export default function Dashboard() {
         <div className="z-10 w-full flex-col items-center font-mono text-md display flex ">
           <ControlsVideo />
           <h2 className="text-lg m-2"> Components: </h2>
-          <div className="w-full space-y-4 display flex flex-col">
+          <div className="w-full space-y-4 display flex flex-col ">
             {/* Aquí incluiré las gráficas (un componente por cada ejemplo). */}
             <LinesChart />
             <LinesChart />
