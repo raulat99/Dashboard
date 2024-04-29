@@ -17,7 +17,7 @@ import { markersValidationSchema } from "../models/import-markers-validation";
 
 export default function ControlsVideo() {
 
-  const {percentageX, videoSync, videoRefs,  volume, currentTime, markers, updateMarkers,  updateVolume, updateVideoSync, updatePercentageX,  updateCurrentTime} = useContext(DashboardGraphsContext)
+  const {percentageX, dataX, videoSync, videoRefs,  volume, currentTime, markers, updateMarkers,  updateVolume, updateVideoSync, updatePercentageX,  updateCurrentTime} = useContext(DashboardGraphsContext)
 
   const progressEl = useRef<HTMLProgressElement>(null)
   const volumeEl = useRef<HTMLInputElement>(null)
@@ -291,7 +291,7 @@ export default function ControlsVideo() {
       }
     }, 500)
   
-  },[videoRefs, !videoSync, currentTimeProgressBar, selectedMarker, getCurrentTime, getDuration])
+  },[videoRefs, !videoSync, currentTimeProgressBar, selectedMarker, dataX, getCurrentTime, getDuration])
 // videoRefs[0]?.videoRef.current?.getCurrentTime(),
   return (
     <div className="w-[95vw] min-w-[70vw] my-8 ">

@@ -18,21 +18,23 @@ export default function Dashboard() {
   const videoConfig3 = { id: "3", url, height, width, fps };
   const videoConfig4 = { id: "4", url, height, width, fps };
 
-  var configArray = [videoConfig1, videoConfig2, videoConfig3, videoConfig4];
-  const {updateUploadedData} = useContext(DashboardGraphsContext)
+  //var configArray = [videoConfig1, videoConfig2, videoConfig3, videoConfig4];
+  const {updateUploadedData, uploadedData, videosConfig, signalsConfig} = useContext(DashboardGraphsContext)
 
   return (
     <main className="flex flex-col items-center">
       <h1 className="text-4xl p-2 py-4 text-center"> Dashboard page </h1>
+
+      <h2>{uploadedData && "session id: " + uploadedData.session.session_id+ " -- Descripcion: "  + uploadedData.session.description + " -- Date: " + uploadedData.session.date  }</h2>
         <div className="flex flex-wrap justify-center gap-4">
-          {configArray.map((videoConfigItem) => {
+          {videosConfig && videosConfig.map((videoConfigItem) => {
             return (
-              <ReactVideoPlayer {...videoConfigItem} key={videoConfigItem.id} />
+              <ReactVideoPlayer {...videoConfigItem} key={videoConfigItem.videoID} />
             );
           })}
         </div>
         <div className="z-10 w-full flex-col items-center font-mono text-md display flex ">
-          <ControlsVideo />
+        {videosConfig.length !== 0 && <ControlsVideo />}
           <h2 className="text-lg m-2"> Components: </h2>
           <label htmlFor="newdata" style={{
             backgroundColor: "indigo",
@@ -49,8 +51,11 @@ export default function Dashboard() {
 
           <div className="w-full space-y-4 display flex flex-col ">
             {/* Aquí incluiré las gráficas (un componente por cada ejemplo). */}
-            <LinesChart />
-            <LinesChart />
+            {signalsConfig && signalsConfig.map((signalsConfig) => {
+            return (
+              <LinesChart key = {signalsConfig.signalID}/>
+            );
+          })}
           </div>
         </div>
     </main>

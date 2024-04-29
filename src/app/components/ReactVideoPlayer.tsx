@@ -1,28 +1,29 @@
 'use client'
 
 import React, { RefObject, use, useContext, useEffect, useRef, useState } from 'react';
-import { DashboardGraphsContext } from '../providers/DashboardProvider';
+import { DashboardGraphsContext, VideoConfigProp } from '../providers/DashboardProvider';
 import ReactPlayer from 'react-player';
 import dynamic from "next/dynamic";
 
 //export default function Video(props:any){
 
-interface Props {
-  url: string;
-  id: string;
-  height: number;
-  width: number;
-  fps: number;
-  timeStart?: number;
-}
+// interface Props {
+//   url: string;
+//   id: string;
+//   //height: number;
+//   //width: number;
+//   fps: number;
+//   //timeStart?: number;
+// }
 
-const ReactVideoPlayer = ( props: Props) => {
+const ReactVideoPlayer = ( props: VideoConfigProp) => {
 
   const {
     fps,
-    id,
-    width,
-    height
+    videoID,
+    url,
+    //width,
+    //height
   } = props;
 
   const {percentageX, videoSync, volume, updateVideoRefs, currentTime} = useContext(DashboardGraphsContext)
@@ -52,7 +53,7 @@ const ReactVideoPlayer = ( props: Props) => {
   ,[currentTime])
 
   useEffect(() => {
-    updateVideoRefs({id, videoRef});
+    updateVideoRefs({videoID, videoRef});
   },[]);
   
   useEffect(()=>{
@@ -83,10 +84,11 @@ const ReactVideoPlayer = ( props: Props) => {
         </div>
         <div className="bg-light mx-2 border border-2 border-black bg-black">
           <ReactPlayer 
-            url={props.url} 
+            url={url} 
             playing={isPlaying}
             volume={volume}
             ref = {videoRef}
+            fps={fps}
           />
         </div>
       </div>

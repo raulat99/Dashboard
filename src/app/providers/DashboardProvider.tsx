@@ -5,21 +5,51 @@ import ReactPlayer from "react-player";
 import { Marker } from "../models/Market";
 
 
-interface videoRefProp
+interface VideoRefProp
 {
-      id: string;
+      videoID: number;
       videoRef: RefObject<ReactPlayer>;
 }
+
+export interface VideoConfigProp
+{
+    videoID: number,
+    fps: number
+    url: string
+}
+
+interface LabelConfigProp{
+    labelId: number,
+    name: string,
+    value: string
+}
+
+interface ValueConfigProp{
+    idValue: number,
+    sample: any,
+    timestamp: number
+}
+
+interface SignalConfigProp{
+    name: string,
+    descripcion: string,
+    signalID: number,
+    labels: LabelConfigProp[],
+    values: ValueConfigProp[]
+}
+
 interface IDashboardGraphsContext {
     graphs: Graph[];
     dataX: number | null;
     percentageX: number | null;
-    videoRefs: videoRefProp[];
+    videoRefs: VideoRefProp[];
     videoSync: boolean;
     currentTime: number;
     volume: number;
     uploadedData: null;
     markers: Marker[];
+    videosConfig: VideoConfigProp[];
+    signalsConfig: SignalConfigProp[];
 
     // TEMPORAL
     coordinateXValues: number[];
@@ -34,7 +64,7 @@ interface IDashboardGraphsContext {
     updatePercentageX: (n: number) => void;
     updateGraphs: (NewGraph: Graph) => void;
     updateDataX: (n: number) => void;
-    updateVideoRefs: (videoRef : videoRefProp) => void;
+    updateVideoRefs: (videoRef : VideoRefProp) => void;
     updateCurrentTime: (currentTime: number) => void;
   }
   
@@ -48,6 +78,8 @@ interface IDashboardGraphsContext {
     volume: 0,
     uploadedData: null,
     markers: [],
+    videosConfig: [],
+    signalsConfig: [],
 
     // TEMPORAL
     coordinateXValues: [],
@@ -69,7 +101,7 @@ interface IDashboardGraphsContext {
   
 export function DashboardProvider ({children} : {children: React.ReactNode})
 {
-    const [videoRefs, setvideoRefs] = useState<videoRefProp[]>([])   
+    const [videoRefs, setvideoRefs] = useState<VideoRefProp[]>([])   
     const [videoSync, setVideoSync] = useState<boolean>(false)
     const [graphs, setGraphs] = useState<Graph[]>([]);
     const [dataX, setDataX] = useState<number>(null);
@@ -79,6 +111,8 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
     const [volume, setVolume] = useState<number>(0.5)
     const [uploadedData, setUploadedData] = useState<any>(null)
     const [markers, setMarkers] = useState<Marker[]>([])
+    const [videosConfig, setVideosConfig] = useState<VideoConfigProp[]>([])
+    const [signalsConfig, setSignalsConfig] = useState<SignalConfigProp[]>([])
 
     const updateCurrentTime = (currentTime: number) => { setCurrentTime(currentTime);}
     const updateVideoSync = (videoSync: boolean) => {setVideoSync(videoSync);}
@@ -94,8 +128,8 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
     const [coordinateYValues, setCoordinateYValues] = useState<number[]>([])
     const [timeStamps, setTimeStamps] = useState<number[]>([])
 
-    const updateVideoRefs = (videoRefProp : videoRefProp) => {
-        const videoRefFound = videoRefs.find((v) => v.id === videoRefProp.id )
+    const updateVideoRefs = (videoRefProp : VideoRefProp) => {
+        const videoRefFound = videoRefs.find((v) => v.videoID === videoRefProp.videoID )
 
         if(videoRefFound === undefined){
             var aux = videoRefs
@@ -152,10 +186,13 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
                             auxTimeStamps.push(objectValue.timestamp)
                         })
 
+                    
                     setCoordinateXValues(auxCoordinatesXValue)
                     setCoordinateYValues(auxCoordinatesYValue)
                     setTimeStamps(auxTimeStamps)
                     updateMarkers(result.session.markers)
+                    setVideosConfig(result.session.videos)
+                    setSignalsConfig(result.session.signals)
                     setUploadedData(result)
                 }
                  else {
@@ -180,6 +217,8 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
             coordinateXValues,
             coordinateYValues,
             timeStamps,
+            videosConfig,
+            signalsConfig,
             updateMarkers,
             updateUploadedData,
             updateVolume,
