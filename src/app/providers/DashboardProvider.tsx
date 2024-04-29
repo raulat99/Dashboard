@@ -30,7 +30,7 @@ interface ValueConfigProp{
     timestamp: number
 }
 
-interface SignalConfigProp{
+export interface SignalConfigProp{
     name: string,
     descripcion: string,
     signalID: number,

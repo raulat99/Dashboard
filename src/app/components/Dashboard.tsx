@@ -51,9 +51,9 @@ export default function Dashboard() {
 
           <div className="w-full space-y-4 display flex flex-col ">
             {/* Aquí incluiré las gráficas (un componente por cada ejemplo). */}
-            {signalsConfig && signalsConfig.map((signalsConfig) => {
+            {signalsConfig && signalsConfig.map((signalConfig) => {
             return (
-              <LinesChart key = {signalsConfig.signalID}/>
+              <LinesChart key = {signalConfig.signalID} props = {signalConfig}/>
             );
           })}
           </div>
