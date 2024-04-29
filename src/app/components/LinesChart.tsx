@@ -45,7 +45,7 @@ export default function LinesChart() {
 
   var id = null;
 
-  const {uploadedData, dataX, updateDataX, updatePercentageX} = useContext(DashboardGraphsContext);
+  const {coordinateXValues, coordinateYValues, timeStamps,uploadedData, dataX, updateDataX, updatePercentageX} = useContext(DashboardGraphsContext);
 
   // var midata = {
   //   labels: minutos,
@@ -66,21 +66,48 @@ export default function LinesChart() {
 
   //console.log(uploadedData?.session?.signals[0].labels[0])
 
-  var midata = {
+
+
+  var midata = timeStamps.length !== 0 && coordinateXValues.length !== 0 && coordinateXValues.length !== 0 ?{
     //labels: uploadedData !== null && uploadedData.session.signals[0].labels[0] ? uploadedData.session.signals[0].labels[0] : minutos,
-    labels: minutos,
+    labels:  timeStamps,
     datasets: [{
-      label: "Pulsaciones",
-      data: pulsaciones,
+      label: "Coordinate X",
+      data: coordinateXValues,
       tension: 0.5,
       borderColor: "rgb(255, 99, 132)",
       backgroundColor: "rgba(255, 99, 132, 0.5)",
-      pointRadius: 5,
+      pointRadius: 2,
       pointBorderColor: "rgba(255, 99, 132)",
       pointBackgroundColor: "rgba(255, 99, 132)",
     },
+    {
+      label: "Coordinate Y",
+      data: coordinateYValues,
+      tension: 0.5,
+      borderColor: "rgb(55, 0, 232)",
+      backgroundColor: "rgba(55, 0, 232, 0.5)",
+      pointRadius: 2,
+      pointBorderColor: "rgba(55, 0, 232)",
+      pointBackgroundColor: "rgba(55, 0, 232)",
+    }
   ],
-  };
+  } : {
+      labels: minutos,
+      datasets: [
+        // Cada una de las líneas del gráfico
+        {
+          label: "Pulsaciones",
+          data: pulsaciones,
+          tension: 0.5,
+          borderColor: "rgb(255, 99, 132)",
+          backgroundColor: "rgba(255, 99, 132, 0.5)",
+          pointRadius: 5,
+          pointBorderColor: "rgba(255, 99, 132)",
+          pointBackgroundColor: "rgba(255, 99, 132)",
+        },
+      ],
+    };
   
   // Opciones del gráfico ()
   var misoptions = {
@@ -96,7 +123,7 @@ export default function LinesChart() {
       },
     },
     onClick: (e: any) => {
-      console.log(e);
+      //console.log(e);
   
       var chart = e.chart;
       var dataXAux: number;
@@ -113,31 +140,24 @@ export default function LinesChart() {
       label = chart.config.data.labels[dataXAux];
       value = chart.config.data.datasets[0].data[dataXAux];
   
-      console.log({
-        dataX: dataXAux,
-        label: label,
-        dataY: dataY,
-        value: value,
-      });
-  
+      // console.log({
+      //   dataX: dataXAux,
+      //   label: label,
+      //   dataY: dataY,
+      //   value: value,
+      // });
       //console.log(chart)
-
-      console.log({percentageX: e.x/ chart.width})
+      //console.log({percentageX: e.x/ chart.width})
 
       updatePercentageX(e.x / chart.width)
-      
-      
-      
       updateDataX(label);
       dataY = value;
       id = chart.id;
-
-      
     },
   };
 
   return (
-    <div className="display flex flex row h-[28vh] mx-6">
+    <div className="display flex flex row h-[38vh] mx-6">
       {/* <Statistics dataX={dataX} dataY={dataY} /> */}
 
       <div className="w-full">

@@ -20,7 +20,9 @@ const ReactVideoPlayer = ( props: Props) => {
 
   const {
     fps,
-    id
+    id,
+    width,
+    height
   } = props;
 
   const {percentageX, videoSync, volume, updateVideoRefs, currentTime} = useContext(DashboardGraphsContext)
@@ -74,7 +76,8 @@ const ReactVideoPlayer = ( props: Props) => {
   }, [volume])
 
     return (
-      <div className="mx-auto">
+      // style={{width:width, height: height}}
+      <div className="mx-auto " >
         <div className="my-5">
           <p><b>Video:</b></p>
         </div>

@@ -20,6 +20,13 @@ interface IDashboardGraphsContext {
     volume: number;
     uploadedData: null;
     markers: Marker[];
+
+    // TEMPORAL
+    coordinateXValues: number[];
+    coordinateYValues: number[];
+    timeStamps: number[];
+    // TEMPORAL
+
     updateMarkers: (markers: Marker[]) => void;
     updateUploadedData: (e : React.ChangeEvent<HTMLInputElement>) => void;
     updateVolume: (n: number) => void;
@@ -41,6 +48,13 @@ interface IDashboardGraphsContext {
     volume: 0,
     uploadedData: null,
     markers: [],
+
+    // TEMPORAL
+    coordinateXValues: [],
+    coordinateYValues: [],
+    timeStamps: [],
+    // TEMPORAL
+
     updateMarkers: () => {},
     updateUploadedData: () => {},
     updateVolume: () => {},
@@ -74,6 +88,12 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
     const updateVolume = (n: number) => {setVolume(n)}
     const updateMarkers = (markers: Marker[]) => {setMarkers(markers)}
 
+    // TEMPORAL
+
+    const [coordinateXValues, setCoordinateXValues] = useState<number[]>([])
+    const [coordinateYValues, setCoordinateYValues] = useState<number[]>([])
+    const [timeStamps, setTimeStamps] = useState<number[]>([])
+
     const updateVideoRefs = (videoRefProp : videoRefProp) => {
         const videoRefFound = videoRefs.find((v) => v.id === videoRefProp.id )
 
@@ -84,7 +104,6 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
         }
     }
     
-
     const updateUploadedData = async (e: React.ChangeEvent<HTMLInputElement>) =>{
         if (e.target.files && e.target.files[0]) {
             const updatedJSON = e.target.files[0]
@@ -96,10 +115,46 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
                 if (target) {
                   const result = JSON.parse(target.result as any)
                 
-                  
                     console.log(result)
                     console.log(result.session.signals[0])
                     console.log(result.session.signals[0].labels[0])
+                    console.log(result.session.signals[0].values[0])
+                    
+                    // result.session.signals[0].values.map((objectValue: any)=>{
+
+                    //     console.log("x", objectValue.sample[0])
+
+                    //     var prevCoordinatesXValues = coordinateXValues.push(objectValue.sample[0])
+                    //     setCoordinateXValues(prevCoordinatesXValues)
+
+                    //     console.log("y", objectValue.sample[1])
+
+                    //     var prevCoordinatesYValues = coordinateYValues.push(objectValue.sample[1])
+                    //     setCoordinateYValues(prevCoordinatesYValues)
+
+                    //     console.log("timestamp", objectValue.timestamp)
+                    //     var prevTimeStamps = timeStamps.push(objectValue.timestamp)
+                    //     setTimeStamps(prevTimeStamps)
+                    // })
+                    var auxCoordinatesXValue : number[] = []
+                    var auxCoordinatesYValue : number[] = []
+                    var auxTimeStamps : number[] = []
+
+                    result.session.signals[0].values.map((objectValue: any)=>{
+
+                            console.log("x", objectValue.sample[0])
+                            auxCoordinatesXValue.push(objectValue.sample[0])
+                            
+                            console.log("y", objectValue.sample[1])
+                            auxCoordinatesYValue.push(objectValue.sample[1])
+                            
+                            console.log("timestamp", objectValue.timestamp)
+                            auxTimeStamps.push(objectValue.timestamp)
+                        })
+
+                    setCoordinateXValues(auxCoordinatesXValue)
+                    setCoordinateYValues(auxCoordinatesYValue)
+                    setTimeStamps(auxTimeStamps)
                     updateMarkers(result.session.markers)
                     setUploadedData(result)
                 }
@@ -122,6 +177,9 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
             volume,
             uploadedData,
             markers,
+            coordinateXValues,
+            coordinateYValues,
+            timeStamps,
             updateMarkers,
             updateUploadedData,
             updateVolume,

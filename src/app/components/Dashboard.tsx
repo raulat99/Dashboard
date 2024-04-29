@@ -9,8 +9,8 @@ export default function Dashboard() {
   //const url = "//vjs.zencdn.net/v/oceans.mp4";
   //const url = "https://www.youtube.com/watch?v=OlL1bDImVkM";
   const url = "https://www.youtube.com/watch?v=2FOYmlLW1bw";
-  const height = 350;
-  const width = 750;
+  const height = 250;
+  const width = 450;
   const fps = 30;
 
   const videoConfig1 = { id: "1", url, height, width, fps };
