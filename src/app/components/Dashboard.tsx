@@ -8,15 +8,15 @@ import { DashboardGraphsContext } from "../providers/DashboardProvider";
 export default function Dashboard() {
   //const url = "//vjs.zencdn.net/v/oceans.mp4";
   //const url = "https://www.youtube.com/watch?v=OlL1bDImVkM";
-  const url = "https://www.youtube.com/watch?v=2FOYmlLW1bw";
-  const height = 250;
-  const width = 450;
-  const fps = 30;
+  // const url = "https://www.youtube.com/watch?v=2FOYmlLW1bw";
+  // const height = 250;
+  // const width = 450;
+  // const fps = 30;
 
-  const videoConfig1 = { id: "1", url, height, width, fps };
-  const videoConfig2 = { id: "2", url, height, width, fps };
-  const videoConfig3 = { id: "3", url, height, width, fps };
-  const videoConfig4 = { id: "4", url, height, width, fps };
+  // const videoConfig1 = { id: "1", url, height, width, fps };
+  // const videoConfig2 = { id: "2", url, height, width, fps };
+  // const videoConfig3 = { id: "3", url, height, width, fps };
+  // const videoConfig4 = { id: "4", url, height, width, fps };
 
   //var configArray = [videoConfig1, videoConfig2, videoConfig3, videoConfig4];
   const {updateUploadedData, uploadedData, videosConfig, signalsConfig} = useContext(DashboardGraphsContext)
@@ -29,7 +29,7 @@ export default function Dashboard() {
         <div className="flex flex-wrap justify-center gap-4">
           {videosConfig && videosConfig.map((videoConfigItem) => {
             return (
-              <ReactVideoPlayer {...videoConfigItem} key={videoConfigItem.videoID} />
+              <ReactVideoPlayer key={videoConfigItem.videoID} {...videoConfigItem}  />
             );
           })}
         </div>
@@ -53,7 +53,7 @@ export default function Dashboard() {
             {/* Aquí incluiré las gráficas (un componente por cada ejemplo). */}
             {signalsConfig && signalsConfig.map((signalConfig) => {
             return (
-              <LinesChart key = {signalConfig.signalID} props = {signalConfig}/>
+              <LinesChart key={signalConfig.signalID} {...signalConfig} />
             );
           })}
           </div>

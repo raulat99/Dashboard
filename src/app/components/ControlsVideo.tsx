@@ -14,10 +14,16 @@ import { FaFileDownload } from "react-icons/fa";
 import { IoCloudUpload } from "react-icons/io5";
 import { ValidationResult } from 'joi'
 import { markersValidationSchema } from "../models/import-markers-validation";
+import { VideoContext } from "../providers/VideoProvider";
 
 export default function ControlsVideo() {
 
-  const {percentageX, dataX, videoSync, videoRefs,  volume, currentTime, markers, updateMarkers,  updateVolume, updateVideoSync, updatePercentageX,  updateCurrentTime} = useContext(DashboardGraphsContext)
+  //const {percentageX, dataX, markersUploaded, updatePercentageX} = useContext(DashboardGraphsContext)
+  const {markersUploaded} = useContext(DashboardGraphsContext)
+
+  const {videoSync, videoRefs, volume, currentTime, updateMarkers, updateVolume, updateVideoSync, updateCurrentTime} = useContext(VideoContext)
+
+  var markers = markersUploaded
 
   const progressEl = useRef<HTMLProgressElement>(null)
   const volumeEl = useRef<HTMLInputElement>(null)
@@ -25,7 +31,7 @@ export default function ControlsVideo() {
   const [selectedMarker, setSelectedMarker] = useState<Marker | undefined>(undefined)
   const [markerConfiguration, setMarkerConfiguration] = useState<MarkerConfiguration | undefined>(undefined)
   const [duration, setVideoDuration] = useState<number>(0)
-  const [currentTimeProgressBar, setCurrentTimeProgressBar] = useState<number>(0)
+  const [currentTimeProgressBar, setCurrentTimeProgressBar] = useState<number>(currentTime)
 
   const getTimeCode = (secs: number): string => {
     let secondsNumber = secs ? parseInt(String(secs), 10) : 0;
@@ -54,22 +60,7 @@ export default function ControlsVideo() {
   const durationTimeCode = getTimeCode(Math.ceil(duration));
   const currentTimeCode = currentTime !== duration ? getTimeCode(currentTime) : durationTimeCode;
 
-  const handleProgressClick = (e: React.MouseEvent<HTMLProgressElement, MouseEvent>) => {
-    if(!progressEl.current ) return
-    const player = videoRefs[0].videoRef.current
-    if(!player) return
-
-    const x = e['clientX'] - progressEl.current.getBoundingClientRect().left + document.body.scrollLeft
-    const percentage = (x * progressEl.current.max) / progressEl.current.offsetWidth
-    progressEl.current.value = percentage
-
-    const percentageInSeconds = player.getDuration() * (percentage/100)
-    //updatePercentageX((percentage / 100))
-      
-      console.log("percentageInSeconds", percentageInSeconds)
-      updateCurrentTime(percentageInSeconds)
-      setCurrentTimeProgressBar(percentageInSeconds)
-  }
+  
 
 
 
@@ -146,7 +137,7 @@ export default function ControlsVideo() {
     }
   }
 
-  const getCurrentTime = useCallback(()=>
+  const getCurrentTime = ()=>
     {
       if(videoRefs.length === 0) return 0
       if(videoRefs[0].videoRef.current)
@@ -155,7 +146,7 @@ export default function ControlsVideo() {
       }
 
       return 0
-    }, [videoRefs])
+    }
 
     const getCurrentTimeNow = ()=>
       {
@@ -270,8 +261,29 @@ export default function ControlsVideo() {
     }
   }
 
+  const handleProgressClick = (e: React.MouseEvent<HTMLProgressElement, MouseEvent>) => {
+    if(!progressEl.current ) return
+    const player = videoRefs[0].videoRef.current
+    if(!player) return
+
+    const x = e['clientX'] - progressEl.current.getBoundingClientRect().left + document.body.scrollLeft
+    const percentage = (x * progressEl.current.max) / progressEl.current.offsetWidth
+    progressEl.current.value = percentage
+
+    const percentageInSeconds = player.getDuration() * (percentage/100)
+    //updatePercentageX((percentage / 100))
+      
+      console.log("percentageInSeconds", percentageInSeconds)
+      updateCurrentTime(percentageInSeconds)
+      setCurrentTimeProgressBar(percentageInSeconds)
+  }
+
   useEffect(() => {
-    //console.log(getCurrentTime())
+    console.log(getCurrentTime())
+    //console.log(currentTimeProgressBar, 
+      // videoRefs, 
+      // !videoSync, 
+      // markers, selectedMarker, dataX, getCurrentTime, getDuration)
     setTimeout(()=>{
       if (progressEl && progressEl.current) {
         const timeNow = getCurrentTime()
@@ -291,7 +303,9 @@ export default function ControlsVideo() {
       }
     }, 500)
   
-  },[videoRefs, !videoSync, currentTimeProgressBar, selectedMarker, dataX, getCurrentTime, getDuration])
+  },[currentTimeProgressBar, videoSync, getCurrentTime, getDuration, markers, selectedMarker]) 
+  // markers, currentTimeProgressBar, videoSync, videoRefs && videoRefs[0]?.videoRef.current?.getCurrentTime()
+  //, videoRefs, markers, selectedMarker, dataX, getCurrentTime, getDuration, videoSync])
 // videoRefs[0]?.videoRef.current?.getCurrentTime(),
   return (
     <div className="w-[95vw] min-w-[70vw] my-8 ">

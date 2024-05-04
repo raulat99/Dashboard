@@ -1,5 +1,4 @@
 "use client";
-
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -11,6 +10,7 @@ import {
   Tooltip,
   Legend,
   Filler,
+  Interaction,
 } from "chart.js";
 import { use, useContext, useEffect, useRef, useState } from "react";
 import { getRelativePosition } from "chart.js/helpers";
@@ -39,64 +39,54 @@ var minutos = [
 
 export default function LinesChart(props: SignalConfigProp) {
   
-  const {name, descripcion, signalID, labels, values} = props.props;
-
-  console.log(props)
-  console.log()
-
+  const {name, descripcion, signalID, labels, values} = props;
   const chartRef = useRef(null);
 
   var id = null;
+  const {dataX, updateDataX, updatePercentageX} = useContext(DashboardGraphsContext);
 
-  const {coordinateXValues, coordinateYValues, timeStamps,uploadedData, dataX, updateDataX, updatePercentageX} = useContext(DashboardGraphsContext);
-
-
-  var midata = timeStamps.length !== 0 && coordinateXValues.length !== 0 && coordinateXValues.length !== 0 ?{
-    //labels: uploadedData !== null && uploadedData.session.signals[0].labels[0] ? uploadedData.session.signals[0].labels[0] : minutos,
-    labels:  timeStamps,
-    datasets: [{
-      label: "Coordinate X",
-      data: coordinateXValues,
-      tension: 0.5,
-      borderColor: "rgb(255, 99, 132)",
-      backgroundColor: "rgba(255, 99, 132, 0.5)",
-      pointRadius: 2,
-      pointBorderColor: "rgba(255, 99, 132)",
-      pointBackgroundColor: "rgba(255, 99, 132)",
-    },
-    {
-      label: "Coordinate Y",
-      data: coordinateYValues,
-      tension: 0.5,
-      borderColor: "rgb(55, 0, 232)",
-      backgroundColor: "rgba(55, 0, 232, 0.5)",
-      pointRadius: 2,
-      pointBorderColor: "rgba(55, 0, 232)",
-      pointBackgroundColor: "rgba(55, 0, 232)",
-    }
-  ],
-  } : {
-      labels: minutos,
-      datasets: [
-        // Cada una de las líneas del gráfico
-        {
-          label: "Pulsaciones",
-          data: pulsaciones,
-          tension: 0.5,
-          borderColor: "rgb(255, 99, 132)",
-          backgroundColor: "rgba(255, 99, 132, 0.5)",
-          pointRadius: 5,
-          pointBorderColor: "rgba(255, 99, 132)",
-          pointBackgroundColor: "rgba(255, 99, 132)",
-        },
-      ],
-    };
+  // var midata = timeStamps.length !== 0 && coordinateXValues.length !== 0 && coordinateXValues.length !== 0 ?{
+  //   //labels: uploadedData !== null && uploadedData.session.signals[0].labels[0] ? uploadedData.session.signals[0].labels[0] : minutos,
+  //   labels:  timeStamps,
+  //   datasets: [{
+  //     label: "Coordinate X",
+  //     data: coordinateXValues,
+  //     tension: 0.5,
+  //     borderColor: "rgb(255, 99, 132)",
+  //     backgroundColor: "rgba(255, 99, 132, 0.5)",
+  //     pointRadius: 2,
+  //     pointBorderColor: "rgba(255, 99, 132)",
+  //     pointBackgroundColor: "rgba(255, 99, 132)",
+  //   },
+  //   {
+  //     label: "Coordinate Y",
+  //     data: coordinateYValues,
+  //     tension: 0.5,
+  //     borderColor: "rgb(55, 0, 232)",
+  //     backgroundColor: "rgba(55, 0, 232, 0.5)",
+  //     pointRadius: 2,
+  //     pointBorderColor: "rgba(55, 0, 232)",
+  //     pointBackgroundColor: "rgba(55, 0, 232)",
+  //   }
+  // ],
+  // } : {
+  //     labels: minutos,
+  //     datasets: [
+  //       // Cada una de las líneas del gráfico
+  //       {
+  //         label: "Pulsaciones",
+  //         data: pulsaciones,
+  //         tension: 0.5,
+  //         borderColor: "rgb(255, 99, 132)",
+  //         backgroundColor: "rgba(255, 99, 132, 0.5)",
+  //         pointRadius: 5,
+  //         pointBorderColor: "rgba(255, 99, 132)",
+  //         pointBackgroundColor: "rgba(255, 99, 132)",
+  //       },
+  //     ],
+  //   };
   
-    console.log(labels)
-    console.log(values)
-
     var valuesArray : any[] = []
-    //var auxCoordinatesYValue : number[] = []
     var auxTimeStamps : number[] = []
 
     labels.map(()=>{
@@ -108,17 +98,13 @@ export default function LinesChart(props: SignalConfigProp) {
               valuesArray[i].push(objectValue.sample[i])
             }
             auxTimeStamps.push(objectValue.timestamp)
-        })
-
-    console.log({valuesArray})
-             
-    const colorArray = ["rgb(255, 99, 132)", "rgb(55, 0, 232)", "rgb(55, 99, 132)", "rgb(55, 99, 232)", "rgb(255, 0, 132)", "rgb(255, 0, 232)", "rgb(255, 99, 132)", "rgb(255, 99, 232)", "rgb(255, 0, 132)", "rgb(255, 0, 232)"]
+        })             
+    const colorArray = ["rgb(255, 99, 132)" ,  "rgb(55, 0, 232)", "rgb(55, 99, 132)", "rgb(55, 99, 232)", "rgb(255, 0, 132)"]
 
     var midata2 = {
-
       labels:  auxTimeStamps,
       datasets: labels.map((label: any)=>{
-        const indexColor = (Math.floor(Math.random() * colorArray.length))
+        const indexColor = label.labelId + signalID
         return (
           {
             label: label.value,
@@ -139,6 +125,10 @@ export default function LinesChart(props: SignalConfigProp) {
   var misoptions = {
     responsive: true,
     maintainAspectRatio: false,
+    Interaction:{
+      mode: 'index',
+      intersect: false,
+    },
     scales: {
       y: {
         min: 0, // Mínimo valor del eje Y en 0

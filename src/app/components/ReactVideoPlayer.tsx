@@ -2,6 +2,7 @@
 
 import React, { RefObject, use, useContext, useEffect, useRef, useState } from 'react';
 import { DashboardGraphsContext, VideoConfigProp } from '../providers/DashboardProvider';
+import {VideoContext} from '../providers/VideoProvider';
 import ReactPlayer from 'react-player';
 import dynamic from "next/dynamic";
 
@@ -26,7 +27,9 @@ const ReactVideoPlayer = ( props: VideoConfigProp) => {
     //height
   } = props;
 
-  const {percentageX, videoSync, volume, updateVideoRefs, currentTime} = useContext(DashboardGraphsContext)
+  const {percentageX} = useContext(DashboardGraphsContext)
+  const {videoSync, volume, updateVideoRefs, currentTime} = useContext(VideoContext)
+
   const videoRef = useRef<ReactPlayer>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
