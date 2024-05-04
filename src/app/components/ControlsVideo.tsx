@@ -33,6 +33,8 @@ export default function ControlsVideo() {
   const [duration, setVideoDuration] = useState<number>(0)
   const [currentTimeProgressBar, setCurrentTimeProgressBar] = useState<number>(currentTime)
 
+  const inputTitleMarker = useRef<HTMLInputElement>(null)
+
   const getTimeCode = (secs: number): string => {
     let secondsNumber = secs ? parseInt(String(secs), 10) : 0;
     let hours = Math.floor(secondsNumber / 3600);
@@ -159,11 +161,11 @@ export default function ControlsVideo() {
       return 0
       }
 
-   const getMarker = (currentTime: number): Marker => {
+   const getMarker = (currentTime: number, titleMarker?: string): Marker => {
     return {
       id: Math.random(),
       time: currentTime,
-      title: `Marker ${markers.length + 1}`,
+      title: titleMarker || `Marker ${markers.length + 1}`,
     };
   };
 
@@ -171,7 +173,11 @@ export default function ControlsVideo() {
     const videoRef = videoRefs[0].videoRef.current
     if (!videoRef) return;
 
-    const newMarker: Marker = getMarker(getCurrentTimeNow());
+    const inputTitleMarker2 = inputTitleMarker.current
+    if (!inputTitleMarker2) return
+    
+
+    const newMarker: Marker = getMarker(getCurrentTimeNow(), inputTitleMarker2.value);
     markers.push(newMarker);
     updateMarkers(markers);
     console.log({ markers: markers });
@@ -280,10 +286,6 @@ export default function ControlsVideo() {
 
   useEffect(() => {
     console.log(getCurrentTime())
-    //console.log(currentTimeProgressBar, 
-      // videoRefs, 
-      // !videoSync, 
-      // markers, selectedMarker, dataX, getCurrentTime, getDuration)
     setTimeout(()=>{
       if (progressEl && progressEl.current) {
         const timeNow = getCurrentTime()
@@ -304,9 +306,7 @@ export default function ControlsVideo() {
     }, 500)
   
   },[currentTimeProgressBar, videoSync, getCurrentTime, getDuration, markers, selectedMarker]) 
-  // markers, currentTimeProgressBar, videoSync, videoRefs && videoRefs[0]?.videoRef.current?.getCurrentTime()
-  //, videoRefs, markers, selectedMarker, dataX, getCurrentTime, getDuration, videoSync])
-// videoRefs[0]?.videoRef.current?.getCurrentTime(),
+
   return (
     <div className="w-[95vw] min-w-[70vw] my-8 ">
       <div className="flex flex-row bg-gray-200 dark:bg-gray-700 rounded-t-lg">
@@ -341,7 +341,7 @@ export default function ControlsVideo() {
         <div className="mt-1 mx-2 text-white">{getTimeCode(getDuration())}</div> 
       </div>
 
-      <div className="diplay flex flex row pt-1 bg-black min-w-fi bg-opacity-15 rounded-b-lg">
+      <div className="diplay flex flex row pt-1 bg-black  bg-opacity-15 rounded-b-lg h-12 ">
         <button className="last-frame" onClick={onLastFrameClick}>
           <div className="w-10 h-8 ">
             <IoIosArrowBack size={24} />
@@ -373,6 +373,9 @@ export default function ControlsVideo() {
         </button>
 
         <div className="flex flex-row mx-auto mt-2 space-x-1">
+        <div>
+            <input type="text" ref={inputTitleMarker} id="first_name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-white dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 h-8 -mt-1" placeholder="Marker title" required />
+        </div>
           <button className="add-marker" onClick={onAddMarkerClick}>
             <div className="w-10 h-8">
               <IoMdAdd size={24} />

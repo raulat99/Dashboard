@@ -42,10 +42,6 @@ interface IDashboardGraphsContext {
     graphs: Graph[];
     dataX: number | null;
     percentageX: number | null;
-    //videoRefs: VideoRefProp[];
-    //videoSync: boolean;
-    //currentTime: number;
-    //volume: number;
     uploadedData: null;
     markersUploaded: Marker[];
     videosConfig: VideoConfigProp[];
@@ -59,23 +55,15 @@ interface IDashboardGraphsContext {
 
     updateMarkersUploaded: (markers: Marker[]) => void;
     updateUploadedData: (e : React.ChangeEvent<HTMLInputElement>) => void;
-    //updateVolume: (n: number) => void;
-    //updateVideoSync: (videoSync: boolean) => void;
     updatePercentageX: (n: number) => void;
     updateGraphs: (NewGraph: Graph) => void;
     updateDataX: (n: number) => void;
-    //updateVideoRefs: (videoRef : VideoRefProp) => void;
-    //updateCurrentTime: (currentTime: number) => void;
   }
   
   export const DashboardGraphsContext = createContext<IDashboardGraphsContext>({
     graphs: [],
     dataX: null,
     percentageX: null,
-    // videoRefs: [],
-    // videoSync: false,
-    // currentTime: 0,
-    // volume: 0,
     uploadedData: null,
     markersUploaded: [],
     videosConfig: [],
@@ -89,37 +77,24 @@ interface IDashboardGraphsContext {
 
     updateMarkersUploaded: () => {},
     updateUploadedData: () => {},
-    // updateVolume: () => {},
-    // updateVideoSync: () => {},
     updatePercentageX: () => {},
     updateGraphs: () => {},
     updateDataX: () => {},
-    // updateVideoRefs: () => {},
-    // updateCurrentTime: () => {},
   });
 
   
 export function DashboardProvider ({children} : {children: React.ReactNode})
 {
-    //const [videoRefs, setvideoRefs] = useState<VideoRefProp[]>([])   
-    //const [videoSync, setVideoSync] = useState<boolean>(false)
     const [graphs, setGraphs] = useState<Graph[]>([]);
     const [dataX, setDataX] = useState<number>(null);
     const [percentageX, setPercentageX] = useState<number>(null);
-    //const [currentTime, setCurrentTime] = useState<number>(0);
-
-    //const [volume, setVolume] = useState<number>(0.5)
     const [uploadedData, setUploadedData] = useState<any>(null)
     const [markersUploaded, setMarkersUploaded] = useState<Marker[]>([])
     const [videosConfig, setVideosConfig] = useState<VideoConfigProp[]>([])
     const [signalsConfig, setSignalsConfig] = useState<SignalConfigProp[]>([])
-
-    //const updateCurrentTime = (currentTime: number) => { setCurrentTime(currentTime);}
-    //const updateVideoSync = (videoSync: boolean) => {setVideoSync(videoSync);}
     const updateGraphs = (graph : Graph) => {setGraphs((prevGraphs: Graph[]) => [...prevGraphs, graph]);}
     const updatePercentageX = (n: number) => {setPercentageX(n)}
     const updateDataX = (n: number)=>{setDataX(n);}
-    //const updateVolume = (n: number) => {setVolume(n)}
     const updateMarkersUploaded = (markers: Marker[]) => {setMarkersUploaded(markers)}
 
     // TEMPORAL
@@ -127,16 +102,6 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
     const [coordinateXValues, setCoordinateXValues] = useState<number[]>([])
     const [coordinateYValues, setCoordinateYValues] = useState<number[]>([])
     const [timeStamps, setTimeStamps] = useState<number[]>([])
-
-    // const updateVideoRefs = (videoRefProp : VideoRefProp) => {
-    //     const videoRefFound = videoRefs.find((v) => v.videoID === videoRefProp.videoID )
-
-    //     if(videoRefFound === undefined){
-    //         var aux = videoRefs
-    //         aux.push(videoRefProp)
-    //         setvideoRefs(aux)
-    //     }
-    // }
     
     const updateUploadedData = async (e: React.ChangeEvent<HTMLInputElement>) =>{
         if (e.target.files && e.target.files[0]) {
@@ -181,10 +146,6 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
             {graphs, 
             dataX, 
             percentageX, 
-            // videoRefs,
-            // videoSync,
-            // currentTime,
-            // volume,
             uploadedData,
             markersUploaded,
             coordinateXValues,
@@ -194,13 +155,9 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
             signalsConfig,
             updateMarkersUploaded,
             updateUploadedData,
-            //updateVolume,
             updatePercentageX,
             updateGraphs, 
-            updateDataX,
-            //updateVideoRefs,
-            //updateVideoSync,
-            //updateCurrentTime
+            updateDataX
           }}>
             
             {children}
