@@ -92,6 +92,7 @@ const ReactVideoPlayer = ( props: VideoConfigProp) => {
             volume={volume}
             ref = {videoRef}
             fps={fps}
+            
           />
         </div>
       </div>

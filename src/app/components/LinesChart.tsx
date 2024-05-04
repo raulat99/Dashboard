@@ -173,7 +173,7 @@ export default function LinesChart(props: SignalConfigProp) {
   };
 
   return (
-    <div className="display flex flex-col h-[38vh] mx-6 my-16">
+    <div className="display flex flex-col h-[38vh] mx-6 my-16 mb-20">
       {/* <Statistics dataX={dataX} dataY={dataY} /> */}
       <div className="display flex flex-col">
       <h2> <b>{signalID}  {name} </b></h2>
@@ -182,6 +182,21 @@ export default function LinesChart(props: SignalConfigProp) {
       <div className="display flex flex col">
           <p> DataX label: </p>
           {dataX && <p> {dataX} </p>}
+      </div>
+      <div className="display flex-col">
+          <p> Labels: </p>
+          {dataX && labels.map(label => {
+            return (
+              <p key={label.labelId}> {label.value} :     
+              { 
+              auxTimeStamps.map((value) => {
+                if(dataX && (dataX-0.01) < value && value < (dataX+0.01)){
+                  var auxIndex = auxTimeStamps.indexOf(value)
+                  return valuesArray[label.labelId][auxIndex]
+                } 
+              }) || "nothing"} </p>
+            )
+          })}
         </div>
       </div>
      
