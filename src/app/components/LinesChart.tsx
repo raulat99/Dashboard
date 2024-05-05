@@ -97,7 +97,7 @@ export default function LinesChart(props: SignalConfigProp) {
             for (let i = 0; i <( objectValue.sample.length); i++) {
               valuesArray[i].push(objectValue.sample[i])
             }
-            auxTimeStamps.push(objectValue.timestamp)
+            auxTimeStamps.push(objectValue.timestamp.toFixed(2))
         })             
     const colorArray = ["rgb(255, 99, 132)" ,  "rgb(55, 0, 232)", "rgb(55, 99, 132)", "rgb(55, 99, 232)", "rgb(255, 0, 132)"]
 

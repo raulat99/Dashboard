@@ -78,15 +78,15 @@ export default function ControlsVideo() {
   },[videoRefs])
 
   const onClickSynchronize = () =>{
-    setTimeout(() => {
+    //setTimeout(() => {
     updateVideoSync(false)
-  },100);
+  //},100);
   setTimeout(() => {
     updateCurrentTime(getCurrentTime())
-  },500);
+  },200);
     setTimeout(() => {
       updateVideoSync(true)
-    },1000);
+    },1500);
   }
 
   const onPlayClick = ()=>{
@@ -282,6 +282,7 @@ export default function ControlsVideo() {
       console.log("percentageInSeconds", percentageInSeconds)
       updateCurrentTime(percentageInSeconds)
       setCurrentTimeProgressBar(percentageInSeconds)
+      onClickSynchronize()
   }
 
   useEffect(() => {
@@ -302,7 +303,10 @@ export default function ControlsVideo() {
         if(percentage === Infinity || Number.isNaN(percentage)) percentage = 0
         progressEl.current.value = percentage;
         progressEl.current.innerHTML = percentage + "% played";
+        
       }
+
+      
     }, 500)
   
   },[currentTimeProgressBar, videoSync, getCurrentTime, getDuration, markers, selectedMarker]) 
@@ -322,8 +326,7 @@ export default function ControlsVideo() {
            
           </progress>
           <div className="flex relative bg-gray-200 dark:bg-gray-700 mt-1">
-          {markers &&
-          markers.map((marker, index) => {
+          {markers && markers.map((marker, index) => {
             return (
               <MarkerView
                 key={index}

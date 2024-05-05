@@ -48,9 +48,9 @@ interface IDashboardGraphsContext {
     signalsConfig: SignalConfigProp[];
 
     // TEMPORAL
-    coordinateXValues: number[];
-    coordinateYValues: number[];
-    timeStamps: number[];
+    // coordinateXValues: number[];
+    // coordinateYValues: number[];
+    // timeStamps: number[];
     // TEMPORAL
 
     updateMarkersUploaded: (markers: Marker[]) => void;
@@ -70,9 +70,9 @@ interface IDashboardGraphsContext {
     signalsConfig: [],
 
     // TEMPORAL
-    coordinateXValues: [],
-    coordinateYValues: [],
-    timeStamps: [],
+    // coordinateXValues: [],
+    // coordinateYValues: [],
+    // timeStamps: [],
     // TEMPORAL
 
     updateMarkersUploaded: () => {},
@@ -99,9 +99,9 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
 
     // TEMPORAL
 
-    const [coordinateXValues, setCoordinateXValues] = useState<number[]>([])
-    const [coordinateYValues, setCoordinateYValues] = useState<number[]>([])
-    const [timeStamps, setTimeStamps] = useState<number[]>([])
+    // const [coordinateXValues, setCoordinateXValues] = useState<number[]>([])
+    // const [coordinateYValues, setCoordinateYValues] = useState<number[]>([])
+    // const [timeStamps, setTimeStamps] = useState<number[]>([])
     
     const updateUploadedData = async (e: React.ChangeEvent<HTMLInputElement>) =>{
         if (e.target.files && e.target.files[0]) {
@@ -114,20 +114,20 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
                 if (target) {
                   const result = JSON.parse(target.result as any)
                 
-                    var auxCoordinatesXValue : number[] = []
-                    var auxCoordinatesYValue : number[] = []
-                    var auxTimeStamps : number[] = []
+                    // var auxCoordinatesXValue : number[] = []
+                    // var auxCoordinatesYValue : number[] = []
+                    // var auxTimeStamps : number[] = []
 
-                    result.session.signals[0].values.map((objectValue: any)=>{
-                            auxCoordinatesXValue.push(objectValue.sample[0])
-                            auxCoordinatesYValue.push(objectValue.sample[1])
-                            var timefixed = objectValue.timestamp.toFixed(2)
-                            auxTimeStamps.push(timefixed)
-                        })
+                    // result.session.signals[0].values.map((objectValue: any)=>{
+                    //         auxCoordinatesXValue.push(objectValue.sample[0])
+                    //         auxCoordinatesYValue.push(objectValue.sample[1])
+                    //         var timefixed = objectValue.timestamp.toFixed(2)
+                    //         auxTimeStamps.push(timefixed)
+                    //     })
 
-                    setCoordinateXValues(auxCoordinatesXValue)
-                    setCoordinateYValues(auxCoordinatesYValue)
-                    setTimeStamps(auxTimeStamps)
+                    // setCoordinateXValues(auxCoordinatesXValue)
+                    // setCoordinateYValues(auxCoordinatesYValue)
+                    // setTimeStamps(auxTimeStamps)
                     updateMarkersUploaded(result.session.markers)
                     setVideosConfig(result.session.videos)
                     setSignalsConfig(result.session.signals)
@@ -148,9 +148,9 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
             percentageX, 
             uploadedData,
             markersUploaded,
-            coordinateXValues,
-            coordinateYValues,
-            timeStamps,
+            // coordinateXValues,
+            // coordinateYValues,
+            // timeStamps,
             videosConfig,
             signalsConfig,
             updateMarkersUploaded,
