@@ -44,6 +44,7 @@ export async function postNewDashboard(
 
 
 export interface SessionsResponse {
+    _id: any;
     sessions: SessionUser[];
 }
 
