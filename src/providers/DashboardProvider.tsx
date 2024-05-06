@@ -42,7 +42,7 @@ interface IDashboardGraphsContext {
     graphs: Graph[];
     dataX: number | null;
     percentageX: number | null;
-    uploadedData: null;
+    //uploadedData: null;
     markersUploaded: Marker[];
     videosConfig: VideoConfigProp[];
     signalsConfig: SignalConfigProp[];
@@ -54,7 +54,7 @@ interface IDashboardGraphsContext {
     // TEMPORAL
 
     updateMarkersUploaded: (markers: Marker[]) => void;
-    updateUploadedData: (e : React.ChangeEvent<HTMLInputElement>) => void;
+    //updateUploadedData: (e : React.ChangeEvent<HTMLInputElement>) => void;
     updatePercentageX: (n: number) => void;
     updateGraphs: (NewGraph: Graph) => void;
     updateDataX: (n: number) => void;
@@ -64,7 +64,7 @@ interface IDashboardGraphsContext {
     graphs: [],
     dataX: null,
     percentageX: null,
-    uploadedData: null,
+    //uploadedData: null,
     markersUploaded: [],
     videosConfig: [],
     signalsConfig: [],
@@ -76,7 +76,7 @@ interface IDashboardGraphsContext {
     // TEMPORAL
 
     updateMarkersUploaded: () => {},
-    updateUploadedData: () => {},
+    //updateUploadedData: () => {},
     updatePercentageX: () => {},
     updateGraphs: () => {},
     updateDataX: () => {},
@@ -88,7 +88,7 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
     const [graphs, setGraphs] = useState<Graph[]>([]);
     const [dataX, setDataX] = useState<number>(null);
     const [percentageX, setPercentageX] = useState<number>(null);
-    const [uploadedData, setUploadedData] = useState<any>(null)
+    //const [uploadedData, setUploadedData] = useState<any>(null)
     const [markersUploaded, setMarkersUploaded] = useState<Marker[]>([])
     const [videosConfig, setVideosConfig] = useState<VideoConfigProp[]>([])
     const [signalsConfig, setSignalsConfig] = useState<SignalConfigProp[]>([])
@@ -103,50 +103,14 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
     // const [coordinateYValues, setCoordinateYValues] = useState<number[]>([])
     // const [timeStamps, setTimeStamps] = useState<number[]>([])
     
-    const updateUploadedData = async (e: React.ChangeEvent<HTMLInputElement>) =>{
-        if (e.target.files && e.target.files[0]) {
-            const updatedJSON = e.target.files[0]
-            if (updatedJSON.type === 'application/json') {
-              const fileReader = new FileReader()
-              fileReader.readAsText(e.target.files[0])
-              fileReader.onload = (ev: ProgressEvent<FileReader>) => {
-                const target = ev.target
-                if (target) {
-                  const result = JSON.parse(target.result as any)
-                
-                    // var auxCoordinatesXValue : number[] = []
-                    // var auxCoordinatesYValue : number[] = []
-                    // var auxTimeStamps : number[] = []
-
-                    // result.session.signals[0].values.map((objectValue: any)=>{
-                    //         auxCoordinatesXValue.push(objectValue.sample[0])
-                    //         auxCoordinatesYValue.push(objectValue.sample[1])
-                    //         var timefixed = objectValue.timestamp.toFixed(2)
-                    //         auxTimeStamps.push(timefixed)
-                    //     })
-
-                    // setCoordinateXValues(auxCoordinatesXValue)
-                    // setCoordinateYValues(auxCoordinatesYValue)
-                    // setTimeStamps(auxTimeStamps)
-                    updateMarkersUploaded(result.session.markers)
-                    setVideosConfig(result.session.videos)
-                    setSignalsConfig(result.session.signals)
-                    setUploadedData(result)
-                }
-                 else {
-                  console.warn(`Unable to read the uploaded file`)
-                }
-              }
-            }
-          }
-    }
+    
 
     return(
         <DashboardGraphsContext.Provider value={
             {graphs, 
             dataX, 
             percentageX, 
-            uploadedData,
+            //uploadedData,
             markersUploaded,
             // coordinateXValues,
             // coordinateYValues,
@@ -154,7 +118,7 @@ export function DashboardProvider ({children} : {children: React.ReactNode})
             videosConfig,
             signalsConfig,
             updateMarkersUploaded,
-            updateUploadedData,
+            //updateUploadedData,
             updatePercentageX,
             updateGraphs, 
             updateDataX

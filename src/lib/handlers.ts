@@ -1,7 +1,7 @@
 import SessionUsers, {SessionUser} from '@/models/Session';
 import connect from '@/lib/mongoose';
 import Users, { User } from '@/models/User';
-import { Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 export interface SessionsResponse {
@@ -23,6 +23,29 @@ export async function getSessions(): Promise<SessionsResponse> {
   return {
     sessions: sessions,
   };
+}
+
+export interface DashboardResponse {
+  dashboard: SessionUser;
+}
+
+export async function getDashboard(dashboardId : string): Promise<DashboardResponse> {
+await connect();
+
+const dashboardProjection = {
+  description: true,
+  dateCreation: true,
+  signals: true,
+  videos: true,
+  markers: true,
+}
+const dashboard = await SessionUsers.findById(dashboardId, dashboardProjection);
+
+console.log(dashboardId, dashboard);
+
+return {
+  dashboard: dashboard,
+};
 }
 
 export interface CreateUserResponse {
