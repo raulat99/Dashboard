@@ -1,7 +1,7 @@
 import { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/authOptions';
-import { DashboardResponse, UserResponse, getDashboard, getUser } from '@/lib/handlers';
+import { DashboardResponse, PostSessionResponse, UserResponse, getDashboard, getUser } from '@/lib/handlers';
 import { NextRequest, NextResponse } from 'next/server';
 import { Types } from 'mongoose';
 
@@ -19,3 +19,4 @@ export async function GET(
 
   return NextResponse.json(dashboard);
 }
+

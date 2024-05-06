@@ -1,10 +1,11 @@
 'use client'
 
+import { postNewDashboard } from "@/lib/handlers"
 import { set } from "mongoose"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export default function UploadDataButton() {
-    const [uploadedData, setUploadedData] = useState(null)
+    const [uploadedData, setUploadedData] = useState<Boolean>(false)
     const updateUploadedData = async (e: React.ChangeEvent<HTMLInputElement>) =>{
         if (e.target.files && e.target.files[0]) {
             const updatedJSON = e.target.files[0]
@@ -16,7 +17,10 @@ export default function UploadDataButton() {
                 if (target) {
                   const result = JSON.parse(target.result as any)
                     console.log(result)
-                    setUploadedData(result)
+                    setUploadedData(true)
+                    postNewDashboardUploaded(result)
+                    
+                    
                     // var auxCoordinatesXValue : number[] = []
                     // var auxCoordinatesYValue : number[] = []
                     // var auxTimeStamps : number[] = []
@@ -44,6 +48,32 @@ export default function UploadDataButton() {
           }
     }
 
+    const postNewDashboardUploaded = async (uploadedData : any) => {
+            try {
+                const response =  await fetch(`/api/dashboards`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(uploadedData),
+                });
+          
+                if (response.ok) {
+                //   router.push('/profile');
+                //   router.refresh();
+                } 
+              } catch (error) {
+                console.log(error);
+              }
+    
+    }
+
+
+    // useEffect(()=>{
+    //     console.log(uploadedData)
+    //     postNewDashboard}, [uploadedData])
+
+
     return (
        <div className="my-8 mx-auto">
         <label htmlFor="newdata" style={{
@@ -58,6 +88,7 @@ export default function UploadDataButton() {
           </label>
 
           <input type="file" id="newdata" accept=".json" onChange={updateUploadedData} hidden />
+          {/* <p className="pt-4">File uploaded</p> */}
           {uploadedData && <p className="pt-4">File uploaded</p>}
        </div>
         

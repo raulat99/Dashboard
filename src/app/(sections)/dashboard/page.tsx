@@ -12,10 +12,9 @@ export default async function Index() {
   
   return <div className= "text-center">
     <Header />
-    This is the main page.
-    <UploadDataButton/>
+    This is the dashboards page.
 
-    <div>
+    <div className="py-8 display flex flex-row place-content-center space-x-8 ">
 
       {dashboards.sessions.map((dashboard: SessionUser) => {
         return (

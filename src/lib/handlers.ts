@@ -4,6 +4,45 @@ import Users, { User } from '@/models/User';
 import { ObjectId, Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 
+export interface PostSessionResponse {
+  session: SessionUser;
+}
+
+export interface PostDashboard {
+  userId: string;
+  session: SessionUser;
+  // description: string;
+  // dateCreation: Date;
+  // signals: string[];
+  // videos: string[];
+  // markers: string[];
+}
+
+export async function postNewDashboard(
+  userId: string,
+  session1: PostDashboard
+): Promise<PostSessionResponse> {
+  await connect();
+
+  // const sessionProjection = {
+  //   description: true,
+  //   dateCreation: true,
+  //   signals: true,
+  //   videos: true,
+  //   markers: true,
+  // }
+  // const sessions = await SessionUsers.find({}, sessionProjection);
+
+  console.log(session1);
+
+  const res1 = await SessionUsers.create(session1.session);
+  
+  return {
+    session: res1,
+  };
+}
+
+
 export interface SessionsResponse {
     sessions: SessionUser[];
 }
