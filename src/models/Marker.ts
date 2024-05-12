@@ -10,7 +10,8 @@ export interface Marker {
     _id?: Types.ObjectId;
     id: number,
     time: number
-    title: string
+    title: string,
+    description?: string,
   }
   
   const MarkerSchema = new Schema<Marker>({
@@ -25,6 +26,10 @@ export interface Marker {
     title: {
         type: String,
         required: true,
+    },
+    description: {
+        type: String,
+        required: false,
     },
 });
 

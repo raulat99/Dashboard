@@ -27,7 +27,10 @@ export default async function Dashboard({
 
   if (!data.dashboard) notFound();
 
+  
   console.log(params.dashboardId, data);
+
+  console.log(data.dashboard.markers)
 
   return (
     <div className='display mt-20 w-full flex-col justify-center '>
@@ -47,7 +50,7 @@ export default async function Dashboard({
               })}
           </div>
           <div className='display w-full flex-col justify-center '>
-            {data.dashboard.videos && <ControlsVideo />}
+            {data.dashboard.markers && <ControlsVideo props={data.dashboard.markers} />}
 
             {data.dashboard.signals &&
               data.dashboard.signals.map((signal: SignalConfig) => {
