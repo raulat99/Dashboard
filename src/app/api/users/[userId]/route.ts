@@ -28,7 +28,11 @@ export async function GET(
   }
 
   if (session.user._id !== params.userId) {
-    return NextResponse.json({}, { status: 403 });
+    return NextResponse.json({
+      sessionID: session,
+      paramsUserId: params.userId,
+
+    }, { status: 403 });
   }
 
   const user = await getUser(params.userId);

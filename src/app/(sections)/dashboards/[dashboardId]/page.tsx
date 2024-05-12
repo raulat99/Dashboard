@@ -2,11 +2,10 @@ import ControlsVideo from '@/components/ControlsVideo';
 import LinesChart from '@/components/LinesChart';
 import ReactVideoPlayer from '@/components/ReactVideoPlayer';
 import { authOptions } from '@/lib/authOptions';
-import { DashboardResponse, SessionsResponse, getDashboard, getSessions } from '@/lib/handlers';
+import { getUserDashboard } from '@/lib/handlers';
 import { SignalConfig } from '@/models/SignalConfig';
-import { ObjectId, Types } from 'mongoose';
 import { Session, getServerSession } from 'next-auth';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 export default async function Dashboard({
   params  
@@ -20,7 +19,11 @@ export default async function Dashboard({
     console.log(params)
   const session: Session | null = await getServerSession(authOptions);
 
-  const data = await getDashboard(params.dashboardId);
+  if (!session) {
+    redirect('/api/auth/signin');
+  }
+  
+  const data = await getUserDashboard(session.user._id, params.dashboardId);
 
   if (!data.dashboard) notFound();
 

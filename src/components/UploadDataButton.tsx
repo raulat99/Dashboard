@@ -2,10 +2,13 @@
 
 import { postNewDashboard } from "@/lib/handlers"
 import { set } from "mongoose"
+import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 
 export default function UploadDataButton() {
     const [uploadedData, setUploadedData] = useState<Boolean>(false)
+    const { data: session } = useSession({ required: true });
+
     const updateUploadedData = async (e: React.ChangeEvent<HTMLInputElement>) =>{
         if (e.target.files && e.target.files[0]) {
             const updatedJSON = e.target.files[0]
@@ -50,7 +53,7 @@ export default function UploadDataButton() {
 
     const postNewDashboardUploaded = async (uploadedData : any) => {
             try {
-                const response =  await fetch(`/api/dashboards`, {
+                const response =  await fetch(`/api/users/${session?.user._id}/dashboards`, {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',

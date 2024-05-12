@@ -3,7 +3,7 @@ import React, { RefObject, createContext, useContext, useState } from "react";
 import { Graph } from "../models/Graph";
 import ReactPlayer from "react-player";
 import { Marker } from "../models/Marker";
-import { getSessions } from "@/lib/handlers";
+import { getDashboards } from "@/lib/handlers";
 
 
 interface VideoRefProp

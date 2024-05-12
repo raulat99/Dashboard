@@ -1,10 +1,11 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import Users, { User } from '@/models/User';
-import SessionUsers, { SessionUser } from '@/models/Session';
+import Dashboards, { Dashboard } from '@/models/Dashboard';
 import { SignalConfig } from '@/models/SignalConfig';
 import {VideoConfig} from '@/models/VideoConfig';
 import {Marker} from '@/models/Marker';
+import bcrypt from 'bcrypt';
 
 const signals : SignalConfig[] = [
   {
@@ -2089,7 +2090,7 @@ const markers : Marker[] = [
   ]
 
 
-const session1 : SessionUser = {
+const dashboard1 : Dashboard = {
   _id: new mongoose.Types.ObjectId(),
   description: 'Session 1',
   dateCreation: new Date(),
@@ -2098,22 +2099,18 @@ const session1 : SessionUser = {
   markers: markers
 };
 
-const user: User = {
-  email: 'raul@gmail.com',
-  password: '1234',
-  name: 'Raul',
-  surname: 'Arroyo',
-  sessionUser: session1._id,
-};
+
 
 const userProjection = {
+  _id: true,
   email: true,
   name: true,
   surname: true,
-  sessionUser: true,
+  dashboards: true,
 }
 
-const sessionProjection = {
+const dashboardProjection = {
+  _id: true,
   description: true,
   dateCreation: true,
   // signals: true,
@@ -2142,16 +2139,32 @@ async function seed() {
   const conn = await mongoose.connect(MONGODB_URI, opts);
   //await conn.connection.db.dropDatabase();
 
+
+  const hash = await bcrypt.hash('1234', 10);
+
+const user: User = {
+  email: 'raul@gmail.com',
+  password: hash,
+  name: 'Raul',
+  surname: 'Arroyo',
+  dashboards: dashboard1._id !== undefined ? [dashboard1._id] : []
+};
+
   //COMENTARIO: ESTO ES PARA CREAR UN USUARIO
-  //const res1 = await SessionUsers.create(session1);
-  //const res = await Users.create(user);
-  //   console.log(JSON.stringify(res, null, 2));
+   //const res1 = await Dashboards.create(dashboard1);
+   //const res = await Users.create(user);
+    // console.log(JSON.stringify(res, null, 2));
 
-  const retrievedUsers = await Users.find()
-  console.log(JSON.stringify(retrievedUsers, null, 2));
+  //const retrievedUsers = await Users.find()//.populate(userProjection);
+  //console.log(JSON.stringify(retrievedUsers, null, 2));
 
-  const retrievedSession = await SessionUsers.findOne({description: "Session 1"}, sessionProjection)//.populate('signals', signalsProjection)
-  console.log(JSON.stringify(retrievedSession, null, 2));
+   const userRetreived = await Users.findById("6640ddc22876a3761101a0c5", userProjection)//.populate('dashboards', dashboardProjection)
+   console.log(JSON.stringify(userRetreived, null, 2));
+
+   const dashboardRetrieved = userRetreived.dashboards.find((dash:any) => dash._id.equals("6640ddc22876a3761101a0c1"))//s.populate(dashboardProjection)
+   console.log(JSON.stringify(dashboardRetrieved, null, 2));
+  // const retrievedDashboard = await Dashboards.findOne({description: "Session 1"}, sessionProjection)//.populate('signals', signalsProjection)
+  // console.log(JSON.stringify(retrievedDashboard, null, 2));
 
   //COMENTARIO: ESTO ES PARA BUSCAR UN USUARIO POR ID
   // const retrievedUserById = await Users.findById('66376e20f09907e548ef7d53');

@@ -1,5 +1,4 @@
 import mongoose, { Schema, Types } from 'mongoose';
-import SessionUser from './Session';
 
 export interface User {
   _id?: Types.ObjectId;
@@ -7,7 +6,7 @@ export interface User {
   password: string;
   name: string;
   surname: string;
-  sessionUser?: Types.ObjectId;
+  dashboards?: Types.ObjectId[];
   
 }
 
@@ -29,9 +28,10 @@ const UserSchema = new Schema<User>({
     type: String,
     required: true,
   },
-  sessionUser:{
+  dashboards:[{
     type: Schema.Types.ObjectId,
+    ref: 'Dashboard',
     required: false,
-  },
+  }],
 });
-export default mongoose.models.User || mongoose.model<User>('User', UserSchema);
+export default mongoose.models.User || mongoose.model('User', UserSchema);

@@ -35,7 +35,7 @@ import {
             <div className='absolute inset-y-0 right-0 flex items-center space-x-4'>
               {session ? (
                 <>
-                  <NavbarButton href='/dashboard'>
+                  <NavbarButton href='/dashboards'>
                     <span className='sr-only'>Dashboard</span>
                     <FaChalkboardTeacher className='h-6 w-6' aria-hidden='true' />
                   </NavbarButton>
@@ -54,7 +54,7 @@ import {
               ) : (
                 <>
                   <Link
-                    href='#'
+                    href='/api/auth/signup'
                     className='rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-gray-100'
                   >
                     Sign up

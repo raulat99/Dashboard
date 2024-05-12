@@ -3,7 +3,7 @@ import { SignalConfig } from './SignalConfig';
 import { VideoConfig } from './VideoConfig';
 import { Marker } from './Marker';
 
-export interface SessionUser {
+export interface Dashboard {
   _id?: Types.ObjectId;
   description: string;
   dateCreation: Date;
@@ -12,7 +12,7 @@ export interface SessionUser {
   markers?: Marker[];
 }
 
-const SessionUserSchema = new Schema<SessionUser>({
+const DashboardSchema = new Schema<Dashboard>({
   description: {
     type: String,
     required: true,
@@ -25,4 +25,4 @@ const SessionUserSchema = new Schema<SessionUser>({
   videos:[],
   markers:[],
 });
-export default mongoose.models.SessionUser || mongoose.model<SessionUser>('SessionUser', SessionUserSchema);
+export default mongoose.models.Dashboard || mongoose.model('Dashboard', DashboardSchema);
