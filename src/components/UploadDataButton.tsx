@@ -1,13 +1,14 @@
 'use client'
 
-import { postNewDashboard } from "@/lib/handlers"
-import { set } from "mongoose"
 import { useSession } from "next-auth/react"
-import { useEffect, useState } from "react"
+import { useRouter } from 'next/navigation'
+import { useState } from "react"
 
 export default function UploadDataButton() {
     const [uploadedData, setUploadedData] = useState<Boolean>(false)
     const { data: session } = useSession({ required: true });
+    const router = useRouter()
+
 
     const updateUploadedData = async (e: React.ChangeEvent<HTMLInputElement>) =>{
         if (e.target.files && e.target.files[0]) {
@@ -60,8 +61,10 @@ export default function UploadDataButton() {
                   },
                   body: JSON.stringify(uploadedData),
                 });
-          
+
                 if (response.ok) {
+                  router.push('/dashboards');
+                 // router.refresh()
                 //   router.push('/profile');
                 //   router.refresh();
                 } 

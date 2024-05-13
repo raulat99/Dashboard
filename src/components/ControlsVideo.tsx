@@ -22,6 +22,7 @@ import { IoCloudUpload } from 'react-icons/io5';
 import { ValidationResult } from 'joi';
 import { markersValidationSchema } from '../models/import-markers-validation';
 import { VideoContext } from '../providers/VideoProvider';
+import { useSession } from 'next-auth/react';
 
 export default function ControlsVideo(props: any) {
   const { percentageX, dataX } = useContext(DashboardGraphsContext);
@@ -39,12 +40,12 @@ export default function ControlsVideo(props: any) {
     updateCurrentTime,
   } = useContext(VideoContext);
 
+  const {
+    markersUploaded,
+    dashboardId
+  } = props;
 
-   console.log(props)
-
-  if(props !== undefined)
-   updateMarkers(props.props)
-
+   
   const progressEl = useRef<HTMLProgressElement>(null);
   const volumeEl = useRef<HTMLInputElement>(null);
   const [muted, updateMuted] = useState<boolean>(false);
@@ -60,6 +61,31 @@ export default function ControlsVideo(props: any) {
 
   const inputTitleMarker = useRef<HTMLInputElement>(null);
   const inputDescriptionMarker = useRef<HTMLInputElement>(null);
+  const { data: session } = useSession({ required: true });
+
+  const updateMarkersDatabase = async (markers:  Marker[]) => {
+    console.log(markers)
+    try {
+      const res = await fetch(
+        `/api/users/${session!.user._id}/dashboards/${dashboardId}`,
+        {
+          method: 'PUT',
+          body:  JSON.stringify(
+            {markers: markers})
+          ,
+        }
+      );
+
+      if (res.ok) {
+        const body = await res.json();
+        console.log(body);
+      }
+    }
+    catch (error) {
+      console.log(error);
+    } 
+  };
+
 
   const getTimeCode = (secs: number): string => {
     let secondsNumber = secs ? parseInt(String(secs), 10) : 0;
@@ -209,8 +235,12 @@ export default function ControlsVideo(props: any) {
     );
     markers.push(newMarker);
     updateMarkers(markers);
+    updateMarkersDatabase(markers);
+
     console.log({ markers: markers });
     toggleModal();
+
+
   };
 
   const handleMarkerClick = (marker: Marker) => {
@@ -226,6 +256,8 @@ export default function ControlsVideo(props: any) {
       (m) => m.id !== markerToDelete.id //&& m.time !== markerToDelete.time
     );
     updateMarkers(remainingMarkers);
+    updateMarkersDatabase(remainingMarkers);
+
     console.log({ remainingMarkers: remainingMarkers });
   };
 
@@ -241,6 +273,8 @@ export default function ControlsVideo(props: any) {
 
   const onDeleteAllMarkersClick = () => {
     updateMarkers([]);
+    updateMarkersDatabase(markers);
+
   };
 
   const handleOnMarkerSelection = (selectedMarker: Marker): void => {
@@ -356,6 +390,14 @@ export default function ControlsVideo(props: any) {
     dataX,
     percentageX,
   ]);
+
+  useEffect(()=>{
+    console.log(props)
+
+    if(markersUploaded !== undefined)
+      updateMarkers(markersUploaded)
+
+  }, [])
 
   return (
     <div className='mx-auto  my-8 w-[95vw]'>

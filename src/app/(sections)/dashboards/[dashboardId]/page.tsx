@@ -50,7 +50,7 @@ export default async function Dashboard({
               })}
           </div>
           <div className='display w-full flex-col justify-center '>
-            {data.dashboard.markers && <ControlsVideo props={data.dashboard.markers} />}
+            {data.dashboard.markers && <ControlsVideo markersUploaded={data.dashboard.markers} dashboardId= {data.dashboard._id}/>}
 
             {data.dashboard.signals &&
               data.dashboard.signals.map((signal: SignalConfig) => {

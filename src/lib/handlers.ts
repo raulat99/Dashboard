@@ -3,6 +3,7 @@ import connect from '@/lib/mongoose';
 import Users, { User } from '@/models/User';
 import { Types } from 'mongoose';
 import bcrypt from 'bcrypt';
+import {Marker} from '@/models/Marker';
 
 const userProjection = {
   email: true,
@@ -141,6 +142,79 @@ export async function getUserDashboard(
 
   return {
     dashboard: dashboard,
+  };
+}
+
+export async function deleteUserDashboard(
+  userId: string,
+  dashboardId: string
+): Promise<DashboardsResponse | {}> {
+  await connect();
+
+  //const dashboards = await Dashboards.deleteMany({});
+
+  const user = await Users.findById(userId, userProjection).populate('dashboards', DashboardProjection);
+
+  const dashboards = user.dashboards;
+
+  const dashboard = dashboards.find((dashboard: Dashboard)=> dashboard._id && dashboard._id.equals(dashboardId));
+
+  if(!dashboard)
+    return {};
+
+  //const dashboardsDeleted = 
+  
+  dashboards.splice(dashboards.indexOf(dashboard), 1);
+
+  user.dashboards = dashboards;
+  await user.save();
+
+  const result : DashboardsResponse | null = await Dashboards.findByIdAndDelete(dashboardId);
+
+  if(result === null)
+    return {};
+
+  console.log(result);
+
+  return {
+    dashboards: dashboards,
+  };
+}
+
+export async function updateUserDashboard(
+  userId: string,
+  dashboardId: string,
+  markers: Marker[]
+): Promise<DashboardsResponse | {}> {
+  await connect();
+  
+  //const dashboards = await Dashboards.deleteMany({});
+
+  const user = await Users.findById(userId, userProjection).populate('dashboards', DashboardProjection);
+  const dashboards = user.dashboards;
+  const dashboard = dashboards.find((dashboard: Dashboard)=> dashboard._id && dashboard._id.equals(dashboardId));
+
+  if(!dashboard)
+    return {};
+
+  //const dashboardsDeleted = 
+  
+  console.log(markers);
+
+  const updatedDashboard = await Dashboards.findByIdAndUpdate(
+
+    dashboard._id,
+    {
+      $set: { markers: markers },
+    },
+    { new: true }
+  );
+
+  
+  console.log({dashboard: updatedDashboard});
+
+  return {
+    dashboard: updatedDashboard,
   };
 }
 
