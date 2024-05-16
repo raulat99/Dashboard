@@ -61,6 +61,7 @@ const ReactVideoPlayer = ( props: VideoConfigProp) => {
   
   useEffect(()=>{
     if (percentageX && videoRef.current !== null) {
+      console.log((videoRef.current).getDuration(), percentageX,(videoRef.current).getDuration() * percentageX, 'seconds')
       videoRef.current.seekTo((videoRef.current).getDuration() * percentageX, 'seconds');
     }
   },[percentageX])

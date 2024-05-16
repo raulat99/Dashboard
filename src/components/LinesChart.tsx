@@ -1,5 +1,5 @@
-"use client";
-import { Line } from "react-chartjs-2";
+'use client';
+import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,12 +11,19 @@ import {
   Legend,
   Filler,
   Interaction,
-} from "chart.js";
-import { use, useContext, useEffect, useRef, useState } from "react";
-import { getRelativePosition } from "chart.js/helpers";
-import {SignalConfig} from "@/models/SignalConfig";
-import { plugin } from "mongoose";
-import { DashboardGraphsContext, SignalConfigProp } from "../providers/DashboardProvider";
+} from 'chart.js';
+import { use, useContext, useEffect, useRef, useState } from 'react';
+import { getRelativePosition } from 'chart.js/helpers';
+import { SignalConfig } from '@/models/SignalConfig';
+import { plugin } from 'mongoose';
+import annotationPlugin from 'chartjs-plugin-annotation';
+
+
+
+import {
+  DashboardGraphsContext,
+  SignalConfigProp,
+} from '../providers/DashboardProvider';
 //import { Graph } from "../models/Graph";
 
 ChartJS.register(
@@ -27,18 +34,17 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
+  annotationPlugin
 );
 
 export interface Graph {
+  id: number;
+  type: string;
+  data: any;
 
-    id: number;
-    type: string;
-    data: any;
-
-    MousePointerX: number;
-    MousePointerY: number;
-
+  MousePointerX: number;
+  MousePointerY: number;
 }
 
 var pulsaciones = [
@@ -51,15 +57,16 @@ var minutos = [
 ];
 
 export default function LinesChart(props: SignalConfig) {
-  
-  const {name, descripcion, signalID, labels, values} = props.props;
+  const { name, descripcion, signalID, labels, values } = props.props;
 
-  console.log(props)
+  console.log(props);
 
   const chartRef = useRef(null);
 
   var id = null;
-  const {dataX, updateDataX, updatePercentageX} = useContext(DashboardGraphsContext);
+  const { dataX, updateDataX, updatePercentageX } = useContext(
+    DashboardGraphsContext
+  );
 
   // var midata = timeStamps.length !== 0 && coordinateXValues.length !== 0 && coordinateXValues.length !== 0 ?{
   //   //labels: uploadedData !== null && uploadedData.session.signals[0].labels[0] ? uploadedData.session.signals[0].labels[0] : minutos,
@@ -101,51 +108,56 @@ export default function LinesChart(props: SignalConfig) {
   //       },
   //     ],
   //   };
-  
-    var valuesArray : any[] = []
-    var auxTimeStamps : number[] = []
 
-    console.log(labels)
+  var valuesArray: any[] = [];
+  var auxTimeStamps: number[] = [];
 
-    labels.map(()=>{
-      valuesArray.push([])  
-    })
+  console.log(labels);
 
-   values.map((objectValue: any)=>{
-            for (let i = 0; i <( objectValue.sample.length); i++) {
-              valuesArray[i].push(objectValue.sample[i])
-            }
-            auxTimeStamps.push(objectValue.timestamp.toFixed(2))
-        })             
-    const colorArray = ["rgb(255, 99, 132)" ,  "rgb(55, 0, 232)", "rgb(55, 99, 132)", "rgb(55, 99, 232)", "rgb(255, 0, 132)"]
+  labels.map(() => {
+    valuesArray.push([]);
+  });
 
-    var midata2 = {
-      labels:  auxTimeStamps,
-      datasets: labels.map((label: any)=>{
-        const indexColor = label.labelId + signalID
-        return (
-          {
-            label: label.value,
-            data: valuesArray[label.labelId],
-            tension: 0.5,
-            borderColor: colorArray[indexColor],
-            backgroundColor: colorArray[indexColor],
-            pointRadius: 2,
-            pointBorderColor: colorArray[indexColor],
-            pointBackgroundColor: colorArray[indexColor],
-          }
-        )
-      })
+  values.map((objectValue: any) => {
+    for (let i = 0; i < objectValue.sample.length; i++) {
+      valuesArray[i].push(objectValue.sample[i]);
     }
-    console.log(midata2)
+    const timeInIncrements : number = objectValue.timestamp.toFixed(2) - values[0].timestamp.toFixed(2)
+    auxTimeStamps.push(timeInIncrements.toFixed(2));
+  });
+  const colorArray = [
+    'rgb(255, 99, 132)',
+    'rgb(55, 0, 232)',
+    'rgb(55, 99, 132)',
+    'rgb(55, 99, 232)',
+    'rgb(255, 0, 132)',
+  ];
 
-    // Opciones del gráfico ()
+  var midata2 = {
+    labels: auxTimeStamps,
+    datasets: labels.map((label: any) => {
+      const indexColor = label.labelId + signalID;
+      return {
+        label: label.value,
+        data: valuesArray[label.labelId],
+        tension: 0.5,
+        borderColor: colorArray[indexColor],
+        backgroundColor: colorArray[indexColor],
+        pointRadius: 2,
+        pointBorderColor: colorArray[indexColor],
+        pointBackgroundColor: colorArray[indexColor],
+      };
+    }),
+  };
+  console.log(midata2);
+
+  // Opciones del gráfico ()
   var misoptions = {
     responsive: true,
     maintainAspectRatio: false,
     redraw: true,
     borderWidth: 1,
-    Interaction:{
+    Interaction: {
       mode: 'index',
       intersect: false,
     },
@@ -155,81 +167,137 @@ export default function LinesChart(props: SignalConfig) {
       },
       x: {
         min: 0,
-        ticks: { color: "rgb(255, 99, 132)" },
+        ticks: { color: 'rgb(255, 99, 132)' },
       },
     },
+      plugins: {
+        annotation: {
+          annotations: {
+            annotation1: {
+              type: 'line',
+              borderColor: 'black',
+              borderWidth: 2,
+              
+              label: {
+                backgroundColor: 'red',
+                content: ' Click ',
+                display: true,
+                position: 'start',
+              },
+              
+              scaleID: 'x',
+              value: dataX && (auxTimeStamps.includes(dataX)) ? dataX : -1,
+            },
+          },
+        },
+      },
+    
     onClick: (e: any) => {
       //console.log(e);
-  
+
       var chart = e.chart;
       var dataXAux: number;
       var label: number;
       var value: number;
       var dataY: number;
-  
+
       const canvasPosition = getRelativePosition(e, chart);
-  
+
       // Substitute the appropriate scale IDs
       dataXAux = chart.scales.x.getValueForPixel(canvasPosition.x);
       dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
-  
+
       label = chart.config.data.labels[dataXAux];
       value = chart.config.data.datasets[0].data[dataXAux];
-  
+
       // console.log({
       //   dataX: dataXAux,
       //   label: label,
       //   dataY: dataY,
       //   value: value,
       // });
-      //console.log(chart)
-      //console.log({percentageX: e.x/ chart.width})
+      // //console.log(chart)
 
-      updatePercentageX(e.x / chart.width)
+      // console.log(canvasPosition)
+
+      // console.log(e)
+      // console.log({percentageX:e.x/ chart.width , event: canvasPosition.x, chart: chart.width})
+
+      var percentaje = e.x / chart.width;
+
+      updatePercentageX(percentaje);
       updateDataX(label);
+
       dataY = value;
       id = chart.id;
+
+      // {label && labels.map(label => {
+      //     auxTimeStamps.map((value) => {
+      //       if(dataX  && (parseFloat(dataX)-0.01) < value && value < (parseFloat(dataX)+ 0.01)){
+              
+      //         //var auxIndex = auxTimeStamps.indexOf(value)
+      //         //return valuesArray[label.labelId][auxIndex]
+      //         chartRef.current.options.plugins.annotation.annotations.annotation1.value = value;
+      //       } else {
+      //         return 
+      //       }
+      //     })} 
+          
+      //   )
+      // }
+      
+
+      
     },
   };
 
+
+
   return (
-    <div className="display flex flex-col h-[38vh] mx-6 my-16 mb-20">
+    <div className='display mx-6 my-6 flex h-[38vh] flex-col'>
       {/* <Statistics dataX={dataX} dataY={dataY} /> */}
-      <div className="display flex flex-col">
-      <h2> <b>{signalID}  {name} </b></h2>
-      <h2> {descripcion} </h2>
-      <h2>  </h2>
-      {/* <div className="display flex flex col">
+      <div className='display flex flex-col'>
+        <h2>
+          {' '}
+          <b>
+            {signalID} {name}{' '}
+          </b>
+        </h2>
+        <h2> {descripcion} </h2>
+        <h2> </h2>
+        {/* <div className="display flex flex col">
           <p> DataX label: </p>
           {dataX && <p> {dataX} </p>}
       </div> */}
-      <div className="display flex-col">
+        <div className='display flex-col'>
           <p> Labels: </p>
-          {/* {dataX && labels.map(label => {
+          {dataX && labels.map(label => {
             return (
               <p key={label.labelId}> {label.value} :     
               { 
               auxTimeStamps.map((value) => {
-                if(dataX && (dataX-0.01) < value && value < (dataX+0.01)){
+                if(dataX  && (parseFloat(dataX)-0.01) < value && value < (parseFloat(dataX)+ 0.01)){
                   var auxIndex = auxTimeStamps.indexOf(value)
                   return valuesArray[label.labelId][auxIndex]
-                } 
-              }) || "nothing"} </p>
+                } else {
+                  return 
+                }
+              }) || "nothing"} 
+              </p>
             )
-          })} */}
+          }) || "nothing"}
         </div>
       </div>
-     
-      <div className="w-full h-[38vh]">
+
+      <div className='h-full w-full'>
         <Line
-          className="pb-10 w-full"
+          className=''
           ref={chartRef}
           data={midata2}
           options={misoptions}
-          
+          //plugins={[annotationPlugin.afterDraw(annotation)]}
         />
       </div>
-
     </div>
-  )
+  );
 }

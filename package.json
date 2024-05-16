@@ -21,6 +21,8 @@
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
     "bcrypt": "^5.1.1",
+    "chartjs-plugin-annotation": "^3.0.1",
+    "circular-json": "^0.5.9",
     "dotenv": "^16.4.5",
     "eslint": "8.49.0",
     "eslint-config-next": "^14.2.3",
@@ -41,6 +43,7 @@
     "typescript": "^5.2.2"
   },
   "devDependencies": {
+    "@types/circular-json": "^0.4.0",
     "tsx": "^3.12.7"
   }
 }

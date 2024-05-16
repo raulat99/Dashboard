@@ -23,26 +23,6 @@ export default function UploadDataButton() {
                     console.log(result)
                     setUploadedData(true)
                     postNewDashboardUploaded(result)
-                    
-                    
-                    // var auxCoordinatesXValue : number[] = []
-                    // var auxCoordinatesYValue : number[] = []
-                    // var auxTimeStamps : number[] = []
-    
-                    // result.session.signals[0].values.map((objectValue: any)=>{
-                    //         auxCoordinatesXValue.push(objectValue.sample[0])
-                    //         auxCoordinatesYValue.push(objectValue.sample[1])
-                    //         var timefixed = objectValue.timestamp.toFixed(2)
-                    //         auxTimeStamps.push(timefixed)
-                    //     })
-    
-                    // setCoordinateXValues(auxCoordinatesXValue)
-                    // setCoordinateYValues(auxCoordinatesYValue)
-                    // setTimeStamps(auxTimeStamps)
-                    // updateMarkersUploaded(result.session.markers)
-                    // setVideosConfig(result.session.videos)
-                    // setSignalsConfig(result.session.signals)
-                    // setUploadedData(result)
                 }
                  else {
                   console.warn(`Unable to read the uploaded file`)
