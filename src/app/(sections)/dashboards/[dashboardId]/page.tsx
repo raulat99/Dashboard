@@ -30,22 +30,17 @@ export default async function Dashboard({
 
   if (!data.dashboard) notFound();
 
- 
-  
-  //console.log("id:", params.dashboardId, "data", data.dashboard);
 
-  //console.log(data.dashboard.markers)
-
-  console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-  console.log(JSON.stringify(data.dashboard, null, 2));
-  console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
   return (
     <div className='display mt-20 w-full flex-col justify-center '>
       {session ? (
         <div className='mx-2 '>
-        <h2 className='text-center'>{data.dashboard && "session id: " + data.dashboard._id + " -- Descripcion: "  + data.dashboard.description + " -- Date: " + data.dashboard.dateCreation  }</h2>
+        {/* <h2 className='text-center'>{data.dashboard && "session id: " + data.dashboard._id + " -- Descripcion: "  + data.dashboard.description + " -- Date: " + data.dashboard.dateCreation  }</h2> */}
+        <div className='m-2'>
+        <h1 className='text-center text-4xl'><b>{data.dashboard && data.dashboard.description}</b></h1>
          {/* {data.dashboard && <DownloadButton dataDownload={data.dashboard} />} */}
          {data.dashboard && <DownloadButton dataDownload={JSON.stringify(data.dashboard, null, 2)}/>}
+         </div>
           <div className='flex flex-wrap justify-center gap-4'>
             {data.dashboard.videos &&
               data.dashboard.videos.map((videoConfigItem) => {

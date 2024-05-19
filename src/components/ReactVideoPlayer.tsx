@@ -83,9 +83,6 @@ const ReactVideoPlayer = ( props: VideoConfigProp) => {
     return (
       // style={{width:width, height: height}}
       <div className="mx-auto shrink " >
-        <div className="my-5">
-          <p><b>Video:</b></p>
-        </div>
         <div className="bg-light mx-2 border border-2 border-black bg-black">
           <ReactPlayer 
             url={url} 

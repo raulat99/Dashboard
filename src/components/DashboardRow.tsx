@@ -12,7 +12,7 @@ interface DashboardProps {
   updateDashboards: (dashboards: DashboardsResponse[]) => void;
 }
 
-export default function DashboardButton( {dashboard, dashboards, updateDashboards} : DashboardProps) {
+export default function DashboardRow( {dashboard, dashboards, updateDashboards} : DashboardProps) {
   const { data: session } = useSession({ required: true });
   const router = useRouter();
 
@@ -40,19 +40,28 @@ export default function DashboardButton( {dashboard, dashboards, updateDashboard
   };
 
   return (
-    <div>
-      <Link href={'/dashboards/' + dashboard._id}>
-        <button className='mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'>
-          {dashboard.description}
-        </button>
-        <p>{String(dashboard._id)}</p>
-      </Link>
-      <button
-        onClick={handleDelete}
-        className='mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-      >
-        DELETE
-      </button>
-    </div>
+  dashboard ? (
+    <tr className="bg-white border-b">
+    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+      {dashboard._id?.toString() ?? ''}
+    </th>
+    <td className="px-6 py-4">
+      {dashboard.description?.toString() ?? ''}
+    </td>
+    <td className="px-6 py-4">
+    {dashboard.dateCreation?.toString() ?? ''}
+    </td>
+    <td className="px-6 py-4">
+        {dashboard.signals && dashboard.signals.map((signal) => <div key={signal._id}>{signal.name}</div>)}
+    </td>
+    <td className="px-6 py-4 text-right">
+        <Link href={'/dashboards/' + dashboard._id} className="font-medium text-blue-600 hover:underline">View</Link>
+    </td>
+    <td className="px-6 py-4 text-right">
+        <button onClick={handleDelete} className="font-medium text-red-600 hover:underline focus:outline-none">Delete</button>
+    </td>
+</tr>
+  ): 'No available'
+    
   );
 }

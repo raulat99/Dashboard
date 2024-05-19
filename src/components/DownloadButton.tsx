@@ -6,9 +6,6 @@ import Link from 'next/link';
 import { FaFileDownload } from 'react-icons/fa';
 import { useSession } from 'next-auth/react';
 
-export const downloadButtonClasses =
-  'rounded-full p-2 text-gray-400 hover:text-white focus:text-white focus:outline-none focus:ring-2 focus:ring-white';
-
   interface DownloadButtonProps {
     dataDownload: any;
   }
@@ -47,8 +44,18 @@ export default function DownloadButton({ dataDownload }: DownloadButtonProps) {
 
 
   return (
-    <button className={downloadButtonClasses} onClick={onExportDataClick}> 
-              <FaFileDownload size={22} />
+    <div className='display flex justify-center'>
+    <button onClick={onExportDataClick} style={{
+      backgroundColor: "indigo",
+      color: "white",
+      padding: "0.5rem",
+      fontFamily: "sans-serif",
+      borderRadius: "0.3rem",
+      cursor: "pointer",
+      marginTop: "1rem",
+    }}> 
+              Download
     </button>
+    </div>
   );
 }
