@@ -24,6 +24,7 @@ import {
   DashboardGraphsContext,
   SignalConfigProp,
 } from '../providers/DashboardProvider';
+import { randomInt } from 'crypto';
 //import { Graph } from "../models/Graph";
 
 ChartJS.register(
@@ -47,18 +48,19 @@ export interface Graph {
   MousePointerY: number;
 }
 
-var pulsaciones = [
-  72, 75, 78, 82, 85, 88, 90, 92, 91, 89, 86, 84, 82, 79, 76, 74, 72, 70, 68,
-  66, 64, 62, 60, 63, 66, 70, 74, 78, 82,
-];
-var minutos = [
-  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-  22, 23, 24, 25, 26, 27, 28, 29, 30,
-];
+interface Props {
 
-export default function LinesChart(props: SignalConfig) {
-  const { name, descripcion, signalID, labels, values } = props.props;
+    signalConfig: SignalConfig;
+    currentTimeNow: any;
+    totalTime: any;
+}
 
+
+export default function LinesChart(props: Props) {
+  const { name, descripcion, signalID, labels, values } = props.signalConfig;
+  const { currentTimeNow, totalTime } = props;
+
+  
   console.log(props);
 
   const chartRef = useRef(null);
@@ -68,46 +70,6 @@ export default function LinesChart(props: SignalConfig) {
     DashboardGraphsContext
   );
 
-  // var midata = timeStamps.length !== 0 && coordinateXValues.length !== 0 && coordinateXValues.length !== 0 ?{
-  //   //labels: uploadedData !== null && uploadedData.session.signals[0].labels[0] ? uploadedData.session.signals[0].labels[0] : minutos,
-  //   labels:  timeStamps,
-  //   datasets: [{
-  //     label: "Coordinate X",
-  //     data: coordinateXValues,
-  //     tension: 0.5,
-  //     borderColor: "rgb(255, 99, 132)",
-  //     backgroundColor: "rgba(255, 99, 132, 0.5)",
-  //     pointRadius: 2,
-  //     pointBorderColor: "rgba(255, 99, 132)",
-  //     pointBackgroundColor: "rgba(255, 99, 132)",
-  //   },
-  //   {
-  //     label: "Coordinate Y",
-  //     data: coordinateYValues,
-  //     tension: 0.5,
-  //     borderColor: "rgb(55, 0, 232)",
-  //     backgroundColor: "rgba(55, 0, 232, 0.5)",
-  //     pointRadius: 2,
-  //     pointBorderColor: "rgba(55, 0, 232)",
-  //     pointBackgroundColor: "rgba(55, 0, 232)",
-  //   }
-  // ],
-  // } : {
-  //     labels: minutos,
-  //     datasets: [
-  //       // Cada una de las líneas del gráfico
-  //       {
-  //         label: "Pulsaciones",
-  //         data: pulsaciones,
-  //         tension: 0.5,
-  //         borderColor: "rgb(255, 99, 132)",
-  //         backgroundColor: "rgba(255, 99, 132, 0.5)",
-  //         pointRadius: 5,
-  //         pointBorderColor: "rgba(255, 99, 132)",
-  //         pointBackgroundColor: "rgba(255, 99, 132)",
-  //       },
-  //     ],
-  //   };
 
   var valuesArray: any[] = [];
   var auxTimeStamps: number[] = [];
@@ -122,8 +84,8 @@ export default function LinesChart(props: SignalConfig) {
     for (let i = 0; i < objectValue.sample.length; i++) {
       valuesArray[i].push(objectValue.sample[i]);
     }
-    const timeInIncrements : number = objectValue.timestamp.toFixed(2) - values[0].timestamp.toFixed(2)
-    auxTimeStamps.push(timeInIncrements.toFixed(2));
+    const timeInIncrements : number = objectValue.timestamp - values[0].timestamp
+    auxTimeStamps.push(timeInIncrements.toFixed(2) as unknown as number);
   });
   const colorArray = [
     'rgb(255, 99, 132)',
@@ -132,6 +94,16 @@ export default function LinesChart(props: SignalConfig) {
     'rgb(55, 99, 232)',
     'rgb(255, 0, 132)',
   ];
+
+  // var auxAuxTimestamps = auxTimeStamps
+  // var auxAuxValues = valuesArray
+  
+  // const [timeStamps, setTimeStamps] = useState<number[]>(auxAuxTimestamps.splice(0,9));
+  // const [valuesGraph, setvaluesGraph] = useState<any[]>(auxAuxValues.map((value: any) => value.splice(0,9)));
+
+  // console.log(timeStamps, valuesGraph)
+
+ 
 
   var midata2 = {
     labels: auxTimeStamps,
@@ -180,116 +152,79 @@ export default function LinesChart(props: SignalConfig) {
               
               label: {
                 backgroundColor: 'red',
-                content: ' Click ',
+                content: ' Player ',
                 display: true,
                 position: 'start',
               },
               
               scaleID: 'x',
-              value: dataX && (auxTimeStamps.includes(dataX)) ? dataX : -1,
+              value: dataX ? dataX : -1,
             },
           },
         },
-      },
-    
-    onClick: (e: any) => {
-      //console.log(e);
-
-      var chart = e.chart;
-      var dataXAux: number;
-      var label: number;
-      var value: number;
-      var dataY: number;
-
-      const canvasPosition = getRelativePosition(e, chart);
-
-      // Substitute the appropriate scale IDs
-      dataXAux = chart.scales.x.getValueForPixel(canvasPosition.x);
-      dataY = chart.scales.y.getValueForPixel(canvasPosition.y);
-
-      label = chart.config.data.labels[dataXAux];
-      value = chart.config.data.datasets[0].data[dataXAux];
-
-      // console.log({
-      //   dataX: dataXAux,
-      //   label: label,
-      //   dataY: dataY,
-      //   value: value,
-      // });
-      // //console.log(chart)
-
-      // console.log(canvasPosition)
-
-      // console.log(e)
-      // console.log({percentageX:e.x/ chart.width , event: canvasPosition.x, chart: chart.width})
-
-      var percentaje = e.x / chart.width;
-
-      updatePercentageX(percentaje);
-      updateDataX(label);
-
-      dataY = value;
-      id = chart.id;
-
-      // {label && labels.map(label => {
-      //     auxTimeStamps.map((value) => {
-      //       if(dataX  && (parseFloat(dataX)-0.01) < value && value < (parseFloat(dataX)+ 0.01)){
-              
-      //         //var auxIndex = auxTimeStamps.indexOf(value)
-      //         //return valuesArray[label.labelId][auxIndex]
-      //         chartRef.current.options.plugins.annotation.annotations.annotation1.value = value;
-      //       } else {
-      //         return 
-      //       }
-      //     })} 
-          
-      //   )
-      // }
-      
-
-      
-    },
+      }
   };
 
+//   useEffect(()=>{
+    
+//     // Index to know the position of the last element in the array of timeStamps in auxTimeStamps
+//     //console.log(dataX, timeStamps, auxTimeStamps)
 
+
+//   //   if(auxTimeStamps && timeStamps && auxTimeStamps.length > 0 && timeStamps?.length > 0){
+
+    
+//   //   const indexAux = auxTimeStamps.findIndex((value: number) => value === timeStamps[8])
+//   //     console.log(indexAux)
+//   //   if(dataX && indexAux !== -1 && dataX + 5 > indexAux){
+
+//   //     console.log(dataX)
+//   //     console.log(indexAux)
+
+
+//   //     labels.map((label: any) => {
+
+//   //       var temporalTimeStamps = timeStamps
+//   //       var temporalValuesGraph = valuesGraph 
+//   //       temporalTimeStamps.shift()
+//   //       temporalTimeStamps.push(auxTimeStamps[dataX])
+//   //       temporalValuesGraph[label.labelId].shift()  
+//   //       temporalValuesGraph[label.labelId].push(valuesArray[label.labelId][dataX])
+
+//   //       console.log(temporalTimeStamps)
+//   //       console.log(temporalValuesGraph)
+
+//   //       setTimeStamps(temporalTimeStamps)
+//   //       setvaluesGraph(temporalValuesGraph)
+
+
+//   //       chartRef.current.data.datasets.push(timeStamps)
+
+//   //     })
+//   //   }
+//   // }
+
+
+//   if (chartRef.current) {
+//     var data = chartRef.current.data;
+
+//     if (data.datasets.length > 0) {
+//       data.labels = 1;
+
+//       for (let index = 0; index < data.datasets.length; ++index) {
+//         data.datasets[index].data.push(100);
+//       }
+
+//       console.log({ data });
+//       console.log({'chartRef': chartRef.current.ctx.canvas});
+
+//       //chartRef.current.ctx.canvas.update();
+//     }
+//   }
+// },[]);
 
   return (
-    <div className='display mx-6 my-6 flex h-[38vh] flex-col'>
-      {/* <Statistics dataX={dataX} dataY={dataY} /> */}
-      <div className='display flex flex-col'>
-        <h2>
-          {' '}
-          <b>
-            {signalID} {name}{' '}
-          </b>
-        </h2>
-        <h2> {descripcion} </h2>
-        <h2> </h2>
-        {/* <div className="display flex flex col">
-          <p> DataX label: </p>
-          {dataX && <p> {dataX} </p>}
-      </div> */}
-        <div className='display flex-col'>
-          <p> Labels: </p>
-          {dataX && labels.map(label => {
-            return (
-              <p key={label.labelId}> {label.value} :     
-              { 
-              auxTimeStamps.map((value) => {
-                if(dataX  && (parseFloat(dataX)-0.01) < value && value < (parseFloat(dataX)+ 0.01)){
-                  var auxIndex = auxTimeStamps.indexOf(value)
-                  return valuesArray[label.labelId][auxIndex]
-                } else {
-                  return 
-                }
-              }) || "nothing"} 
-              </p>
-            )
-          }) || "nothing"}
-        </div>
-      </div>
-
-      <div className='h-full w-full'>
+      <div className='h-full w-full ' >
         <Line
           className=''
           ref={chartRef}
@@ -297,7 +232,6 @@ export default function LinesChart(props: SignalConfig) {
           options={misoptions}
           //plugins={[annotationPlugin.afterDraw(annotation)]}
         />
-      </div>
     </div>
   );
 }

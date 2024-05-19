@@ -56,50 +56,7 @@ export default async function Profile() {
           <span className='ml-5 text-sm font-bold text-gray-900'>Email: </span>
           <span className='ml-5 text-sm text-gray-500'> {userData.email}</span>
         </div>
-{/* 
-      <h2 className='my-7 pb-4 text-2xl font-bold text-gray-900 sm:pb-6 lg:pb-8'>
-        Orders
-      </h2>
 
-      <div className='relative overflow-x-auto shadow-md sm:rounded-lg'>
-        <table className='w-full text-left text-sm text-gray-500'>
-          <thead className='bg-gray-300 text-xs uppercase text-gray-700'>
-            <tr>
-              <th scope='col' className='px-6 py-3'>
-                Order ID
-              </th>
-              <th scope='col' className='px-6 py-3'>
-                Shipment Address
-              </th>
-              <th scope='col' className='px-6 py-3'>
-                Payment Information
-              </th>
-              <th scope='col' className='px-6 py-3'></th>
-            </tr>
-          </thead>
-          <tbody>
-            {orderData.orders.map((order) => (
-              <tr key={order._id.toString()} className='border-b bg-gray-200'>
-                <th
-                  scope='row'
-                  className='whitespace-nowrap px-6 py-4 font-medium text-gray-900'
-                >
-                  {order._id.toString()}
-                </th>
-                <td className='whitespace-nowrap px-6 py-4'>{order.address}</td>
-                <td className='whitespace-nowrap px-6 py-4'>
-                  <div>
-                    <div>{order.cardNumber}</div>
-                    <div>{order.cardHolder}</div>
-                  </div>
-                </td>
-                <td className='whitespace-nowrap px-6 py-4'>
-                  <Link href={`/orders/${order._id}`}>View Details</Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>*/}
       </div> 
     </div>
   );

@@ -72,10 +72,10 @@ return (
             </tr>
         </thead>
         <tbody>
-        {dashboards && dashboards.map((dashboard: DashboardsResponse) => {
+        {dashboards && dashboards.map((dashboard: any) => {
         return (
           <DashboardRow 
-          key={dashboard._id?.toString()} 
+          key = {dashboard._id}
           dashboard={dashboard} 
           dashboards={dashboards}
           updateDashboards={(dashboards: DashboardsResponse[]) => {setDashboards(dashboards)}} />

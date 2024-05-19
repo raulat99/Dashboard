@@ -352,6 +352,8 @@ export default function ControlsVideo(props: any) {
     console.log('percentageInSeconds', percentageInSeconds);
     updateCurrentTime(percentageInSeconds);
     setCurrentTimeProgressBar(percentageInSeconds);
+
+    if(videoSync)
     onClickSynchronize();
   };
 

@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import {  DashboardsResponse } from '@/lib/handlers';
+import {  DashboardResponse, DashboardsResponse } from '@/lib/handlers';
 
 interface DashboardProps {
   dashboard: Dashboard;

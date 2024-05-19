@@ -1,6 +1,6 @@
 import ControlsVideo from '@/components/ControlsVideo';
 import DownloadButton from '@/components/DownloadButton';
-import LinesChart from '@/components/LinesChart';
+import LinesChartWithInfo from '@/components/LinesChartWithInfo';
 import ReactVideoPlayer from '@/components/ReactVideoPlayer';
 import UploadDataButton from '@/components/UploadDataButton';
 import { authOptions } from '@/lib/authOptions';
@@ -19,7 +19,7 @@ export default async function Dashboard({
     //   notFound();
     // }
 
-    console.log(params)
+    // console.log(params)
   const session: Session | null = await getServerSession(authOptions);
 
   if (!session) {
@@ -42,12 +42,15 @@ export default async function Dashboard({
          {data.dashboard && <DownloadButton dataDownload={JSON.stringify(data.dashboard, null, 2)}/>}
          </div>
           <div className='flex flex-wrap justify-center gap-4'>
-            {data.dashboard.videos &&
+            {data.dashboard.videos && data.dashboard.signals &&
               data.dashboard.videos.map((videoConfigItem) => {
                 return (
                   <ReactVideoPlayer
                     key={videoConfigItem._id}
-                    {...videoConfigItem}
+                    url={videoConfigItem.url}
+                    videoID={videoConfigItem.videoID}
+                    fps={videoConfigItem.fps}
+                    signals={data.dashboard.signals}
                   />
                 );
               })}
@@ -57,7 +60,7 @@ export default async function Dashboard({
             
             {data.dashboard.signals &&
               data.dashboard.signals.map((signal: SignalConfig) => {
-                return <LinesChart key={signal.signalID} props={signal} />;
+                return <LinesChartWithInfo key={signal.signalID} props={signal} />;
               })}
           </div>
         </div>
