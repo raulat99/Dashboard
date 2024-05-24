@@ -59,15 +59,15 @@ const ReactVideoPlayer = (props: Props) => {
   };
 
   const OnPlayerProgress = (state: any) => {
-    console.log(state)
+    // console.log(state)
     
-    console.log(videoRef.current.getDuration())
+    // console.log(videoRef.current.getDuration())
 
-    console.log(signals[0].values.length )
+    // console.log(signals[0].values.length )
 
 
 
-    console.log(state.playedSeconds/videoRef.current.getDuration()*signals[0].values.length)
+    // console.log(state.playedSeconds/videoRef.current.getDuration()*signals[0].values.length)
     const point: string = (state.playedSeconds / videoRef.current.getDuration()*signals[0].values.length).toFixed(0)
     console.log(parseFloat(point))
     
@@ -75,22 +75,23 @@ const ReactVideoPlayer = (props: Props) => {
     //   {
         updateDataX(parseFloat(point));
         setCurrentTimeNow(state.playedSeconds)
-    
 
-        let beginingNumber = (parseFloat(point) - 10)  < 0 ? 0 : parseFloat(point)-10
+        var numberOfPointsInGraph = 8
+
+        let beginingNumber = (parseFloat(point) - numberOfPointsInGraph)  < 0 ? 0 : parseFloat(point)-numberOfPointsInGraph
         //let endNumber = parseFloat(point) + 10 > 
 
-        console.log(beginingNumber  )
+        // console.log(beginingNumber  )
 
         let signalsSort = {...signals[0]}
 
-        console.log(signalsSort)
+        // console.log(signalsSort)
 
         signalsSort.values = signalsSort.values.slice(beginingNumber, parseFloat(point)+1)
 
         // signalsSort.values = signals[0].values.slice(beginingNumber, parseFloat(point))
         
-         console.log(signalsSort.values.length)
+        //  console.log(signalsSort.values.length)
 
 
         

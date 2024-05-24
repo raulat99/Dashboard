@@ -1,5 +1,5 @@
 'use client';
-import { Line } from 'react-chartjs-2';
+import { Line, Scatter } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -60,7 +60,6 @@ export default function LinesChart(props: Props) {
   const { name, descripcion, signalID, labels, values } = props.signalConfig;
   const { currentTimeNow, totalTime } = props;
 
-  
   console.log(props);
 
   const chartRef = useRef(null);
@@ -70,23 +69,14 @@ export default function LinesChart(props: Props) {
     DashboardGraphsContext
   );
 
-
-  var valuesArray: any[] = [];
-  var auxTimeStamps: number[] = [];
-
-  console.log(labels);
-
-  labels.map(() => {
-    valuesArray.push([]);
-  });
+  var valuesX: number[] = [];
+  var valuesY: number[] = [];
 
   values.map((objectValue: any) => {
-    for (let i = 0; i < objectValue.sample.length; i++) {
-      valuesArray[i].push(objectValue.sample[i]);
-    }
-    const timeInIncrements : number = objectValue.timestamp - values[0].timestamp
-    auxTimeStamps.push(timeInIncrements.toFixed(2) as unknown as number);
+    valuesX.push(objectValue.sample[0]);
+    valuesY.push(objectValue.sample[1]);
   });
+
   const colorArray = [
     'rgb(255, 99, 132)',
     'rgb(55, 0, 232)',
@@ -95,32 +85,52 @@ export default function LinesChart(props: Props) {
     'rgb(255, 0, 132)',
   ];
 
-  // var auxAuxTimestamps = auxTimeStamps
-  // var auxAuxValues = valuesArray
+  var angleArray : number[] = []
+
+  for (let i = valuesX.length-1 ; i >= 0 ; i--)
+    {
+      var p1 = { x: valuesX[i - 1], y: valuesY[i - 1] };
+      var p2 = { x: valuesX[i], y: valuesY[i] };
+
+      if(i===0)
+        {
+          p1 = { x: valuesX[i], y: valuesY[i] };
+          p2 = { x: valuesX[i + 1], y: valuesY[i + 1] };
+        }
+      var angleDeg = Math.atan2(p1.y - p2.y, p1.x - p2.x) * 180 / Math.PI ;
+      var adjustedAngle = angleDeg  + 90
+      // console.log(p1, p2, angleDeg)
+      angleArray.push(-adjustedAngle || 0)
+    }
   
-  // const [timeStamps, setTimeStamps] = useState<number[]>(auxAuxTimestamps.splice(0,9));
-  // const [valuesGraph, setvaluesGraph] = useState<any[]>(auxAuxValues.map((value: any) => value.splice(0,9)));
+  // console.log(valuesX)
+  // console.log(valuesY)
 
-  // console.log(timeStamps, valuesGraph)
+  console.log(valuesX, valuesY);
+  var yourImage = new Image()
+  yourImage.src ='https://cdn-icons-png.flaticon.com/512/60/60564.png';
+  //yourImage.src ='https://imgs.search.brave.com/QmDNNLkmapk8OK-S8HSAPO-aQyq61vtiOQvZ1Wrl0iA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzgzLzAyLzkz/LzM2MF9GXzI4MzAy/OTM4MF82U0FiN2tI/blhtRWpwQkZzbmdt/anhETEE0c1EwSWlo/RS5qcGc';
 
+  yourImage.width = 15;
+  yourImage.height = 15;
+  
+  var midata2 = {
+    labels: valuesX,
+    datasets: [{
+        label: labels[0].name,
+        data: valuesY,
+        lineTension: 0,
+        pointStyle: [yourImage],
+        pointRotation: angleArray.reverse(),
+        borderColor: colorArray[0],
+        backgroundColor: colorArray[0],
+        pointRadius: 5,
+        pointBorderColor: colorArray[0],
+        pointBackgroundColor: colorArray[0],
+    },]
+  };
  
 
-  var midata2 = {
-    labels: auxTimeStamps,
-    datasets: labels.map((label: any) => {
-      const indexColor = label.labelId + signalID;
-      return {
-        label: label.value,
-        data: valuesArray[label.labelId],
-        tension: 0.5,
-        borderColor: colorArray[indexColor],
-        backgroundColor: colorArray[indexColor],
-        pointRadius: 2,
-        pointBorderColor: colorArray[indexColor],
-        pointBackgroundColor: colorArray[indexColor],
-      };
-    }),
-  };
   console.log(midata2);
 
   // Opciones del gráfico ()
@@ -128,109 +138,32 @@ export default function LinesChart(props: Props) {
     responsive: true,
     maintainAspectRatio: false,
     redraw: true,
-    borderWidth: 1,
+    borderWidth: 2,
+    showLine: true,
     Interaction: {
       mode: 'index',
-      intersect: false,
+      intersect: true,
     },
     scales: {
       y: {
         min: 0, // Mínimo valor del eje Y en 0
+        max: 800
       },
       x: {
         min: 0,
+        max: 800,
         ticks: { color: 'rgb(255, 99, 132)' },
       },
     },
-      plugins: {
-        annotation: {
-          annotations: {
-            annotation1: {
-              type: 'line',
-              borderColor: 'black',
-              borderWidth: 2,
-              
-              label: {
-                backgroundColor: 'red',
-                content: ' Player ',
-                display: true,
-                position: 'start',
-              },
-              
-              scaleID: 'x',
-              value: dataX ? dataX : -1,
-            },
-          },
-        },
-      }
   };
-
-//   useEffect(()=>{
-    
-//     // Index to know the position of the last element in the array of timeStamps in auxTimeStamps
-//     //console.log(dataX, timeStamps, auxTimeStamps)
-
-
-//   //   if(auxTimeStamps && timeStamps && auxTimeStamps.length > 0 && timeStamps?.length > 0){
-
-    
-//   //   const indexAux = auxTimeStamps.findIndex((value: number) => value === timeStamps[8])
-//   //     console.log(indexAux)
-//   //   if(dataX && indexAux !== -1 && dataX + 5 > indexAux){
-
-//   //     console.log(dataX)
-//   //     console.log(indexAux)
-
-
-//   //     labels.map((label: any) => {
-
-//   //       var temporalTimeStamps = timeStamps
-//   //       var temporalValuesGraph = valuesGraph 
-//   //       temporalTimeStamps.shift()
-//   //       temporalTimeStamps.push(auxTimeStamps[dataX])
-//   //       temporalValuesGraph[label.labelId].shift()  
-//   //       temporalValuesGraph[label.labelId].push(valuesArray[label.labelId][dataX])
-
-//   //       console.log(temporalTimeStamps)
-//   //       console.log(temporalValuesGraph)
-
-//   //       setTimeStamps(temporalTimeStamps)
-//   //       setvaluesGraph(temporalValuesGraph)
-
-
-//   //       chartRef.current.data.datasets.push(timeStamps)
-
-//   //     })
-//   //   }
-//   // }
-
-
-//   if (chartRef.current) {
-//     var data = chartRef.current.data;
-
-//     if (data.datasets.length > 0) {
-//       data.labels = 1;
-
-//       for (let index = 0; index < data.datasets.length; ++index) {
-//         data.datasets[index].data.push(100);
-//       }
-
-//       console.log({ data });
-//       console.log({'chartRef': chartRef.current.ctx.canvas});
-
-//       //chartRef.current.ctx.canvas.update();
-//     }
-//   }
-// },[]);
 
   return (
       <div className='h-full w-full ' >
-        <Line
+        <Scatter
           className=''
           ref={chartRef}
           data={midata2}
           options={misoptions}
-          //plugins={[annotationPlugin.afterDraw(annotation)]}
         />
     </div>
   );
