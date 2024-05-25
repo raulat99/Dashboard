@@ -50,6 +50,7 @@ export default async function Dashboard({
                     url={videoConfigItem.url}
                     videoID={videoConfigItem.videoID}
                     fps={videoConfigItem.fps}
+                    signalOnVideo={videoConfigItem.signalOnVideo}
                     signals={data.dashboard.signals}
                   />
                 );

@@ -399,7 +399,7 @@ export default function ControlsVideo(props: any) {
     if(markersUploaded !== undefined)
       updateMarkers(markersUploaded)
 
-  }, [])
+  }, [markersUploaded, props, updateMarkers, videoRefs])
 
   return (
     <div className='mx-auto  my-8 w-[95vw]'>

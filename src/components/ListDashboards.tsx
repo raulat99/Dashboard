@@ -22,7 +22,6 @@ export default function CartItemsList() {
             if (res.ok) {
               const body = await res.json();
                 setDashboards(body.dashboards);
-              
             }
             } catch (error) {
               console.log(session?.user._id)  

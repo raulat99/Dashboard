@@ -1,5 +1,5 @@
 'use client';
-import { Line, Scatter } from 'react-chartjs-2';
+import { Scatter } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,22 +10,13 @@ import {
   Tooltip,
   Legend,
   Filler,
-  Interaction,
 } from 'chart.js';
-import { use, useContext, useEffect, useRef, useState } from 'react';
-import { getRelativePosition } from 'chart.js/helpers';
-import { SignalConfig } from '@/models/SignalConfig';
-import { plugin } from 'mongoose';
+import { useContext, useMemo, useRef } from 'react';
 import annotationPlugin from 'chartjs-plugin-annotation';
-
-
 
 import {
   DashboardGraphsContext,
-  SignalConfigProp,
 } from '../providers/DashboardProvider';
-import { randomInt } from 'crypto';
-//import { Graph } from "../models/Graph";
 
 ChartJS.register(
   CategoryScale,
@@ -49,17 +40,14 @@ export interface Graph {
 }
 
 interface Props {
-
-    signalConfig: SignalConfig;
-    currentTimeNow: any;
-    totalTime: any;
+    signalConfig: any;
+    min: number;
+    max: number;
 }
-
 
 export default function LinesChart(props: Props) {
   const { name, descripcion, signalID, labels, values } = props.signalConfig;
-  const { currentTimeNow, totalTime } = props;
-
+  const { min, max } = props;
   console.log(props);
 
   const chartRef = useRef(null);
@@ -107,28 +95,29 @@ export default function LinesChart(props: Props) {
   // console.log(valuesY)
 
   console.log(valuesX, valuesY);
-  var yourImage = new Image()
-  yourImage.src ='https://cdn-icons-png.flaticon.com/512/60/60564.png';
+  const yourImage = new Image()
+  yourImage.src ="/ARROW.png";
   //yourImage.src ='https://imgs.search.brave.com/QmDNNLkmapk8OK-S8HSAPO-aQyq61vtiOQvZ1Wrl0iA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzgzLzAyLzkz/LzM2MF9GXzI4MzAy/OTM4MF82U0FiN2tI/blhtRWpwQkZzbmdt/anhETEE0c1EwSWlo/RS5qcGc';
 
   yourImage.width = 15;
   yourImage.height = 15;
   
-  var midata2 = {
+  
+  const midata2 = {
     labels: valuesX,
     datasets: [{
-        label: labels[0].name,
-        data: valuesY,
-        lineTension: 0,
-        pointStyle: [yourImage],
-        pointRotation: angleArray.reverse(),
-        borderColor: colorArray[0],
-        backgroundColor: colorArray[0],
-        pointRadius: 5,
-        pointBorderColor: colorArray[0],
-        pointBackgroundColor: colorArray[0],
-    },]
-  };
+      label: labels[0].name,
+      data: valuesY,
+      lineTension: 0,
+      pointStyle: [yourImage],
+      pointRotation: angleArray.reverse(),
+      borderColor: colorArray[0],
+      backgroundColor: colorArray[0],
+      pointRadius: 5,
+      pointBorderColor: colorArray[0],
+      pointBackgroundColor: colorArray[0],
+    }]
+  }
  
 
   console.log(midata2);
@@ -146,13 +135,13 @@ export default function LinesChart(props: Props) {
     },
     scales: {
       y: {
-        min: 0, // Mínimo valor del eje Y en 0
-        max: 800
+        min: min || 0, // Mínimo valor del eje Y en 0
+        max: max || 100 // Math.max.apply(null, valuesY)
       },
       x: {
-        min: 0,
-        max: 800,
-        ticks: { color: 'rgb(255, 99, 132)' },
+        min: min || 0,
+        max: max || 100 // Math.max.apply(null, valuesY),
+        //ticks: { color: 'rgb(255, 99, 132)' },
       },
     },
   };
