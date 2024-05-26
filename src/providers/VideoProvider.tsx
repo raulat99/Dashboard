@@ -45,9 +45,11 @@ interface IVideoContext {
     currentTime: number;
     volume: number;
     markers: Marker[];
+    durationVideo: number;
     //videosConfig: VideoConfigProp[];
     //signalsConfig: SignalConfigProp[];
 
+    updateDurationVideo: (n: number) => void;
     updateMarkers: (markers: Marker[]) => void;
     updateVolume: (n: number) => void;
     updateVideoSync: (videoSync: boolean) => void;
@@ -61,10 +63,11 @@ interface IVideoContext {
     currentTime: 0,
     volume: 0,
     markers: [],
+    durationVideo: 0,
     //videosConfig: [],
     //signalsConfig: [],
 
-
+    updateDurationVideo: () => {},
     updateMarkers: () => {},
     updateVolume: () => {},
     updateVideoSync: () => {},
@@ -81,6 +84,8 @@ export function VideoProvider ({children} : {children: React.ReactNode})
     const [videoSync, setVideoSync] = useState<boolean>(false)
     const [currentTime, setCurrentTime] = useState<number>(0);
 
+    const [durationVideo, setDurationVideo] = useState<number>(0);
+
     const [volume, setVolume] = useState<number>(0.5)
     //const [uploadedData, setUploadedData] = useState<any>(null)
     const [markers, setMarkers] = useState<Marker[]>([])
@@ -90,6 +95,7 @@ export function VideoProvider ({children} : {children: React.ReactNode})
     const updateCurrentTime = (currentTime: number) => { setCurrentTime(currentTime);}
     const updateVideoSync = (videoSync: boolean) => {setVideoSync(videoSync);}
     const updateVolume = (n: number) => {setVolume(n)}
+    const updateDurationVideo = (n: number) => {setDurationVideo(n)}
     const updateMarkers = (markersGiven: Marker[]) => {setMarkers(markersGiven)}
 
 
@@ -115,12 +121,13 @@ export function VideoProvider ({children} : {children: React.ReactNode})
             currentTime,
             volume,
             markers,
+            durationVideo,
            
             //signalsConfig,
             updateMarkers,
             updateVolume,
             
-          
+            updateDurationVideo,
             updateVideoRefs,
             updateVideoSync,
             updateCurrentTime

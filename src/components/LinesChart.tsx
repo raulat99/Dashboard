@@ -17,6 +17,7 @@ import annotationPlugin from 'chartjs-plugin-annotation';
 import {
   DashboardGraphsContext,
 } from '../providers/DashboardProvider';
+import {SignalConfig} from '@/models/SignalConfig';
 
 ChartJS.register(
   CategoryScale,
@@ -40,31 +41,42 @@ export interface Graph {
 }
 
 interface Props {
-  signalConfig: any;
+  //signalConfig: any;
   minX: number;
   maxX: number;
   minY: number;
   maxY: number;
+  points: number;
+  signalOnVideo: number[];
+  signals: any;
+  currentTimeNow: number;
+  durationVideo: number;
 }
 
 
 export default function LinesChart(props: Props) {
-  const { name, descripcion, signalID, labels, values } = props.signalConfig;
-const { minX, maxX, minY, maxY } = props;
-
-  console.log(props);
-
+  //const { name, descripcion, signalID, labels, values } = props.signalConfig;
+const { minX, maxX, minY, maxY, points, signalOnVideo, signals, currentTimeNow, durationVideo } = props;
+  
   const chartRef = useRef(null);
-
   var id = null;
-  const { dataX, updateDataX, updatePercentageX } = useContext(
-    DashboardGraphsContext
-  );
+  
+  const signalRequested = signalOnVideo.map((signal: any) => {
+    return signals.find(
+      (signalItem: SignalConfig) => signalItem.signalID === signal.signalID
+    );
+  });
+  
+  const point: string = ((currentTimeNow / durationVideo) * signalRequested[0].values.length).toFixed(0);
+  let beginingNumber = parseFloat(point) - points < 0 ? 0 : parseFloat(point) - points;
+    let signalsSort = { ...signalRequested[0] };
+    signalsSort.values = signalsSort.values.slice(beginingNumber,parseFloat(point) + 1);
 
+  var label: string = signalRequested[0].name
   var valuesX: number[] = [];
   var valuesY: number[] = [];
 
-  values.map((objectValue: any) => {
+  signalsSort.values.map((objectValue: any) => {
     valuesX.push(objectValue.sample[0]);
     valuesY.push(objectValue.sample[1]);
   });
@@ -95,10 +107,6 @@ const { minX, maxX, minY, maxY } = props;
       angleArray.push(-adjustedAngle || 0)
     }
   
-  // console.log(valuesX)
-  // console.log(valuesY)
-
-  console.log(valuesX, valuesY);
   const yourImage = new Image()
   yourImage.src ="/ARROW.png";
   //yourImage.src ='https://imgs.search.brave.com/QmDNNLkmapk8OK-S8HSAPO-aQyq61vtiOQvZ1Wrl0iA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzgzLzAyLzkz/LzM2MF9GXzI4MzAy/OTM4MF82U0FiN2tI/blhtRWpwQkZzbmdt/anhETEE0c1EwSWlo/RS5qcGc';
@@ -106,11 +114,10 @@ const { minX, maxX, minY, maxY } = props;
   yourImage.width = 15;
   yourImage.height = 15;
   
-  
   const midata2 = {
     labels: valuesX,
     datasets: [{
-      label: labels[0].name,
+      label: label,
       data: valuesY,
       lineTension: 0,
       pointStyle: [yourImage],
@@ -123,9 +130,6 @@ const { minX, maxX, minY, maxY } = props;
     }]
   }
  
-
-  console.log(midata2);
-
   // Opciones del gráfico ()
   const misoptions = {
     responsive: true,
@@ -139,14 +143,14 @@ const { minX, maxX, minY, maxY } = props;
     },
     scales: {
       y: {
-        min: minY || 0,
-        max: maxY || 100,
+        min: minY ,
+        max: maxY ,
       },
       x: {
-        min: minX || 0,
-        max: maxX || 100,
+        min: minX,
+        max: maxX,
       },
-    },
+    }
   };
   
 

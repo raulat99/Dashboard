@@ -34,6 +34,7 @@ export default function ControlsVideo(props: any) {
     volume,
     currentTime,
     markers,
+    durationVideo,
     updateMarkers,
     updateVolume,
     updateVideoSync,
@@ -55,7 +56,7 @@ export default function ControlsVideo(props: any) {
   const [markerConfiguration, setMarkerConfiguration] = useState<
     MarkerConfiguration | undefined
   >(undefined);
-  const [duration, setVideoDuration] = useState<number>(0);
+  //const [duration, setVideoDuration] = useState<number>(0);
   const [currentTimeProgressBar, setCurrentTimeProgressBar] =
     useState<number>(currentTime);
 
@@ -115,19 +116,19 @@ export default function ControlsVideo(props: any) {
     setIsModalVisible(!isModalVisible);
   };
 
-  const durationTimeCode = getTimeCode(Math.ceil(duration));
-  const currentTimeCode =
-    currentTime !== duration ? getTimeCode(currentTime) : durationTimeCode;
+  // const durationTimeCode = getTimeCode(Math.ceil(duration));
+  // const currentTimeCode =
+  //   currentTime !== duration ? getTimeCode(currentTime) : durationTimeCode;
 
-  const getDuration = useCallback(() => {
-    if (videoRefs.length === 0) return 0;
+  // const getDuration = useCallback(() => {
+  //   if (videoRefs.length === 0) return 0;
 
-    const player = videoRefs[0].videoRef.current;
-    if (player) {
-      return player.getDuration();
-    }
-    return 0;
-  }, [videoRefs]);
+  //   const player = videoRefs[0].videoRef.current;
+  //   if (player) {
+  //     return player.getDuration();
+  //   }
+  //   return 0;
+  // }, [videoRefs]);
 
   const onClickSynchronize = () => {
     //setTimeout(() => {
@@ -151,7 +152,7 @@ export default function ControlsVideo(props: any) {
 
   const onNextFrameClick = () => {
     const player = videoRefs[0].videoRef.current;
-    const frameTime = 1 / 30;
+    const frameTime = 1 / 60;
 
     //Si pulso en el siguiente frame, sumo 1/frame al tiempo actual para pasar al siguiente frame
     //Utilizo el min para que no pueda ser mayor que la duración del video
@@ -163,7 +164,7 @@ export default function ControlsVideo(props: any) {
 
   const onLastFrameClick = () => {
     const player = videoRefs[0].videoRef.current;
-    const frameTime = 1 / 30;
+    const frameTime = 1 / 60;
 
     //Si pulso en el anterior frame, resto 1/frame al tiempo actual para pasar al anterior frame
     // Utilizo el max para que no pueda ser negativo
@@ -194,11 +195,14 @@ export default function ControlsVideo(props: any) {
   };
 
   const getCurrentTime = () => {
+    console.log("hola")
     if (videoRefs.length === 0) return 0;
     if (videoRefs[0].videoRef.current) {
+      console.log("hola")
+
       return videoRefs[0].videoRef.current.getCurrentTime();
     }
-
+    console.log("hola")
     return 0;
   };
 
@@ -358,10 +362,13 @@ export default function ControlsVideo(props: any) {
   };
 
   useEffect(() => {
-    console.log(getCurrentTime());
     setTimeout(() => {
       if (progressEl && progressEl.current) {
-        const timeNow = getCurrentTime();
+
+        if (videoRefs.length === 0) return 0;
+        if (!videoRefs[0].videoRef.current ) return 0;    
+
+        const timeNow = videoRefs[0].videoRef.current.getCurrentTime();
         setCurrentTimeProgressBar(timeNow);
 
         if (
@@ -376,22 +383,14 @@ export default function ControlsVideo(props: any) {
             setSelectedMarker(marker);
           }
         });
-        let percentage = (timeNow / getDuration()) * 100;
+        let percentage = (timeNow / durationVideo) * 100;
+        console.log(percentage)
         if (percentage === Infinity || Number.isNaN(percentage)) percentage = 0;
         progressEl.current.value = percentage;
         progressEl.current.innerHTML = percentage + '% played';
       }
     }, 500);
-  }, [
-    currentTimeProgressBar,
-    videoSync,
-    getCurrentTime,
-    getDuration,
-    markers,
-    selectedMarker,
-    dataX,
-    percentageX,
-  ]);
+  }, [currentTimeProgressBar, videoSync, durationVideo, markers, selectedMarker, dataX, percentageX, videoRefs]);
 
   useEffect(()=>{
     console.log(props)
@@ -400,6 +399,10 @@ export default function ControlsVideo(props: any) {
       updateMarkers(markersUploaded)
 
   }, [markersUploaded, props, updateMarkers, videoRefs])
+
+  useEffect(() => {
+
+  },[])
 
   return (
     <div className='mx-auto  my-8 w-[95vw]'>
@@ -421,7 +424,7 @@ export default function ControlsVideo(props: any) {
                   <MarkerView
                     key={index}
                     marker={marker}
-                    duration={getDuration()}
+                    duration={durationVideo}
                     onMarkerClick={handleMarkerClick}
                     selectedMarker={selectedMarker}
                     configuration={markerConfiguration}
@@ -431,7 +434,7 @@ export default function ControlsVideo(props: any) {
           </div>
         </div>
 
-        <div className='mx-2 mt-1 text-white'>{getTimeCode(getDuration())}</div>
+        <div className='mx-2 mt-1 text-white'>{getTimeCode(durationVideo)}</div>
       </div>
 
       <div className='diplay row flex flex h-12 rounded-b-lg  bg-black bg-opacity-15 pt-1 '>

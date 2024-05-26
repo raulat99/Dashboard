@@ -35,8 +35,11 @@ const ReactVideoPlayer = (props: Props) => {
   const { url, videoID, fps, signals, signalOnVideo } = props;
   const [currentTimeNow, setCurrentTimeNow] = useState<number>(0)
 
+  //const [duration, setDuration] = useState<number>(0)
+
+
   const { percentageX, dataX, updateDataX } = useContext(DashboardGraphsContext);
-  const { videoSync, volume, updateVideoRefs, currentTime } = useContext(VideoContext);
+  const { videoSync, volume, updateVideoRefs, currentTime, durationVideo, updateDurationVideo } = useContext(VideoContext);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const videoRef = useRef<ReactPlayer>(null);
@@ -69,32 +72,42 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
     setIsModalVisible(!isModalVisible);
   };
 
+  const OnDurationLoaded = useCallback((durationLoaded: any) => {
+
+    if(durationLoaded && durationLoaded !== durationVideo)
+     updateDurationVideo(durationLoaded);
+
+  },[durationVideo, updateDurationVideo])
+
   const OnPlayerProgress = useCallback((state: any) => {
     if (videoRef.current === null) return;
     if (signalOnVideo === undefined) return;
 
-    var signalRequested = signalOnVideo.map((signal: any) => {
-      return signals.find(
-        (signalItem: SignalConfig) => signalItem.signalID === signal.signalID
-      );
-    });
 
-    console.log(state)
-    console.log(videoRef.current.getDuration())
-    const point: string = ((state.playedSeconds / videoRef.current.getDuration()) * signalRequested[0].values.length).toFixed(0);
+    // console.log(signals)
+
+    // var signalRequested = signalOnVideo.map((signal: any) => {
+    //   return signals.find(
+    //     (signalItem: SignalConfig) => signalItem.signalID === signal.signalID
+    //   );
+    // });
+
+    // console.log(durationVideo)
+
+    const point: string = ((state.playedSeconds / durationVideo) * signals[0].values.length).toFixed(0);
 
     console.log(point)
     updateDataX(parseFloat(point));
     setCurrentTimeNow(state.playedSeconds);
 
-    let beginingNumber = parseFloat(point) - pointsGraph < 0 ? 0 : parseFloat(point) - pointsGraph;
+    // let beginingNumber = parseFloat(point) - pointsGraph < 0 ? 0 : parseFloat(point) - pointsGraph;
 
-    let signalsSort = { ...signalRequested[0] };
+    // let signalsSort = { ...signalRequested[0] };
 
-    signalsSort.values = signalsSort.values.slice(beginingNumber,parseFloat(point) + 1);
-    console.log(signalsSort)
-    setSignalsSort(signalsSort);
-  }, [signalOnVideo, updateDataX, pointsGraph, signals]);
+    // signalsSort.values = signalsSort.values.slice(beginingNumber,parseFloat(point) + 1);
+
+    // setSignalsSort(signalsSort);
+  }, [signalOnVideo, durationVideo, signals, updateDataX]);
 
   const onChangePropertiesClick = () => {
     if (!videoRef.current) return;
@@ -157,22 +170,27 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
             ref={videoRef}
             //fps={fps}
             onProgress={OnPlayerProgress}
+            onDuration={OnDurationLoaded}
           />
         </div>
-        {signalsSort.length !== 0 && (
+        {signals && signalOnVideo && (
           <div className=' absolute left-0 top-0 h-full w-full'>
             <LinesChart
-              signalConfig={signalsSort}
+              signals={signals}
               minX={minGraphX}
               maxX={maxGraphX}
               minY={minGraphY}
               maxY={maxGraphY}
+              points={pointsGraph}
+              signalOnVideo={signalOnVideo}
+              currentTimeNow={currentTimeNow}
+              durationVideo={durationVideo}
             />
           </div>
         )}
       </div>
 
-      {signalsSort.length !== 0 && (
+      {signals.length !== 0 && signalOnVideo && (
         <div className='w-50 relative mx-2 h-8'>
           <button
             onClick={toggleModal}
@@ -217,89 +235,89 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
                   </button>
                 </div>
                 <div className='p-4 md:p-5'>
-                <div className='mb-4 grid grid-cols-4 gap-4'>
-  <div className='col-span-2'>
-    <label
-      htmlFor='minGraphX'
-      className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
-    >
-      Min X
-    </label>
-    <input
-      type='text'
-      id='minGraphX'
-      ref={inputMinGraphX}
-      className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
-      placeholder={minGraphX.toString()}
-      required
-    />
-  </div>
-  <div className='col-span-2'>
-    <label
-      htmlFor='maxGraphX'
-      className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
-    >
-      Max X
-    </label>
-    <input
-      type='text'
-      id='maxGraphX'
-      ref={inputMaxGraphX}
-      className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
-      placeholder={maxGraphX.toString()}
-      required
-    />
-  </div>
-  <div className='col-span-2'>
-    <label
-      htmlFor='minGraphY'
-      className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
-    >
-      Min Y
-    </label>
-    <input
-      type='text'
-      id='minGraphY'
-      ref={inputMinGraphY}
-      className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
-      placeholder={minGraphY.toString()}
-      required
-    />
-  </div>
-  <div className='col-span-2'>
-    <label
-      htmlFor='maxGraphY'
-      className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
-    >
-      Max Y
-    </label>
-    <input
-      type='text'
-      id='maxGraphY'
-      ref={inputMaxGraphY}
-      className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
-      placeholder={maxGraphY.toString()}
-      required
-    />
-  </div>
-  <div className='col-span-4'>
-    <label
-      htmlFor='name'
-      className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
-    >
-      Points graph
-    </label>
-    <input
-      type='text'
-      name='name'
-      id='name'
-      ref={inputPointsGraph}
-      className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
-      placeholder={pointsGraph.toString()}
-      required
-    />
-  </div>
-</div>
+                  <div className='mb-4 grid grid-cols-4 gap-4'>
+                    <div className='col-span-2'>
+                      <label
+                        htmlFor='minGraphX'
+                        className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
+                      >
+                        Min X
+                      </label>
+                      <input
+                        type='text'
+                        id='minGraphX'
+                        ref={inputMinGraphX}
+                        className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
+                        placeholder={minGraphX.toString()}
+                        required
+                      />
+                    </div>
+                    <div className='col-span-2'>
+                      <label
+                        htmlFor='maxGraphX'
+                        className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
+                      >
+                        Max X
+                      </label>
+                      <input
+                        type='text'
+                        id='maxGraphX'
+                        ref={inputMaxGraphX}
+                        className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
+                        placeholder={maxGraphX.toString()}
+                        required
+                      />
+                    </div>
+                    <div className='col-span-2'>
+                      <label
+                        htmlFor='minGraphY'
+                        className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
+                      >
+                        Min Y
+                      </label>
+                      <input
+                        type='text'
+                        id='minGraphY'
+                        ref={inputMinGraphY}
+                        className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
+                        placeholder={minGraphY.toString()}
+                        required
+                      />
+                    </div>
+                    <div className='col-span-2'>
+                      <label
+                        htmlFor='maxGraphY'
+                        className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
+                      >
+                        Max Y
+                      </label>
+                      <input
+                        type='text'
+                        id='maxGraphY'
+                        ref={inputMaxGraphY}
+                        className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
+                        placeholder={maxGraphY.toString()}
+                        required
+                      />
+                    </div>
+                    <div className='col-span-4'>
+                      <label
+                        htmlFor='name'
+                        className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
+                      >
+                        Points graph
+                      </label>
+                      <input
+                        type='text'
+                        name='name'
+                        id='name'
+                        ref={inputPointsGraph}
+                        className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
+                        placeholder={pointsGraph.toString()}
+                        required
+                      />
+                    </div>
+                  </div>
 
                   <button
                     type='submit'

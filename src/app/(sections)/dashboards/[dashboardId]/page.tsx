@@ -30,6 +30,7 @@ export default async function Dashboard({
 
   if (!data.dashboard) notFound();
 
+  
 
   return (
     <div className='display mt-20 w-full flex-col justify-center '>
@@ -48,7 +49,7 @@ export default async function Dashboard({
                   <ReactVideoPlayer
                     key={videoConfigItem._id}
                     url={videoConfigItem.url}
-                    videoID={videoConfigItem.videoID}
+                    videoID={videoConfigItem.videoID.toString()}
                     fps={videoConfigItem.fps}
                     signalOnVideo={videoConfigItem.signalOnVideo}
                     signals={data.dashboard.signals}
