@@ -40,14 +40,18 @@ export interface Graph {
 }
 
 interface Props {
-    signalConfig: any;
-    min: number;
-    max: number;
+  signalConfig: any;
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
 }
+
 
 export default function LinesChart(props: Props) {
   const { name, descripcion, signalID, labels, values } = props.signalConfig;
-  const { min, max } = props;
+const { minX, maxX, minY, maxY } = props;
+
   console.log(props);
 
   const chartRef = useRef(null);
@@ -123,28 +127,28 @@ export default function LinesChart(props: Props) {
   console.log(midata2);
 
   // Opciones del gráfico ()
-  var misoptions = {
+  const misoptions = {
     responsive: true,
     maintainAspectRatio: false,
     redraw: true,
     borderWidth: 2,
     showLine: true,
-    Interaction: {
+    interaction: {
       mode: 'index',
       intersect: true,
     },
     scales: {
       y: {
-        min: min || 0, // Mínimo valor del eje Y en 0
-        max: max || 100 // Math.max.apply(null, valuesY)
+        min: minY || 0,
+        max: maxY || 100,
       },
       x: {
-        min: min || 0,
-        max: max || 100 // Math.max.apply(null, valuesY),
-        //ticks: { color: 'rgb(255, 99, 132)' },
+        min: minX || 0,
+        max: maxX || 100,
       },
     },
   };
+  
 
   return (
       <div className='h-full w-full ' >

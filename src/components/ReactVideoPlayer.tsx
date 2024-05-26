@@ -43,13 +43,18 @@ const ReactVideoPlayer = (props: Props) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [signalsSort, setSignalsSort] = useState([]);
 
-  const [minGraph, setMinGraph] = useState(0)
-  const [maxGraph, setMaxGraph] = useState(100)
-  const [pointsGraph, setPointsGraph] = useState(10)
+  const [minGraphX, setMinGraphX] = useState(0);
+const [maxGraphX, setMaxGraphX] = useState(100);
+const [minGraphY, setMinGraphY] = useState(0);
+const [maxGraphY, setMaxGraphY] = useState(100);
+const [pointsGraph, setPointsGraph] = useState(10);
 
-  const inputMinGraph = useRef<HTMLInputElement>(null);
-  const inputMaxGraph = useRef<HTMLInputElement>(null);
-  const inputPointsGraph = useRef<HTMLInputElement>(null);
+const inputMinGraphX = useRef<HTMLInputElement>(null);
+const inputMaxGraphX = useRef<HTMLInputElement>(null);
+const inputMinGraphY = useRef<HTMLInputElement>(null);
+const inputMaxGraphY = useRef<HTMLInputElement>(null);
+const inputPointsGraph = useRef<HTMLInputElement>(null);
+
 
   const play = () => {setIsPlaying(true);};
   const pause = () => { setIsPlaying(false);};
@@ -74,8 +79,11 @@ const ReactVideoPlayer = (props: Props) => {
       );
     });
 
+    console.log(state)
+    console.log(videoRef.current.getDuration())
     const point: string = ((state.playedSeconds / videoRef.current.getDuration()) * signalRequested[0].values.length).toFixed(0);
 
+    console.log(point)
     updateDataX(parseFloat(point));
     setCurrentTimeNow(state.playedSeconds);
 
@@ -89,21 +97,26 @@ const ReactVideoPlayer = (props: Props) => {
   }, [signalOnVideo, updateDataX, pointsGraph, signals]);
 
   const onChangePropertiesClick = () => {
-    
     if (!videoRef.current) return;
-    if (!inputMinGraph.current) return;
-    if (!inputMaxGraph.current) return;
+    if (!inputMinGraphX.current) return;
+    if (!inputMaxGraphX.current) return;
+    if (!inputMinGraphY.current) return;
+    if (!inputMaxGraphY.current) return;
     if (!inputPointsGraph.current) return;
-
-    const minGraphInput = parseFloat(inputMinGraph.current.value) || minGraph;
-    const maxGraphInput = parseFloat(inputMaxGraph.current.value) || maxGraph;
+  
+    const minGraphXInput = parseFloat(inputMinGraphX.current.value) || minGraphX;
+    const maxGraphXInput = parseFloat(inputMaxGraphX.current.value) || maxGraphX;
+    const minGraphYInput = parseFloat(inputMinGraphY.current.value) || minGraphY;
+    const maxGraphYInput = parseFloat(inputMaxGraphY.current.value) || maxGraphY;
     const pointsGraphInput = parseFloat(inputPointsGraph.current.value) || pointsGraph;
-
-    setMinGraph(minGraphInput);
-    setMaxGraph( maxGraphInput);
-    setPointsGraph( pointsGraphInput);
-
+  
+    setMinGraphX(minGraphXInput);
+    setMaxGraphX(maxGraphXInput);
+    setMinGraphY(minGraphYInput);
+    setMaxGraphY(maxGraphYInput);
+    setPointsGraph(pointsGraphInput);
   };
+  
 
   useEffect(() => {
     if (videoRef.current) {
@@ -112,6 +125,7 @@ const ReactVideoPlayer = (props: Props) => {
   }, [currentTime]);
 
   useEffect(() => {
+    console.log(videoID, videoRef)
     updateVideoRefs({ videoID, videoRef });
   }, [updateVideoRefs, videoID]);
 
@@ -133,146 +147,174 @@ const ReactVideoPlayer = (props: Props) => {
   }, [volume]);
 
   return (
-
-
     <div className='bg-light '>
       <div className='sticky m-2 border border-2 border-black'>
         <div>
-        <ReactPlayer
-          url={url}
-          playing={isPlaying}
-          volume={volume}
-          ref={videoRef}
-          //fps={fps}
-          onProgress={OnPlayerProgress}
-        />
+          <ReactPlayer
+            url={url}
+            playing={isPlaying}
+            volume={volume}
+            ref={videoRef}
+            //fps={fps}
+            onProgress={OnPlayerProgress}
+          />
         </div>
-        {signalsSort.length !== 0 && ( 
+        {signalsSort.length !== 0 && (
           <div className=' absolute left-0 top-0 h-full w-full'>
-            <LinesChart signalConfig={signalsSort}  min={minGraph} max={maxGraph} />
+            <LinesChart
+              signalConfig={signalsSort}
+              minX={minGraphX}
+              maxX={maxGraphX}
+              minY={minGraphY}
+              maxY={maxGraphY}
+            />
           </div>
-          
         )}
-
-
       </div>
 
       {signalsSort.length !== 0 && (
-      <div className=' relative h-8 w-50'>
-            <button
-              onClick={toggleModal}
-              className='block rounded-lg bg-blue-700 h-8 px-5 py-1.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-              type='button'
-            >
-              Change properties
+        <div className='w-50 relative mx-2 h-8'>
+          <button
+            onClick={toggleModal}
+            className='block h-8 rounded-lg bg-blue-700 px-5 py-1.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+            type='button'
+          >
+            Change properties
+          </button>
 
-            </button>
-
-            <div
-              id='crud-modal'
-              aria-hidden='true'
-              className={`absolute bottom-full left-0 z-50 mb-2 flex items-center justify-center ${isModalVisible ? '' : 'hidden'}`}
-            >
-              <div className='relative max-h-full w-max	 p-4'>
-                <div className='relative rounded-lg bg-white shadow dark:bg-gray-700'>
-                  <div className='flex items-center justify-between rounded-t border-b p-4 md:p-5 dark:border-gray-600'>
-                    <h3 className='text-lg font-semibold text-gray-900 dark:text-white'>
-                      Change properties
-                    </h3>
-                    <button
-                      type='button'
-                      onClick={toggleModal}
-                      className='ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white'
+          <div
+            id='crud-modal'
+            aria-hidden='true'
+            className={`absolute bottom-full left-0 z-50 mb-2 flex items-center justify-center ${isModalVisible ? '' : 'hidden'}`}
+          >
+            <div className='relative max-h-full w-max	 p-4'>
+              <div className='relative rounded-lg bg-white shadow dark:bg-gray-700'>
+                <div className='flex items-center justify-between rounded-t border-b p-4 md:p-5 dark:border-gray-600'>
+                  <h3 className='text-lg font-semibold text-gray-900 dark:text-white'>
+                    Change properties
+                  </h3>
+                  <button
+                    type='button'
+                    onClick={toggleModal}
+                    className='ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white'
+                  >
+                    <svg
+                      className='h-3 w-3'
+                      aria-hidden='true'
+                      xmlns='http://www.w3.org/2000/svg'
+                      fill='none'
+                      viewBox='0 0 14 14'
                     >
-                      <svg
-                        className='h-3 w-3'
-                        aria-hidden='true'
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 14 14'
-                      >
-                        <path
-                          stroke='currentColor'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          strokeWidth='2'
-                          d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'
-                        />
-                      </svg>
-                      <span className='sr-only'>Close modal</span>
-                    </button>
-                  </div>
-                  <div className='p-4 md:p-5'>
-                    <div className='mb-4 grid grid-cols-2 gap-4 '>
-                      <div className='col-span-2'>
-                        <label
-                          htmlFor='name'
-                          className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
-                        >
-                          Min
-                        </label>
-                        <input
-                          type='text'
-                          name='name'
-                          id='name'
-                          ref={inputMinGraph}
-                          className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
-                          placeholder={minGraph.toString()}
-                          required
-                        />
-                      </div>
-                      <div className='col-span-2'>
-                        <label
-                          htmlFor='name'
-                          className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
-                        >
-                          Max
-                        </label>
-                        <input
-                          type='text'
-                          name='name'
-                          id='name'
-                          ref={inputMaxGraph}
-                          className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
-                          placeholder={maxGraph.toString()}
-                          required
-                        />
-                      </div>
-                      <div className='col-span-2'>
-                        <label
-                          htmlFor='name'
-                          className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
-                        >
-                          Points graph
-                        </label>
-                        <input
-                          type='text'
-                          name='name'
-                          id='name'
-                          ref={inputPointsGraph}
-                          className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
-                          placeholder={pointsGraph.toString()}
-                          required
-                        />
-                      </div>
-
-                    </div>
-                    <button
-                      type='submit'
-                      className='inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-                      onClick={onChangePropertiesClick}
-                    >
-                     
-                      Update
-                    </button>
+                      <path
+                        stroke='currentColor'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth='2'
+                        d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'
+                      />
+                    </svg>
+                    <span className='sr-only'>Close modal</span>
+                  </button>
                 </div>
+                <div className='p-4 md:p-5'>
+                <div className='mb-4 grid grid-cols-4 gap-4'>
+  <div className='col-span-2'>
+    <label
+      htmlFor='minGraphX'
+      className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
+    >
+      Min X
+    </label>
+    <input
+      type='text'
+      id='minGraphX'
+      ref={inputMinGraphX}
+      className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
+      placeholder={minGraphX.toString()}
+      required
+    />
+  </div>
+  <div className='col-span-2'>
+    <label
+      htmlFor='maxGraphX'
+      className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
+    >
+      Max X
+    </label>
+    <input
+      type='text'
+      id='maxGraphX'
+      ref={inputMaxGraphX}
+      className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
+      placeholder={maxGraphX.toString()}
+      required
+    />
+  </div>
+  <div className='col-span-2'>
+    <label
+      htmlFor='minGraphY'
+      className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
+    >
+      Min Y
+    </label>
+    <input
+      type='text'
+      id='minGraphY'
+      ref={inputMinGraphY}
+      className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
+      placeholder={minGraphY.toString()}
+      required
+    />
+  </div>
+  <div className='col-span-2'>
+    <label
+      htmlFor='maxGraphY'
+      className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
+    >
+      Max Y
+    </label>
+    <input
+      type='text'
+      id='maxGraphY'
+      ref={inputMaxGraphY}
+      className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
+      placeholder={maxGraphY.toString()}
+      required
+    />
+  </div>
+  <div className='col-span-4'>
+    <label
+      htmlFor='name'
+      className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
+    >
+      Points graph
+    </label>
+    <input
+      type='text'
+      name='name'
+      id='name'
+      ref={inputPointsGraph}
+      className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
+      placeholder={pointsGraph.toString()}
+      required
+    />
+  </div>
+</div>
+
+                  <button
+                    type='submit'
+                    className='inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+                    onClick={onChangePropertiesClick}
+                  >
+                    Update
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-    
-    )}
-     </div>
+        </div>
+      )}
+    </div>
   );
 };
 
