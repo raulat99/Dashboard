@@ -152,7 +152,7 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
             volume={volume}
             ref={videoRef}
             //fps={fps}
-            progressInterval={50}
+            progressInterval={100}
             onProgress={OnPlayerProgress}
             onDuration={OnDurationLoaded}
           />

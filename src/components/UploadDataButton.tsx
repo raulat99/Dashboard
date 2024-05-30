@@ -70,7 +70,7 @@ export default function UploadDataButton() {
             borderRadius: "0.3rem",
             cursor: "pointer",
             marginTop: "1rem",
-          }} >Upload new data
+          }} >Upload new dashboard
           </label>
 
           <input type="file" id="newdata" accept=".json" onChange={updateUploadedData} hidden />

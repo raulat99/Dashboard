@@ -342,6 +342,7 @@ export default function ControlsVideo(props: any) {
     const player = videoRefs[0].videoRef.current;
     if (!player) return;
 
+    onPauseClick()
     const x =
       e['clientX'] -
       progressEl.current.getBoundingClientRect().left +
@@ -363,11 +364,11 @@ export default function ControlsVideo(props: any) {
   };
 
   useEffect(() => {
-    setTimeout(() => {
+    //setTimeout(() => {
       if (progressEl && progressEl.current) {
 
-        if (videoRefs.length === 0) return 0;
-        if (!videoRefs[0].videoRef.current ) return 0;    
+        if (videoRefs.length === 0) return ;
+        if (!videoRefs[0].videoRef.current ) return ;    
 
         const timeNow = videoRefs[0].videoRef.current.getCurrentTime();
         console.log(timeNow)
@@ -390,9 +391,12 @@ export default function ControlsVideo(props: any) {
         if (percentage === Infinity || Number.isNaN(percentage)) percentage = 0;
         progressEl.current.value = percentage;
         progressEl.current.innerHTML = percentage + '% played';
+
+        if(percentage === 100)
+          onPauseClick()
       }
-    }, 500);
-  }, [currentTimeProgressBar, videoSync, durationVideo, markers, selectedMarker, dataX, percentageX, videoRefs]);
+    //}, 500);
+  }, [currentTimeProgressBar, videoSync, durationVideo, markers, selectedMarker, dataX, percentageX, videoRefs, onPauseClick]);
 
   useEffect(()=>{
     console.log(props)
@@ -402,9 +406,6 @@ export default function ControlsVideo(props: any) {
 
   }, [markersUploaded, props, updateMarkers, videoRefs])
 
-  useEffect(() => {
-
-  },[])
 
   return (
     <div className='mx-auto  my-8 w-[95vw]'>
@@ -660,3 +661,7 @@ export default function ControlsVideo(props: any) {
     </div>
   );
 }
+function updateMarkers(markersUploaded: any) {
+  throw new Error('Function not implemented.');
+}
+

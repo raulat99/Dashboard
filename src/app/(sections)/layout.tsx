@@ -7,17 +7,16 @@ import { VideoProvider } from '@/providers/VideoProvider';
 import { NextAuthProvider } from '@/providers/NextAuthProvider';
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className='flex min-h-screen flex-col '>
+    <div className='flex flex-col min-h-screen overflow-hidden'>
       <Navbar />
       
-      <main className=' w-full my-auto'>
+      <main className='flex-1 w-full my-auto display flex  items-center justify-center'>
         <DashboardProvider>
             <VideoProvider>
         {children}
         </VideoProvider>
         </DashboardProvider>
       </main>
-        <Footer />
     </div>
   );
 }
