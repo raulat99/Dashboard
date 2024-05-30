@@ -350,7 +350,8 @@ export default function ControlsVideo(props: any) {
       (x * progressEl.current.max) / progressEl.current.offsetWidth;
     progressEl.current.value = percentage;
 
-    const percentageInSeconds = player.getDuration() * (percentage / 100);
+    console.log('percentage', percentage);
+    const percentageInSeconds = durationVideo * (percentage / 100);
     //updatePercentageX((percentage / 100))
 
     console.log('percentageInSeconds', percentageInSeconds);
@@ -369,6 +370,7 @@ export default function ControlsVideo(props: any) {
         if (!videoRefs[0].videoRef.current ) return 0;    
 
         const timeNow = videoRefs[0].videoRef.current.getCurrentTime();
+        console.log(timeNow)
         setCurrentTimeProgressBar(timeNow);
 
         if (

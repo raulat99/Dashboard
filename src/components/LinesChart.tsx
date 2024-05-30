@@ -11,13 +11,8 @@ import {
   Legend,
   Filler,
 } from 'chart.js';
-import { useContext, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import annotationPlugin from 'chartjs-plugin-annotation';
-
-import {
-  DashboardGraphsContext,
-} from '../providers/DashboardProvider';
-import {SignalConfig} from '@/models/SignalConfig';
 
 ChartJS.register(
   CategoryScale,
@@ -53,33 +48,93 @@ interface Props {
   durationVideo: number;
 }
 
-
 export default function LinesChart(props: Props) {
-  //const { name, descripcion, signalID, labels, values } = props.signalConfig;
 const { minX, maxX, minY, maxY, points, signalOnVideo, signals, currentTimeNow, durationVideo } = props;
   
   const chartRef = useRef(null);
+  const previousPointRef = useRef<number>(0);
+  const previousPreviousPointRef = useRef<number>(0);
+
   var id = null;
+  var idsRequested : any[] = []
+
+  signalOnVideo.map((signal: any) => {
+    idsRequested.push(signal.signalID)
+  })
+
+  var signalRequested : any[] = []
   
-  const signalRequested = signalOnVideo.map((signal: any) => {
-    return signals.find(
-      (signalItem: SignalConfig) => signalItem.signalID === signal.signalID
-    );
-  });
-  
+  signals.map((signal: any) => {
+    if(idsRequested.includes(signal.signalID))
+      {
+        signalRequested.push(signal)
+      }
+  })
+
+  console.log(signalOnVideo)
+  console.log(signalRequested)
+  console.log(signals)
+
   const point: string = ((currentTimeNow / durationVideo) * signalRequested[0].values.length).toFixed(0);
   let beginingNumber = parseFloat(point) - points < 0 ? 0 : parseFloat(point) - points;
-    let signalsSort = { ...signalRequested[0] };
-    signalsSort.values = signalsSort.values.slice(beginingNumber,parseFloat(point) + 1);
 
-  var label: string = signalRequested[0].name
-  var valuesX: number[] = [];
-  var valuesY: number[] = [];
+  if(beginingNumber > previousPointRef.current)
+{
+  beginingNumber = previousPreviousPointRef.current || previousPointRef.current
 
-  signalsSort.values.map((objectValue: any) => {
-    valuesX.push(objectValue.sample[0]);
-    valuesY.push(objectValue.sample[1]);
+  console.log(beginingNumber)
+
+}
+    
+  console.log(beginingNumber,parseFloat(point) + 1)
+
+  const jumpingNumber = Math.floor(Math.max((parseFloat(point) - beginingNumber)/ points, 1))
+
+  console.log(jumpingNumber)
+
+  var signalsSortArray : any = []
+
+  signalRequested.map((signal: any) => {
+    signalsSortArray.push({...signal})
+  })
+
+  var signalSortValues : any[] = []
+
+  // signalsSortArray.map((signal: any) => { 
+  //   signal.values = signal.values.slice(beginingNumber,parseFloat(point) + 1);
+  //   signalSortValues.push(signal.values)
+  // })
+    
+  signalsSortArray.forEach((signal: any) => {
+    if (jumpingNumber > 1) {
+      let adjustedValues = [];
+      for (let i = beginingNumber; i <= parseFloat(point); i += jumpingNumber) {
+        signal.values[Math.floor(i)] && adjustedValues.push(signal.values[Math.floor(i)]);
+        //console.log(signal.values[Math.floor(i)]);
+      }
+      signalSortValues.push(adjustedValues);
+    } else {
+      signal.values = signal.values.slice(beginingNumber, parseFloat(point) + 1);
+      signalSortValues.push(signal.values);
+    }
   });
+
+
+  console.log(signalSortValues)
+
+  var valuesXYtogether : any[] = []
+
+  var valuesXYtogetherAux : any[] = []
+
+  signalSortValues.map((signal: any) => {
+    valuesXYtogetherAux = []
+    signal.map((objectValue: any) => {
+      valuesXYtogetherAux.push({x: objectValue.sample[0], y: objectValue.sample[1]})
+    });
+    valuesXYtogether.push(valuesXYtogetherAux)
+   })
+
+   console.log(valuesXYtogether)
 
   const colorArray = [
     'rgb(255, 99, 132)',
@@ -90,44 +145,65 @@ const { minX, maxX, minY, maxY, points, signalOnVideo, signals, currentTimeNow, 
   ];
 
   var angleArray : number[] = []
+  var angleArrayFinal : number[][] = []
 
-  for (let i = valuesX.length-1 ; i >= 0 ; i--)
+  for(let i = 0 ; i < valuesXYtogether.length ; i++)
     {
-      var p1 = { x: valuesX[i - 1], y: valuesY[i - 1] };
-      var p2 = { x: valuesX[i], y: valuesY[i] };
-
-      if(i===0)
+      console.log(i)
+      angleArray = []
+      for (let j = valuesXYtogether[i].length-1 ; j >= 0 ; j--)
         {
-          p1 = { x: valuesX[i], y: valuesY[i] };
-          p2 = { x: valuesX[i + 1], y: valuesY[i + 1] };
+          console.log(i,j)
+          console.log(valuesXYtogether[i][j])
+          var p1 
+          var p2 
+    
+          if(valuesXYtogether[i].length === 1)
+            {
+              p1 = { x: valuesXYtogether[i][j].x, y: valuesXYtogether[i][j].y };
+              p2 = { x: valuesXYtogether[i][j].x, y: valuesXYtogether[i][j].y };
+            }
+            else{
+              if(j===0)
+                {
+                  p1 = { x: valuesXYtogether[i][j].x, y: valuesXYtogether[i][j].y };
+                  p2 = { x: valuesXYtogether[i][j + 1].x, y: valuesXYtogether[i][j + 1].y };
+                }
+                else{
+                  p1 = { x: valuesXYtogether[i][j - 1].x, y: valuesXYtogether[i][j - 1].y }; 
+                  p2 = { x: valuesXYtogether[i][j].x, y: valuesXYtogether[i][j].y }; 
+                }
+            }
+            console.log(p1,p2)
+          var angleDeg = Math.atan2(p1.y - p2.y, p1.x - p2.x) * 180 / Math.PI ;
+          var adjustedAngle = angleDeg  + 90
+          angleArray.push(-adjustedAngle || 0)
         }
-      var angleDeg = Math.atan2(p1.y - p2.y, p1.x - p2.x) * 180 / Math.PI ;
-      var adjustedAngle = angleDeg  + 90
-      // console.log(p1, p2, angleDeg)
-      angleArray.push(-adjustedAngle || 0)
+        angleArrayFinal.push(angleArray.reverse())
     }
-  
+
   const yourImage = new Image()
   yourImage.src ="/ARROW.png";
-  //yourImage.src ='https://imgs.search.brave.com/QmDNNLkmapk8OK-S8HSAPO-aQyq61vtiOQvZ1Wrl0iA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAyLzgzLzAyLzkz/LzM2MF9GXzI4MzAy/OTM4MF82U0FiN2tI/blhtRWpwQkZzbmdt/anhETEE0c1EwSWlo/RS5qcGc';
-
   yourImage.width = 15;
   yourImage.height = 15;
-  
+
+
+  const datasetArray = valuesXYtogether.map((data, i) => ({
+    label: signalRequested[i].name,
+    data: data,
+    lineTension: 0.5,
+    pointStyle: [yourImage],
+    pointRotation: angleArrayFinal[i],
+    borderColor: colorArray[i],
+    backgroundColor: colorArray[i],
+    pointRadius: 5,
+    pointBorderColor: colorArray[i],
+    pointBackgroundColor: colorArray[i],
+  }));
+
   const midata2 = {
-    labels: valuesX,
-    datasets: [{
-      label: label,
-      data: valuesY,
-      lineTension: 0,
-      pointStyle: [yourImage],
-      pointRotation: angleArray.reverse(),
-      borderColor: colorArray[0],
-      backgroundColor: colorArray[0],
-      pointRadius: 5,
-      pointBorderColor: colorArray[0],
-      pointBackgroundColor: colorArray[0],
-    }]
+    //labels: valuesX,
+    datasets: datasetArray
   }
  
   // Opciones del gráfico ()
@@ -153,6 +229,19 @@ const { minX, maxX, minY, maxY, points, signalOnVideo, signals, currentTimeNow, 
     }
   };
   
+  useEffect(() => {
+    // Store the current point value as the previous value for the next render
+    previousPreviousPointRef.current = previousPointRef.current;
+    previousPointRef.current = parseFloat(point);
+    
+  }, [point]);
+
+  const previousPoint = previousPointRef.current;
+  const previousPreviousPoint = previousPreviousPointRef.current;
+
+  console.log("Previous Previous point:", previousPreviousPoint);
+  console.log("Previous point:", previousPoint);
+  console.log("Current point:", point);
 
   return (
       <div className='h-full w-full ' >

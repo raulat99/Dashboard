@@ -50,7 +50,7 @@ const ReactVideoPlayer = (props: Props) => {
 const [maxGraphX, setMaxGraphX] = useState(100);
 const [minGraphY, setMinGraphY] = useState(0);
 const [maxGraphY, setMaxGraphY] = useState(100);
-const [pointsGraph, setPointsGraph] = useState(10);
+const [pointsGraph, setPointsGraph] = useState(5);
 
 const inputMinGraphX = useRef<HTMLInputElement>(null);
 const inputMaxGraphX = useRef<HTMLInputElement>(null);
@@ -83,30 +83,13 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
     if (videoRef.current === null) return;
     if (signalOnVideo === undefined) return;
 
-
-    // console.log(signals)
-
-    // var signalRequested = signalOnVideo.map((signal: any) => {
-    //   return signals.find(
-    //     (signalItem: SignalConfig) => signalItem.signalID === signal.signalID
-    //   );
-    // });
-
-    // console.log(durationVideo)
+    console.log(state)
 
     const point: string = ((state.playedSeconds / durationVideo) * signals[0].values.length).toFixed(0);
 
     console.log(point)
     updateDataX(parseFloat(point));
     setCurrentTimeNow(state.playedSeconds);
-
-    // let beginingNumber = parseFloat(point) - pointsGraph < 0 ? 0 : parseFloat(point) - pointsGraph;
-
-    // let signalsSort = { ...signalRequested[0] };
-
-    // signalsSort.values = signalsSort.values.slice(beginingNumber,parseFloat(point) + 1);
-
-    // setSignalsSort(signalsSort);
   }, [signalOnVideo, durationVideo, signals, updateDataX]);
 
   const onChangePropertiesClick = () => {
@@ -169,6 +152,7 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
             volume={volume}
             ref={videoRef}
             //fps={fps}
+            progressInterval={50}
             onProgress={OnPlayerProgress}
             onDuration={OnDurationLoaded}
           />
