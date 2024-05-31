@@ -15,55 +15,67 @@ export default async function Dashboard({
   }: {
   params: { dashboardId: string };
 }) {
-    // if (!Types.ObjectId.isValid(params.dashboardId)) {
-    //   notFound();
-    // }
+  // if (!Types.ObjectId.isValid(params.dashboardId)) {
+  //   notFound();
+  // }
 
-    // console.log(params)
+  // console.log(params)
   const session: Session | null = await getServerSession(authOptions);
 
   if (!session) {
     redirect('/api/auth/signin');
   }
-  
+
   const data = await getUserDashboard(session.user._id, params.dashboardId);
 
   if (!data.dashboard) notFound();
-
   
 
   return (
     <div className='display mt-20 w-full flex-col justify-center '>
       {session ? (
+        <div>
         <div className='mx-2 '>
-        {/* <h2 className='text-center'>{data.dashboard && "session id: " + data.dashboard._id + " -- Descripcion: "  + data.dashboard.description + " -- Date: " + data.dashboard.dateCreation  }</h2> */}
-        <div className='m-2'>
-        <h1 className='text-center text-4xl'><b>{data.dashboard && data.dashboard.description}</b></h1>
-         {/* {data.dashboard && <DownloadButton dataDownload={data.dashboard} />} */}
-         {data.dashboard && <DownloadButton dataDownload={JSON.stringify(data.dashboard, null, 2)}/>}
-         </div>
-          <div className='flex flex-wrap justify-center gap-4'>
-            {data.dashboard.videos && data.dashboard.signals &&
-              data.dashboard.videos.map((videoConfigItem) => {
-                return (
-                  <ReactVideoPlayer
-                    key={videoConfigItem._id}
-                    url={videoConfigItem.url}
-                    videoID={videoConfigItem.videoID.toString()}
-                    fps={videoConfigItem.fps}
-                    signalOnVideo={videoConfigItem.signalOnVideo}
-                    signals={data.dashboard.signals}
-                  />
-                );
-              })}
-          </div>
-          <div className='display w-full flex-col justify-center '>
-            {data.dashboard.markers && <ControlsVideo markersUploaded={data.dashboard.markers} dashboardId= {data.dashboard._id}/>}
+            {/* <h2 className='text-center'>{data.dashboard && "session id: " + data.dashboard._id + " -- Descripcion: "  + data.dashboard.description + " -- Date: " + data.dashboard.dateCreation  }</h2> */}
+            <div className='mb-8 flex flex-row items-center justify-center gap-4 '>
+              <h1 className='text-center text-4xl '>
+                <b>{data.dashboard && data.dashboard.description}</b>
+              </h1>
+              {/* {data.dashboard && <DownloadButton dataDownload={data.dashboard} />} */}
+              {data.dashboard && (
+                <DownloadButton
+                  dataDownload={JSON.stringify(data.dashboard, null, 2)} />
+              )}
+            </div>
             
-            {data.dashboard.signals &&
-              data.dashboard.signals.map((signal: SignalConfig) => {
-                return <LinesChartWithInfo key={signal.signalID} props={signal} />;
-              })}
+            <div className='flex flex-wrap justify-center gap-8'>
+              {data.dashboard.videos &&
+                data.dashboard.signals &&
+                data.dashboard.videos.map((videoConfigItem) => {
+                  return (
+                    <ReactVideoPlayer
+                      key={videoConfigItem._id}
+                      url={videoConfigItem.url}
+                      videoID={videoConfigItem.videoID.toString()}
+                      fps={videoConfigItem.fps}
+                      signalOnVideo={videoConfigItem.signalOnVideo}
+                      signals={data.dashboard.signals} />
+                  );
+                })}
+            </div>
+            <div className='display w-full flex-col justify-center '>
+              {data.dashboard.markers && (
+                <ControlsVideo
+                  markersUploaded={data.dashboard.markers}
+                  dashboardId={data.dashboard._id} />
+              )}
+              {data.dashboard.signals &&
+                data.dashboard.signals.map((signal: SignalConfig) => {
+                  return (
+                    <LinesChartWithInfo key={signal.signalID} props={signal} />
+                  );
+                })}
+            </div>
           </div>
         </div>
       ) : (

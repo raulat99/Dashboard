@@ -7,6 +7,8 @@ import { IoIosArrowBack, IoIosArrowForward, IoMdAdd } from 'react-icons/io';
 import { TiDeleteOutline } from 'react-icons/ti';
 import { MdDeleteForever } from 'react-icons/md';
 import { FaVolumeMute, FaVolumeUp } from 'react-icons/fa';
+import NavbarMarkers from '@/components/NavbarMarkers';
+
 import {
   use,
   useCallback,
@@ -247,13 +249,22 @@ export default function ControlsVideo(props: any) {
 
   };
 
+
+
   const handleMarkerClick = (marker: Marker) => {
-    const videoRef = videoRefs[0].videoRef.current;
+    if (!videoRefs) return;
+
+    const videoRef = videoRefs[0]?.videoRef.current;
     if (!videoRef) return;
     console.log('markerTime', marker['time']);
     updateCurrentTime(marker['time']);
     handleOnMarkerSelection(marker);
   };
+
+  
+  const navbarMarkerClick = (marker: Marker) => {
+    handleMarkerClick(marker);
+  }
 
   const onDeleteMarker = (markerToDelete: Marker) => {
     const remainingMarkers = markers.filter(
@@ -376,13 +387,13 @@ export default function ControlsVideo(props: any) {
 
         if (
           selectedMarker !== undefined &&
-          (timeNow - 1 > selectedMarker.time ||
-            selectedMarker.time > timeNow + 1)
+          (timeNow - 0.1 > selectedMarker.time ||
+            selectedMarker.time > timeNow + 0.1)
         )
           setSelectedMarker(undefined);
 
         markers.map((marker: Marker) => {
-          if (timeNow - 1 < marker.time && marker.time < timeNow + 1) {
+          if (timeNow - 0.1 < marker.time && marker.time < timeNow + 0.1) {
             setSelectedMarker(marker);
           }
         });
@@ -408,7 +419,7 @@ export default function ControlsVideo(props: any) {
 
 
   return (
-    <div className='mx-auto  my-8 w-[95vw]'>
+    <div className='mx-auto  my-8 w-[95vw] min-w-[992px]'>
       <div className='flex flex-row rounded-t-lg bg-gray-200 dark:bg-gray-700'>
         <div className='mx-2 mt-1 h-12 text-white'>
           {getTimeCode(currentTimeProgressBar)}
@@ -473,7 +484,7 @@ export default function ControlsVideo(props: any) {
             <IoSyncOutline size={24} />
           </div>
         </button>
-        <div className='mx-auto mt-2 flex flex-row space-x-1'>
+        <div className='ml-auto mt-2 flex flex-row space-x-1'>
           <div className=' relative h-8 w-10'>
             <button
               onClick={toggleModal}
@@ -630,7 +641,15 @@ export default function ControlsVideo(props: any) {
           <div className='relative h-8 w-20'>
             <label htmlFor='input_json'> markers </label>
           </div>
+
+          
         </div>
+
+        <div className="display flex mr-auto">
+        <NavbarMarkers markers={markers} handleMarkerClick={navbarMarkerClick} currentTime={currentTimeProgressBar}  />
+        </div>
+
+        
 
         <div className='w-30 mx-2 mt-1 flex h-8 flex-row'>
           <input

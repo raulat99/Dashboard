@@ -52,7 +52,6 @@ export default function DownloadButton({ dataDownload }: DownloadButtonProps) {
       fontFamily: "sans-serif",
       borderRadius: "0.3rem",
       cursor: "pointer",
-      marginTop: "1rem",
     }}> 
               Download
     </button>

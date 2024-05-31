@@ -152,13 +152,14 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
             volume={volume}
             ref={videoRef}
             //fps={fps}
+           
             progressInterval={100}
             onProgress={OnPlayerProgress}
             onDuration={OnDurationLoaded}
           />
         </div>
         {signals && signalOnVideo && (
-          <div className=' absolute left-0 top-0 h-full w-full'>
+          <div className=' absolute -left-9 -bottom-7 ' style={{width: '690px', height: '420px'}}>
             <LinesChart
               signals={signals}
               minX={minGraphX}
@@ -175,13 +176,13 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
       </div>
 
       {signals.length !== 0 && signalOnVideo && (
-        <div className='w-50 relative mx-2 h-8'>
+        <div className='w-50 relative mx-2 pt-6 h-8'>
           <button
             onClick={toggleModal}
             className='block h-8 rounded-lg bg-blue-700 px-5 py-1.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
             type='button'
           >
-            Change properties
+            { !isModalVisible ? "Change properties" : "Hide properties"}            
           </button>
 
           <div

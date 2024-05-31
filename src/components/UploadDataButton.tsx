@@ -75,7 +75,7 @@ export default function UploadDataButton() {
 
           <input type="file" id="newdata" accept=".json" onChange={updateUploadedData} hidden />
           {/* <p className="pt-4">File uploaded</p> */}
-          {uploadedData && <p className="pt-4">File uploaded</p>}
+          {uploadedData && <p className="pt-4 text-white text-xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] ">File uploaded</p>}
        </div>
         
     );
