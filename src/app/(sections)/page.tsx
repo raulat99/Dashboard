@@ -14,8 +14,12 @@ export default async function Index() {
       <div className='relative z-10 flex flex-col items-center justify-center text-center'>
         <Header />
         {session ? (
-          <div>
-            <p className="text-white text-xl font-bold  drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] ">This is the main page.</p>
+          <div className="display flex flex-row space-x-4 justify-center">
+            {/* <p className="text-white text-xl font-bold  drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] ">This is the main page.</p> */}
+            
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 my-4 rounded"> 
+              <a href="/dashboards" >View Dashboards</a>
+              </button>
             <UploadDataButton />
           </div>
         ) : (

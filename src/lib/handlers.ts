@@ -233,6 +233,8 @@ export async function createUser(user: {
 
   const prevUser = await Users.find({ email: user.email });
 
+  console.log(prevUser);
+
   if (prevUser.length !== 0) {
     return null;
   }

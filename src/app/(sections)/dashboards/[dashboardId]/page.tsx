@@ -23,7 +23,7 @@ export default async function Dashboard({
   const session: Session | null = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/api/auth/signin');
+    redirect('/auth/signin');
   }
 
   const data = await getUserDashboard(session.user._id, params.dashboardId);

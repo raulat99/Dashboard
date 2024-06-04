@@ -6,11 +6,15 @@ export async function POST(
 ): Promise<NextResponse<CreateUserResponse> | {}> {
   const body = await request.json();
 
-  if (!body.email || !body.password || !body.name || !body.surname || !body.sessionUser) {
+  console.log(body)
+
+  if (!body.email || !body.password || !body.name || !body.surname ) {
     return NextResponse.json({}, { status: 400 });
   }
 
   const userId = await createUser(body);
+
+  console.log({ userId })
 
   if (userId === null) {
     return NextResponse.json({}, { status: 400 });

@@ -62,16 +62,10 @@ export default function UploadDataButton() {
 
     return (
        <div className="my-8 mx-auto">
-        <label htmlFor="newdata" style={{
-            backgroundColor: "indigo",
-            color: "white",
-            padding: "0.5rem",
-            fontFamily: "sans-serif",
-            borderRadius: "0.3rem",
-            cursor: "pointer",
-            marginTop: "1rem",
-          }} >Upload new dashboard
-          </label>
+        <label htmlFor="newdata" className="bg-indigo-600 text-white m-2  p-4 font-bold rounded-md cursor-pointer">
+  Upload new session data
+</label>
+
 
           <input type="file" id="newdata" accept=".json" onChange={updateUploadedData} hidden />
           {/* <p className="pt-4">File uploaded</p> */}

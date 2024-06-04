@@ -20,7 +20,7 @@ export default async function Profile() {
   const session: Session | null = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/api/auth/signin');
+    redirect('/auth/signin');
   }
 
   const userData: UserResponse | null = await getUser(session.user._id);

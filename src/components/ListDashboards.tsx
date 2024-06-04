@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import DashboardRow from "./DashboardRow";
 import { useSession } from 'next-auth/react';
 import { Dashboard } from "@/models/Dashboard";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 export default function CartItemsList() {
     const [dashboards, setDashboards] = useState<DashboardsResponse[]>([]);
@@ -55,7 +56,7 @@ export default function CartItemsList() {
                                   <div className="flex items-center">DESCRIPTION</div>
                               </th>
                               <th scope="col" className="px-6 py-3">
-                                  <div className="flex items-center">DATE CREATION</div>
+                                  <div className="flex items-center">CREATION DATE</div>
                               </th>
                               <th scope="col" className="px-6 py-3">
                                   <div className="flex items-center">SIGNALS</div>
@@ -70,9 +71,10 @@ export default function CartItemsList() {
                       </thead>
                       <tbody>
                           
-                              {dashboards && dashboards.map((dashboard: any) => (
+                              {dashboards && dashboards.map((dashboard: any, i:number) => (
                                   <DashboardRow 
                                       key={dashboard._id}
+                                      id={i}
                                       dashboard={dashboard}
                                       dashboards={dashboards}
                                       updateDashboards={(dashboards: DashboardsResponse[]) => { setDashboards(dashboards) }}

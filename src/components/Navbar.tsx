@@ -28,7 +28,7 @@ import {
                 <BsGraphUpArrow className="w-8 h-8"/>
 
                 <div className='inline-block w-auto text-xl font-semibold'>
-                  Dashboard
+                Sessions Dashboards
                 </div>
               </Link>
             </div>
@@ -54,13 +54,13 @@ import {
               ) : (
                 <>
                   <Link
-                    href='/api/auth/signup'
+                    href='/auth/signup'
                     className='rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-gray-100'
                   >
                     Sign up
                   </Link>
                   <Link
-                    href='/api/auth/signin'
+                    href='/auth/signin'
                     className='rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-gray-100'
                   >
                     Sign in
