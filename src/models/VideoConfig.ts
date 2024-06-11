@@ -1,5 +1,8 @@
 import mongoose, {Schema, Types} from "mongoose";
 
+export interface signalID {
+    signalID: number;
+}
 
 export interface VideoConfig
 {
@@ -7,7 +10,7 @@ export interface VideoConfig
     videoID: number;
     fps: number;
     url: string;
-    signalOnVideo: number[];
+    signalOnVideo: signalID[];
 }
 
 const VideoConfigSchema = new Schema<VideoConfig>({
@@ -24,8 +27,10 @@ const VideoConfigSchema = new Schema<VideoConfig>({
         required: true,
     },
     signalOnVideo: [{
-        type: Number,
-        required: false,
+        signalID: {
+            type: Number,
+            required: false,
+        }
     }]
 });
 

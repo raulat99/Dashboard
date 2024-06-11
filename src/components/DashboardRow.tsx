@@ -42,6 +42,11 @@ export default function DashboardRow( {id, dashboard, dashboards, updateDashboar
     }
   };
 
+  const handleOnClickView = ()=>{
+    router.push('/dashboards/' + dashboard._id);
+    router.refresh()
+  }
+
   return (
   dashboard ? (
     <tr className="bg-white border-b">
@@ -58,9 +63,9 @@ export default function DashboardRow( {id, dashboard, dashboards, updateDashboar
         {dashboard.signals && dashboard.signals.map((signal) => <div key={signal._id}>{signal.name}</div>)}
     </td>
     <td className="px-6 py-4 text-right">
-        <Link href={'/dashboards/' + dashboard._id} className="font-medium text-blue-600 hover:underline flex flex-row">View
+        <button onClick={handleOnClickView} className="font-medium text-blue-600 hover:underline flex flex-row">View
         <BsGraphUpArrow className='ml-1 mt-0.5	' />
-        </Link>
+        </button>
     </td>
     <td className="px-6 py-4 text-right ">
         <button onClick={handleDelete} className="font-medium text-red-600 hover:underline focus:outline-none flex flex-row">Delete

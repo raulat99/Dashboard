@@ -20,15 +20,17 @@ import { DashboardResponse } from '@/lib/handlers';
 import LinesChartWithInfo from './LinesChartWithInfo';
 import LinesChart from './LinesChart';
 import { SignalConfig } from '@/models/SignalConfig';
+import { signalID } from '@/models/VideoConfig';
 
 //export default function Video(props:any){
+
 
 interface Props {
   url: string;
   videoID: string;
   fps: number;
   signals?: any;
-  signalOnVideo?: number[];
+  signalOnVideo?: signalID[];
 }
 
 const ReactVideoPlayer = (props: Props) => {
@@ -37,6 +39,7 @@ const ReactVideoPlayer = (props: Props) => {
 
   //const [duration, setDuration] = useState<number>(0)
 
+  console.log(signalOnVideo);
 
   const { percentageX, dataX, updateDataX } = useContext(DashboardGraphsContext);
   const { videoSync, volume, updateVideoRefs, currentTime, durationVideo, updateDurationVideo } = useContext(VideoContext);
@@ -152,13 +155,13 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
             volume={volume}
             ref={videoRef}
             //fps={fps}
-           
+
             progressInterval={100}
             onProgress={OnPlayerProgress}
             onDuration={OnDurationLoaded}
           />
         </div>
-        {signals && signalOnVideo && (
+        {signals && signalOnVideo?.length !== 0 && (
           <div className=' absolute -left-9 -bottom-7 ' style={{width: '690px', height: '420px'}}>
             <LinesChart
               signals={signals}
@@ -175,7 +178,7 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
         )}
       </div>
 
-      {signals.length !== 0 && signalOnVideo && (
+      {signals.length !== 0 && signalOnVideo?.length !== 0 && (
         <div className='w-50 relative mx-2 pt-6 h-8'>
           <button
             onClick={toggleModal}

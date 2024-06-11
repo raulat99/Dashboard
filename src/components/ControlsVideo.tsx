@@ -43,6 +43,8 @@ export default function ControlsVideo(props: any) {
     updateCurrentTime,
   } = useContext(VideoContext);
 
+  console.log(markers)
+
   const {
     markersUploaded,
     dashboardId
@@ -67,7 +69,7 @@ export default function ControlsVideo(props: any) {
   const { data: session } = useSession({ required: true });
 
   const updateMarkersDatabase = async (markers:  Marker[]) => {
-    console.log(markers)
+    console.log(markers.length)
     try {
       const res = await fetch(
         `/api/users/${session!.user._id}/dashboards/${dashboardId}`,
@@ -270,6 +272,8 @@ export default function ControlsVideo(props: any) {
     const remainingMarkers = markers.filter(
       (m) => m.id !== markerToDelete.id //&& m.time !== markerToDelete.time
     );
+
+    console.log(remainingMarkers.length)
     updateMarkers(remainingMarkers);
     updateMarkersDatabase(remainingMarkers);
 
@@ -288,7 +292,7 @@ export default function ControlsVideo(props: any) {
 
   const onDeleteAllMarkersClick = () => {
     updateMarkers([]);
-    updateMarkersDatabase(markers);
+    updateMarkersDatabase([]);
 
   };
 
@@ -415,7 +419,7 @@ export default function ControlsVideo(props: any) {
     if(markersUploaded !== undefined)
       updateMarkers(markersUploaded)
 
-  }, [markersUploaded, props, updateMarkers, videoRefs])
+  }, [])
 
 
   return (
@@ -680,7 +684,3 @@ export default function ControlsVideo(props: any) {
     </div>
   );
 }
-function updateMarkers(markersUploaded: any) {
-  throw new Error('Function not implemented.');
-}
-

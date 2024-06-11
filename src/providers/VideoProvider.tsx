@@ -96,7 +96,10 @@ export function VideoProvider ({children} : {children: React.ReactNode})
     const updateVideoSync = (videoSync: boolean) => {setVideoSync(videoSync);}
     const updateVolume = (n: number) => {setVolume(n)}
     const updateDurationVideo = (n: number) => {setDurationVideo(n)}
-    const updateMarkers = (markersGiven: Marker[]) => {setMarkers(markersGiven)}
+    const updateMarkers = (markersGiven: Marker[]) => {
+        console.log(markersGiven.length)
+        setMarkers(markersGiven)
+    }
 
 
     

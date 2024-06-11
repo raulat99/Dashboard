@@ -58,8 +58,8 @@ if (session.user._id !== params.userId) {
 const dashboards = await deleteUserDashboard(session.user._id, params.dashboardId);
 
 console.log(dashboards);
-if( dashboards.dashboards === {} ||  dashboards.dashboards.length === 0  )
-  return NextResponse.json({}, { status: 404 });
+// if( dashboards.dashboards === {} ||  dashboards.dashboards.length === 0  )
+//   return NextResponse.json({}, { status: 404 });
 
 
 

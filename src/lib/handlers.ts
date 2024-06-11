@@ -9,6 +9,8 @@ const userProjection = {
   email: true,
   name: true,
   surname: true,
+  address: true,
+  birthdate: true,  
   dashboards: true,
 };
 
@@ -227,7 +229,9 @@ export async function createUser(user: {
   password: string;
   name: string;
   surname: string;
-  sessionUser?: Types.ObjectId;
+  address?: string;
+  birthdate?: string;
+  dashboards?: Types.ObjectId[];
 }): Promise<CreateUserResponse | null> {
   await connect();
 
@@ -239,6 +243,8 @@ export async function createUser(user: {
     return null;
   }
   const hash = await bcrypt.hash(user.password, 10);
+
+  console.log(user)
 
   const doc: User = {
     ...user,
@@ -256,6 +262,8 @@ export interface UserResponse {
   email: string;
   name: string;
   surname: string;
+  address?: string;
+  birthdate?: string;
   dashboards?: Dashboard[];
 }
 
@@ -263,6 +271,8 @@ export async function getUser(userId: string): Promise<UserResponse | null> {
   await connect();
 
   const user = await Users.findById(userId, userProjection);
+
+  console.log(user._id, user.email, user.name, user.surname, user.address, user.birthdate, user.dashboards)
 
   if (user === null) {
     return null;
