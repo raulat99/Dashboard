@@ -81,7 +81,7 @@ export default function CartItemsList() {
                                   />
                               ))       }
                       </tbody>
-                  </table> : <p className="text-xl  text-red-600	"><b>These are no the sessions available.</b></p>)
+                  </table> : <p className="text-xl  text-red-400 bg-gray-200 rounded-xl p-4"><b>These are no the sessions available.</b></p>)
                 
                 }
             </div>

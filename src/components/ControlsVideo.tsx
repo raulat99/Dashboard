@@ -332,28 +332,29 @@ export default function ControlsVideo(props: any) {
 
   const onMarkerImported = (importedMarkers: Marker[]) => {
     const completeMarkers = markers.slice().concat(importedMarkers);
-    updateMarkers(completeMarkers);
+    console.log(completeMarkers)
+    updateMarkers(importedMarkers);
+    updateMarkersDatabase(importedMarkers);
   };
 
   const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      console.log("aaaaaaaaaaaaaa")
       const updatedJSON = e.target.files[0];
       if (updatedJSON.type === 'application/json') {
+        console.log("aaaaaaaaaaaaaa")
         const fileReader = new FileReader();
         fileReader.readAsText(e.target.files[0]);
         fileReader.onload = (ev: ProgressEvent<FileReader>) => {
           const target = ev.target;
           if (target) {
+            console.log("aaaaaaaaaaaaaa")
             const result: Marker[] = JSON.parse(target.result as any);
-            const { error }: ValidationResult =
-              markersValidationSchema.validate(result);
-            if (error) {
-              //this.setState({ errors: error.details.map((m) => m.message) })
-              console.warn(`Invalid file`);
-            } else {
+
               onMarkerImported(result);
-            }
+            
           } else {
+            console.log("aaaaaaaaaaaaaa")
             console.warn(`Unable to read the uploaded file`);
           }
         };
