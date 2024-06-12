@@ -21,7 +21,7 @@ export default function DashboardRow( {id, dashboard, dashboards, updateDashboar
 
   const handleDelete = async () => {
     try {
-      console.log(dashboard._id);
+      //console.log(dashboard._id);
 
       const res = await fetch(
         `/api/users/${session?.user._id}/dashboards/${dashboard._id}`,
@@ -33,12 +33,12 @@ export default function DashboardRow( {id, dashboard, dashboards, updateDashboar
       if (res.ok) {
         const remainingDashboards = dashboards.filter(dashboardItem => dashboardItem._id !== dashboard._id);
         updateDashboards(remainingDashboards);
-        console.log('Dashboard deleted');
+        //console.log('Dashboard deleted');
         
         //const body = await res.json();
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
 

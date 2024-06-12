@@ -71,9 +71,9 @@ const { minX, maxX, minY, maxY, points, signalOnVideo, signals, currentTimeNow, 
       }
   })
 
-  console.log(signalOnVideo)
-  console.log(signalRequested)
-  console.log(signals)
+  //console.log(signalOnVideo)
+  //console.log(signalRequested)
+  //console.log(signals)
 
   const point: string = ((currentTimeNow / durationVideo) * signalRequested[0].values.length).toFixed(0);
   let beginingNumber = parseFloat(point) - points < 0 ? 0 : parseFloat(point) - points;
@@ -82,15 +82,15 @@ const { minX, maxX, minY, maxY, points, signalOnVideo, signals, currentTimeNow, 
 {
   beginingNumber = previousPreviousPointRef.current || previousPointRef.current
 
-  console.log(beginingNumber)
+  //console.log(beginingNumber)
 
 }
     
-  console.log(beginingNumber,parseFloat(point) + 1)
+  //console.log(beginingNumber,parseFloat(point) + 1)
 
   const jumpingNumber = Math.floor(Math.max((parseFloat(point) - beginingNumber)/ points, 1))
 
-  console.log(jumpingNumber)
+  //console.log(jumpingNumber)
 
   var signalsSortArray : any = []
 
@@ -110,7 +110,7 @@ const { minX, maxX, minY, maxY, points, signalOnVideo, signals, currentTimeNow, 
       let adjustedValues = [];
       for (let i = beginingNumber; i <= parseFloat(point); i += jumpingNumber) {
         signal.values[Math.floor(i)] && adjustedValues.push(signal.values[Math.floor(i)]);
-        //console.log(signal.values[Math.floor(i)]);
+        ////console.log(signal.values[Math.floor(i)]);
       }
       signalSortValues.push(adjustedValues);
     } else {
@@ -120,7 +120,7 @@ const { minX, maxX, minY, maxY, points, signalOnVideo, signals, currentTimeNow, 
   });
 
 
-  console.log(signalSortValues)
+  //console.log(signalSortValues)
 
   var valuesXYtogether : any[] = []
 
@@ -134,7 +134,7 @@ const { minX, maxX, minY, maxY, points, signalOnVideo, signals, currentTimeNow, 
     valuesXYtogether.push(valuesXYtogetherAux)
    })
 
-   console.log(valuesXYtogether)
+   //console.log(valuesXYtogether)
 
   const colorArray = [
     'rgb(255, 99, 132)',
@@ -149,12 +149,12 @@ const { minX, maxX, minY, maxY, points, signalOnVideo, signals, currentTimeNow, 
 
   for(let i = 0 ; i < valuesXYtogether.length ; i++)
     {
-      console.log(i)
+      //console.log(i)
       angleArray = []
       for (let j = valuesXYtogether[i].length-1 ; j >= 0 ; j--)
         {
-          console.log(i,j)
-          console.log(valuesXYtogether[i][j])
+          //console.log(i,j)
+          //console.log(valuesXYtogether[i][j])
           var p1 
           var p2 
     
@@ -174,7 +174,7 @@ const { minX, maxX, minY, maxY, points, signalOnVideo, signals, currentTimeNow, 
                   p2 = { x: valuesXYtogether[i][j].x, y: valuesXYtogether[i][j].y }; 
                 }
             }
-            console.log(p1,p2)
+            //console.log(p1,p2)
           var angleDeg = Math.atan2(p1.y - p2.y, p1.x - p2.x) * 180 / Math.PI ;
           var adjustedAngle = angleDeg  + 90
           angleArray.push(-adjustedAngle || 0)
@@ -239,9 +239,9 @@ const { minX, maxX, minY, maxY, points, signalOnVideo, signals, currentTimeNow, 
   const previousPoint = previousPointRef.current;
   const previousPreviousPoint = previousPreviousPointRef.current;
 
-  console.log("Previous Previous point:", previousPreviousPoint);
-  console.log("Previous point:", previousPoint);
-  console.log("Current point:", point);
+  //console.log("Previous Previous point:", previousPreviousPoint);
+  //console.log("Previous point:", previousPoint);
+  //console.log("Current point:", point);
 
   return (
       <div className='h-full w-full ' >

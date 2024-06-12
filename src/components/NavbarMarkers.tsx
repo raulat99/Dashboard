@@ -35,15 +35,15 @@ export default function NavbarMarkers(props: NavbarMarkersProps) {
 
     const sortedMarkers = markers.sort((a, b) => a.time - b.time);
 
-    console.log(sortedMarkers)
-    console.log(currentTime)
+    //console.log(sortedMarkers)
+    //console.log(currentTime)
 
 
     const handleEditMarker = (e: React.MouseEvent<HTMLButtonElement>,  markerTitle?: string, markerDescription?:string, markerId?: number )=>{
       e.stopPropagation(); 
-      console.log("hola")
+      //console.log("hola")
 
-      console.log(markerTitle, markerDescription, markerId)
+      //console.log(markerTitle, markerDescription, markerId)
 
       inputTitleMarker.current!.value = markerTitle!;
       inputDescriptionMarker.current!.value = markerDescription!;
@@ -64,7 +64,7 @@ export default function NavbarMarkers(props: NavbarMarkersProps) {
             return marker;
         });
 
-        console.log(newMarkers)
+        //console.log(newMarkers)
 
         updateMarkersDatabase(newMarkers);
         updateMarkers(newMarkers);

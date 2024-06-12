@@ -35,7 +35,7 @@ export default function DownloadButton({ dataDownload }: DownloadButtonProps) {
   // const onExportDataClick = () => {
   //   try {
   //     const dataString = CircularJSON.stringify(dataDownload);
-  //     console.log(dataString);
+  //     //console.log(dataString);
   //   } catch (error) {
   //     console.error("Error serializing dataDownload:", error);
   //   }

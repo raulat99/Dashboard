@@ -38,13 +38,15 @@ export default function ControlsVideo(props: any) {
     currentTime,
     markers,
     durationVideo,
+    playBackRate,
+    updatePlayBackRate,
     updateMarkers,
     updateVolume,
     updateVideoSync,
     updateCurrentTime,
   } = useContext(VideoContext);
 
-  console.log(markers)
+  //console.log(markers)
 
   const {
     markersUploaded,
@@ -70,7 +72,7 @@ export default function ControlsVideo(props: any) {
   const { data: session } = useSession({ required: true });
 
   const updateMarkersDatabase = async (markers:  Marker[]) => {
-    console.log(markers.length)
+    //console.log(markers.length)
     try {
       const res = await fetch(
         `/api/users/${session!.user._id}/dashboards/${dashboardId}`,
@@ -84,11 +86,11 @@ export default function ControlsVideo(props: any) {
 
       if (res.ok) {
         const body = await res.json();
-        console.log(body);
+        //console.log(body);
       }
     }
     catch (error) {
-      console.log(error);
+      //console.log(error);
     } 
   };
 
@@ -189,6 +191,17 @@ export default function ControlsVideo(props: any) {
     updateVolume(volumeX);
   };
 
+  const onChangePlaybackRate = (e: React.ChangeEvent<HTMLSelectElement>) => {
+
+    console.log(e.target.value)
+
+    if (videoRefs.length === 0) return;
+
+    updatePlayBackRate(parseFloat(e.target.value));
+    
+
+  }
+
   const onMuteClick = () => {
     if (muted) {
       updateVolume(volume);
@@ -200,14 +213,11 @@ export default function ControlsVideo(props: any) {
   };
 
   const getCurrentTime = () => {
-    console.log("hola")
     if (videoRefs.length === 0) return 0;
     if (videoRefs[0].videoRef.current) {
-      console.log("hola")
 
       return videoRefs[0].videoRef.current.getCurrentTime();
     }
-    console.log("hola")
     return 0;
   };
 
@@ -246,7 +256,7 @@ export default function ControlsVideo(props: any) {
     updateMarkers(markers);
     updateMarkersDatabase(markers);
 
-    console.log({ markers: markers });
+    //console.log({ markers: markers });
     toggleModal();
 
 
@@ -259,7 +269,7 @@ export default function ControlsVideo(props: any) {
 
     const videoRef = videoRefs[0]?.videoRef.current;
     if (!videoRef) return;
-    console.log('markerTime', marker['time']);
+    //console.log('markerTime', marker['time']);
     updateCurrentTime(marker['time']);
     handleOnMarkerSelection(marker);
   };
@@ -274,11 +284,11 @@ export default function ControlsVideo(props: any) {
       (m) => m.id !== markerToDelete.id //&& m.time !== markerToDelete.time
     );
 
-    console.log(remainingMarkers.length)
+    //console.log(remainingMarkers.length)
     updateMarkers(remainingMarkers);
     updateMarkersDatabase(remainingMarkers);
 
-    console.log({ remainingMarkers: remainingMarkers });
+    //console.log({ remainingMarkers: remainingMarkers });
   };
 
   const onDeleteMarkerClick = () => {
@@ -287,7 +297,7 @@ export default function ControlsVideo(props: any) {
     } else {
       //const newErrors = this.state.errors.concat('No Marker is selected')
       //this.setState({ errors: newErrors })
-      console.log('No Marker is selected');
+      //console.log('No Marker is selected');
     }
   };
 
@@ -367,11 +377,11 @@ export default function ControlsVideo(props: any) {
       (x * progressEl.current.max) / progressEl.current.offsetWidth;
     progressEl.current.value = percentage;
 
-    console.log('percentage', percentage);
+    //console.log('percentage', percentage);
     const percentageInSeconds = durationVideo * (percentage / 100);
     //updatePercentageX((percentage / 100))
 
-    console.log('percentageInSeconds', percentageInSeconds);
+    //console.log('percentageInSeconds', percentageInSeconds);
     updateCurrentTime(percentageInSeconds);
     setCurrentTimeProgressBar(percentageInSeconds);
 
@@ -387,7 +397,7 @@ export default function ControlsVideo(props: any) {
         if (!videoRefs[0].videoRef.current ) return ;    
 
         const timeNow = videoRefs[0].videoRef.current.getCurrentTime();
-        console.log(timeNow)
+        //console.log(timeNow)
         setCurrentTimeProgressBar(timeNow);
 
         if (
@@ -403,7 +413,7 @@ export default function ControlsVideo(props: any) {
           }
         });
         let percentage = (timeNow / durationVideo) * 100;
-        console.log(percentage)
+        //console.log(percentage)
         if (percentage === Infinity || Number.isNaN(percentage)) percentage = 0;
         progressEl.current.value = percentage;
         progressEl.current.innerHTML = percentage + '% played';
@@ -415,7 +425,7 @@ export default function ControlsVideo(props: any) {
   }, [currentTimeProgressBar, videoSync, durationVideo, markers, selectedMarker, dataX, percentageX, videoRefs, onPauseClick]);
 
   useEffect(()=>{
-    console.log(props)
+    //console.log(props)
 
     if(markersUploaded !== undefined)
       updateMarkers(markersUploaded)
@@ -488,7 +498,21 @@ export default function ControlsVideo(props: any) {
           <div className='h-8 w-10'>
             <IoSyncOutline size={24} />
           </div>
-        </button>
+        </button >
+
+        <div className='h-8 w-6 mt-1.5 rounded-lg'>
+          <select className = "rounded-lg p-1 bg-gray-600 text-white" name="playbackRateSelect" id="playbackRateSelect" onChange={onChangePlaybackRate}>
+            <option value="0.25">0.25x</option>
+            <option value="0.50" >0.5x</option>
+            <option value="0.75">0.75x</option>
+            <option value="1" selected>1.00x</option>
+            <option value="1.25">1.25x</option>
+            <option value="1.50">1.50x</option>
+            <option value="1.75">1.75x</option>
+            <option value="2">2.00x</option>
+        </select>
+      </div>
+          
         <div className='ml-auto mt-2 flex flex-row space-x-1'>
           <div className=' relative h-8 w-10'>
             <button

@@ -21,7 +21,7 @@ export default async function Dashboard({
   //   notFound();
   // }
 
-  // console.log(params)
+  // //console.log(params)
   const session: Session | null = await getServerSession(authOptions);
 
   if (!session) {

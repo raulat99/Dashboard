@@ -3191,36 +3191,36 @@ const user: User = {
   //COMENTARIO: ESTO ES PARA CREAR UN USUARIO
    const res1 = await Dashboards.create(dashboard1);
    const res = await Users.create(user);
-    // console.log(JSON.stringify(res, null, 2));
+    // //console.log(JSON.stringify(res, null, 2));
 
   //const retrievedUsers = await Users.find()//.populate(userProjection);
-  //console.log(JSON.stringify(retrievedUsers, null, 2));
+  ////console.log(JSON.stringify(retrievedUsers, null, 2));
 
    //const userRetreived = await Users.findById("6640ddc22876a3761101a0c5", userProjection)//.populate('dashboards', dashboardProjection)
-   //console.log(JSON.stringify(userRetreived, null, 2));
+   ////console.log(JSON.stringify(userRetreived, null, 2));
 
    //const dashboardRetrieved = userRetreived.dashboards.find((dash:any) => dash._id.equals("6640ddc22876a3761101a0c1"))//s.populate(dashboardProjection)
-   //console.log(JSON.stringify(dashboardRetrieved, null, 2));
+   ////console.log(JSON.stringify(dashboardRetrieved, null, 2));
   // const retrievedDashboard = await Dashboards.findOne({description: "Session 1"}, sessionProjection)//.populate('signals', signalsProjection)
-  // console.log(JSON.stringify(retrievedDashboard, null, 2));
+  // //console.log(JSON.stringify(retrievedDashboard, null, 2));
 
   //COMENTARIO: ESTO ES PARA BUSCAR UN USUARIO POR ID
   // const retrievedUserById = await Users.findById('66376e20f09907e548ef7d53');
-  // console.log(JSON.stringify(retrievedUserById, null, 2));
+  // //console.log(JSON.stringify(retrievedUserById, null, 2));
   
   // const retrievedUsersByCriteria = await Users.find({
   //   email: 'raul@gmail.com',
   // });
-  // console.log(JSON.stringify(retrievedUsersByCriteria, null, 2));
+  // //console.log(JSON.stringify(retrievedUsersByCriteria, null, 2));
 
   // const deletedUser = await Users.deleteOne({ email: 'raul@gmail.com' });
-  // console.log(JSON.stringify(deletedUser, null, 2));
+  // //console.log(JSON.stringify(deletedUser, null, 2));
 
   //COMENTARIO: ESTO ES PARA BUSCAR UN USUARIO Y CAMBIARLE EL NOMBRE
   // const retrievedUserByCriteria = await Users.findOne({
   //      email: 'raul@gmail.com',
   //    });
-  //    console.log(JSON.stringify(retrievedUserByCriteria, null, 2));
+  //    //console.log(JSON.stringify(retrievedUserByCriteria, null, 2));
      
   //    retrievedUserByCriteria.name = 'Raul';
   //    await retrievedUserByCriteria.save();
@@ -3228,7 +3228,7 @@ const user: User = {
   //    const retrievedNewUserByCriteria = await Users.findOne({
   //      email: 'raul@gmail.com',
   //    });
-  //    console.log(JSON.stringify(retrievedNewUserByCriteria, null, 2));
+  //    //console.log(JSON.stringify(retrievedNewUserByCriteria, null, 2));
 
   await conn.disconnect();
 }

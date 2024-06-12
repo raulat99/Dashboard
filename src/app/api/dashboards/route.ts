@@ -21,13 +21,13 @@ export async function GET(
 //     return NextResponse.json({}, { status: 401 });
 //   }
 
-//     console.log(body);
+//     //console.log(body);
 //   const output = await postNewDashboard(
 //     session.user._id,
 //     body
 //   );
 
-//   console.log({output})
+//   //console.log({output})
   
   
 //   if (output === null) return NextResponse.json({}, { status: 400 });

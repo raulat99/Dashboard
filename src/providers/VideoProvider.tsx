@@ -46,9 +46,10 @@ interface IVideoContext {
     volume: number;
     markers: Marker[];
     durationVideo: number;
+    playBackRate: number;
     //videosConfig: VideoConfigProp[];
     //signalsConfig: SignalConfigProp[];
-
+    updatePlayBackRate: (n: number) => void;
     updateDurationVideo: (n: number) => void;
     updateMarkers: (markers: Marker[]) => void;
     updateVolume: (n: number) => void;
@@ -64,9 +65,10 @@ interface IVideoContext {
     volume: 0,
     markers: [],
     durationVideo: 0,
+    playBackRate: 1,
     //videosConfig: [],
     //signalsConfig: [],
-
+    updatePlayBackRate: () => {},
     updateDurationVideo: () => {},
     updateMarkers: () => {},
     updateVolume: () => {},
@@ -85,7 +87,7 @@ export function VideoProvider ({children} : {children: React.ReactNode})
     const [currentTime, setCurrentTime] = useState<number>(0);
 
     const [durationVideo, setDurationVideo] = useState<number>(0);
-
+    const [playBackRate, setPlayBackRate] = useState<number>(1);
     const [volume, setVolume] = useState<number>(0.5)
     //const [uploadedData, setUploadedData] = useState<any>(null)
     const [markers, setMarkers] = useState<Marker[]>([])
@@ -97,9 +99,11 @@ export function VideoProvider ({children} : {children: React.ReactNode})
     const updateVolume = (n: number) => {setVolume(n)}
     const updateDurationVideo = (n: number) => {setDurationVideo(n)}
     const updateMarkers = (markersGiven: Marker[]) => {
-        console.log(markersGiven.length)
+        //console.log(markersGiven.length)
         setMarkers(markersGiven)
     }
+
+    const updatePlayBackRate = (n: number) => {setPlayBackRate(n)}
 
 
     
@@ -125,11 +129,12 @@ export function VideoProvider ({children} : {children: React.ReactNode})
             volume,
             markers,
             durationVideo,
+            playBackRate,
            
             //signalsConfig,
             updateMarkers,
             updateVolume,
-            
+            updatePlayBackRate,
             updateDurationVideo,
             updateVideoRefs,
             updateVideoSync,

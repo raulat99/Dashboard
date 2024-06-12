@@ -57,7 +57,7 @@ if (session.user._id !== params.userId) {
 
 const dashboards = await deleteUserDashboard(session.user._id, params.dashboardId);
 
-console.log(dashboards);
+//console.log(dashboards);
 // if( dashboards.dashboards === {} ||  dashboards.dashboards.length === 0  )
 //   return NextResponse.json({}, { status: 404 });
 
@@ -89,11 +89,11 @@ if (session.user._id !== params.userId) {
   return NextResponse.json({}, { status: 403 });
 }
 
-console.log(body.markers);
+//console.log(body.markers);
 
 const dashboard = await updateUserDashboard(session.user._id, params.dashboardId, body.markers);
 
-console.log(dashboard);
+//console.log(dashboard);
 
 
 if(  dashboard === null )

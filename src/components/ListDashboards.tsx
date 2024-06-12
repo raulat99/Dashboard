@@ -25,12 +25,12 @@ export default function CartItemsList() {
 
                 if (res.ok) {
                     const body = await res.json();
-                    console.log(body.dashboards)
+                    //console.log(body.dashboards)
                     setDashboards(body.dashboards);
                 }
             } catch (error) {
-                console.log(session?.user._id);
-                console.log(error);
+                //console.log(session?.user._id);
+                //console.log(error);
             } finally {
                 setLoading(false);
             }

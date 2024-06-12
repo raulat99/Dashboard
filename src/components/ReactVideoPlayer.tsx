@@ -39,10 +39,10 @@ const ReactVideoPlayer = (props: Props) => {
 
   //const [duration, setDuration] = useState<number>(0)
 
-  console.log(signalOnVideo);
+  //console.log(signalOnVideo);
 
   const { percentageX, dataX, updateDataX } = useContext(DashboardGraphsContext);
-  const { videoSync, volume, updateVideoRefs, currentTime, durationVideo, updateDurationVideo } = useContext(VideoContext);
+  const { videoSync, volume, playBackRate, updateVideoRefs, currentTime, durationVideo, updateDurationVideo } = useContext(VideoContext);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const videoRef = useRef<ReactPlayer>(null);
@@ -67,7 +67,7 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
 
   const OnPlayerClick = () => {
     if (videoRef.current) {
-      console.log(videoRef.current?.getCurrentTime());
+      //console.log(videoRef.current?.getCurrentTime());
     }
   };
   
@@ -86,14 +86,14 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
     if (videoRef.current === null) return;
     if (signalOnVideo === undefined) return;
 
-    console.log(state)
+    //console.log(state)
 
     const point: string = ((state.playedSeconds / durationVideo) * signals[0].values.length).toFixed(0);
 
-    console.log(point)
+    //console.log(point)
     updateDataX(parseFloat(point));
     setCurrentTimeNow(state.playedSeconds);
-  }, [signalOnVideo, durationVideo, signals, updateDataX]);
+  }, [signalOnVideo, durationVideo, signals, updateDataX, setCurrentTimeNow]);
 
   const onChangePropertiesClick = () => {
     if (!videoRef.current) return;
@@ -124,7 +124,7 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
   }, [currentTime]);
 
   useEffect(() => {
-    console.log(videoID, videoRef)
+    //console.log(videoID, videoRef)
     updateVideoRefs({ videoID, videoRef });
   }, [updateVideoRefs, videoID]);
 
@@ -155,7 +155,7 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
             volume={volume}
             ref={videoRef}
             //fps={fps}
-
+            playbackRate={playBackRate}
             progressInterval={100}
             onProgress={OnPlayerProgress}
             onDuration={OnDurationLoaded}

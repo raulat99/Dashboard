@@ -38,7 +38,7 @@ export async function POST(request :NextRequest): Promise<NextResponse<PostSessi
     return NextResponse.json({}, { status: 401 });
   }
 
-    console.log(body);
+    //console.log(body);
   const output = await postNewDashboard(
     session.user._id,
     body

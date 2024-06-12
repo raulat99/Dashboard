@@ -21,7 +21,7 @@ export default function UploadDataButton(props?: any) {
                 const target = ev.target
                 if (target) {
                   const result = JSON.parse(target.result as any)
-                    console.log(result)
+                    //console.log(result)
                     setUploadedData(true)
                     postNewDashboardUploaded(result)
                 }
@@ -44,7 +44,7 @@ export default function UploadDataButton(props?: any) {
                 });
 
                 if (response.ok) {
-                  console.log(hrefDirection)
+                  //console.log(hrefDirection)
                   hrefDirection === undefined ? location.reload() : router.push(hrefDirection) 
                   router.refresh()
                   //router.push('/dashboards');
@@ -53,14 +53,14 @@ export default function UploadDataButton(props?: any) {
                 //   router.refresh();
                 } 
               } catch (error) {
-                console.log(error);
+                //console.log(error);
               }
     
     }
 
 
     // useEffect(()=>{
-    //     console.log(uploadedData)
+    //     //console.log(uploadedData)
     //     postNewDashboard}, [uploadedData])
 
 
