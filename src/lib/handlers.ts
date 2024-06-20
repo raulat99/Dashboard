@@ -9,6 +9,8 @@ const userProjection = {
   email: true,
   name: true,
   surname: true,
+  address: true,
+  birthdate: true,  
   dashboards: true,
 };
 
@@ -50,16 +52,16 @@ export async function postNewDashboard(
     markers: dashboard.dashboard.markers,
   });
 
-  console.log(dashboardExist);
+  //console.log(dashboardExist);
 
   if (dashboardExist.length !== 0) {
-    console.log('dashboard already exist');
+    //console.log('dashboard already exist');
     return {dashboard: null};
   }
   
   const dashboardCreated = await Dashboards.create(dashboard.dashboard);
 
-  console.log(dashboardCreated);
+  //console.log(dashboardCreated);
 
   const updatedUser = await Users.findByIdAndUpdate(
 
@@ -118,7 +120,7 @@ export async function getDashboard(
 
   const dashboard = await Dashboards.findById(dashboardId, DashboardProjection);
 
-  console.log(dashboardId, dashboard);
+  //console.log(dashboardId, dashboard);
 
   return {
     dashboard: dashboard,
@@ -138,7 +140,7 @@ export async function getUserDashboard(
 
   const dashboard = dashboards.find((dashboard: Dashboard) => dashboard._id && dashboard._id.equals(dashboardId))
 
-  console.log(dashboardId, dashboard);
+  //console.log(dashboardId, dashboard);
 
   return {
     dashboard: dashboard,
@@ -174,7 +176,7 @@ export async function deleteUserDashboard(
   if(result === null)
     return {};
 
-  console.log(result);
+  //console.log(result);
 
   return {
     dashboards: dashboards,
@@ -199,7 +201,7 @@ export async function updateUserDashboard(
 
   //const dashboardsDeleted = 
   
-  console.log(markers);
+  //console.log(markers);
 
   const updatedDashboard = await Dashboards.findByIdAndUpdate(
 
@@ -211,7 +213,7 @@ export async function updateUserDashboard(
   );
 
   
-  console.log({dashboard: updatedDashboard});
+  //console.log({dashboard: updatedDashboard});
 
   return {
     dashboard: updatedDashboard,
@@ -227,18 +229,22 @@ export async function createUser(user: {
   password: string;
   name: string;
   surname: string;
-  sessionUser?: Types.ObjectId;
+  address?: string;
+  birthdate?: string;
+  dashboards?: Types.ObjectId[];
 }): Promise<CreateUserResponse | null> {
   await connect();
 
   const prevUser = await Users.find({ email: user.email });
 
-  console.log(prevUser);
+  //console.log(prevUser);
 
   if (prevUser.length !== 0) {
     return null;
   }
   const hash = await bcrypt.hash(user.password, 10);
+
+  //console.log(user)
 
   const doc: User = {
     ...user,
@@ -256,6 +262,8 @@ export interface UserResponse {
   email: string;
   name: string;
   surname: string;
+  address?: string;
+  birthdate?: string;
   dashboards?: Dashboard[];
 }
 
@@ -263,6 +271,8 @@ export async function getUser(userId: string): Promise<UserResponse | null> {
   await connect();
 
   const user = await Users.findById(userId, userProjection);
+
+  //console.log(user._id, user.email, user.name, user.surname, user.address, user.birthdate, user.dashboards)
 
   if (user === null) {
     return null;

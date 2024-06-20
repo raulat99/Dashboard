@@ -59,7 +59,7 @@ var minutos = [
 export default function LinesChartWithInfo(props: SignalConfig) {
   const { name, descripcion, signalID, labels, values } = props.props;
 
-  console.log(props);
+  //console.log(props);
 
   const chartRef = useRef(null);
 
@@ -112,7 +112,7 @@ export default function LinesChartWithInfo(props: SignalConfig) {
   var valuesArray: any[] = [];
   var auxTimeStamps: number[] = [];
   var auxValueIndex: number = -1;
-  console.log(labels);
+  //console.log(labels);
 
   labels.map(() => {
     valuesArray.push([]);
@@ -149,7 +149,7 @@ export default function LinesChartWithInfo(props: SignalConfig) {
       };
     }),
   };
-  console.log(midata2);
+  //console.log(midata2);
 
   // Opciones del gráfico ()
   var misoptions = {
@@ -194,7 +194,7 @@ export default function LinesChartWithInfo(props: SignalConfig) {
       },
     
     onClick: (e: any) => {
-      //console.log(e);
+      ////console.log(e);
 
       var chart = e.chart;
       var dataXAux: number;
@@ -211,22 +211,22 @@ export default function LinesChartWithInfo(props: SignalConfig) {
       label = chart.config.data.labels[dataXAux];
       value = chart.config.data.datasets[0].data[dataXAux];
 
-      // console.log({
+      // //console.log({
       //   dataX: dataXAux,
       //   label: label,
       //   dataY: dataY,
       //   value: value,
       // });
-      // //console.log(chart)
+      // ////console.log(chart)
 
-      // console.log(canvasPosition)
+      // //console.log(canvasPosition)
 
-      // console.log(e)
-      // console.log({percentageX:e.x/ chart.width , event: canvasPosition.x, chart: chart.width})
+      // //console.log(e)
+      // //console.log({percentageX:e.x/ chart.width , event: canvasPosition.x, chart: chart.width})
 
-      console.log(e.x / chart.width * midata2.labels.length)
-      console.log(dataXAux)
-      console.log(dataY)
+      //console.log(e.x / chart.width * midata2.labels.length)
+      //console.log(dataXAux)
+      //console.log(dataY)
       //const percentaje : string = (e.x / chart.width * midata2.labels.length).toFixed(0);
 
       updatePercentageX(dataXAux/ midata2.labels.length);

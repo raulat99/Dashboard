@@ -4,7 +4,8 @@ import { useSession } from "next-auth/react"
 import { useRouter } from 'next/navigation'
 import { useState } from "react"
 
-export default function UploadDataButton() {
+export default function UploadDataButton(props?: any) {
+    const {hrefDirection} = props
     const [uploadedData, setUploadedData] = useState<Boolean>(false)
     const { data: session } = useSession({ required: true });
     const router = useRouter()
@@ -20,7 +21,7 @@ export default function UploadDataButton() {
                 const target = ev.target
                 if (target) {
                   const result = JSON.parse(target.result as any)
-                    console.log(result)
+                    //console.log(result)
                     setUploadedData(true)
                     postNewDashboardUploaded(result)
                 }
@@ -43,20 +44,23 @@ export default function UploadDataButton() {
                 });
 
                 if (response.ok) {
-                  router.push('/dashboards');
-                 // router.refresh()
+                  //console.log(hrefDirection)
+                  hrefDirection === undefined ? location.reload() : router.push(hrefDirection) 
+                  router.refresh()
+                  //router.push('/dashboards');
+                  //router.refresh()
                 //   router.push('/profile');
                 //   router.refresh();
                 } 
               } catch (error) {
-                console.log(error);
+                //console.log(error);
               }
     
     }
 
 
     // useEffect(()=>{
-    //     console.log(uploadedData)
+    //     //console.log(uploadedData)
     //     postNewDashboard}, [uploadedData])
 
 

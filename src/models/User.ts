@@ -6,8 +6,9 @@ export interface User {
   password: string;
   name: string;
   surname: string;
+  address?: string;
+  birthdate?: String;
   dashboards?: Types.ObjectId[];
-  
 }
 
 const UserSchema = new Schema<User>({
@@ -27,6 +28,14 @@ const UserSchema = new Schema<User>({
   surname: {
     type: String,
     required: true,
+  },
+  address: {
+    type: String,
+    required: false,
+  },
+  birthdate: {
+    type: String,
+    required: false,
   },
   dashboards:[{
     type: Schema.Types.ObjectId,

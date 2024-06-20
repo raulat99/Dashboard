@@ -32,9 +32,9 @@ export default async function Profile() {
   }
 
   return (
-    <div className='display flex items-center flex-col'>
+    <div className='display flex items-center flex-col  bg-gray-700/50 rounded-xl p-4'>
       <div
-        className='absolute -z-50 inset-0 bg-cover bg-center filter blur-md'
+        className='absolute -z-50 inset-0 bg-cover bg-center  filter blur-md'
         style={{ backgroundImage: 'url(https://pro2-bar-s3-cdn-cf6.myportfolio.com/5a142761-664b-4e50-ad0d-d1e9b5b316ef/ab2dcc26-562a-4138-9cf1-5899f8b2d875_rw_1200.gif?h=06d091ffe85bb25d463b023d631d6005)' }}
       ></div>
 
@@ -57,6 +57,18 @@ export default async function Profile() {
           <span className='ml-5 text-lg font-bold text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]'>Email: </span>
           <span className='ml-5 text-lg text-white'>{userData.email}</span>
         </div>
+
+        {userData.address && <div className='flex flex-row items-center mb-2'>
+          <EnvelopeIcon className='h-8 w-8 text-white' />
+          <span className='ml-5 text-lg font-bold text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]'>Address: </span>
+          <span className='ml-5 text-lg text-white'>{userData.address}</span>
+        </div>}
+
+        {userData.birthdate && <div className='flex flex-row items-center mb-2'>
+          <EnvelopeIcon className='h-8 w-8 text-white' />
+          <span className='ml-5 text-lg font-bold text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]'>Birthdate: </span>
+          <span className='ml-5 text-lg text-white'>{userData.birthdate}</span>
+        </div>}
       </div>
     </div>
   );

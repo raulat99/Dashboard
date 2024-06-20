@@ -20,7 +20,7 @@ export default async function Index() {
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 my-4 rounded"> 
               <a href="/dashboards" >View Dashboards</a>
               </button>
-            <UploadDataButton />
+            <UploadDataButton hrefDirection='/dashboards'/>
           </div>
         ) : (
           <p className="text-white text-xl font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] ">You are not logged in</p>

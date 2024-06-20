@@ -11,11 +11,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <Navbar />
       
       <main className='flex-1 w-full my-auto display flex  items-center justify-center'>
-        <DashboardProvider>
-            <VideoProvider>
+        {/* <DashboardProvider>
+            <VideoProvider> */}
         {children}
-        </VideoProvider>
-        </DashboardProvider>
+        {/* </VideoProvider>
+        </DashboardProvider> */}
       </main>
     </div>
   );

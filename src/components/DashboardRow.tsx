@@ -21,7 +21,7 @@ export default function DashboardRow( {id, dashboard, dashboards, updateDashboar
 
   const handleDelete = async () => {
     try {
-      console.log(dashboard._id);
+      //console.log(dashboard._id);
 
       const res = await fetch(
         `/api/users/${session?.user._id}/dashboards/${dashboard._id}`,
@@ -33,14 +33,19 @@ export default function DashboardRow( {id, dashboard, dashboards, updateDashboar
       if (res.ok) {
         const remainingDashboards = dashboards.filter(dashboardItem => dashboardItem._id !== dashboard._id);
         updateDashboards(remainingDashboards);
-        console.log('Dashboard deleted');
+        //console.log('Dashboard deleted');
         
         //const body = await res.json();
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
+
+  const handleOnClickView = ()=>{
+    router.push('/dashboards/' + dashboard._id);
+    router.refresh()
+  }
 
   return (
   dashboard ? (
@@ -58,9 +63,9 @@ export default function DashboardRow( {id, dashboard, dashboards, updateDashboar
         {dashboard.signals && dashboard.signals.map((signal) => <div key={signal._id}>{signal.name}</div>)}
     </td>
     <td className="px-6 py-4 text-right">
-        <Link href={'/dashboards/' + dashboard._id} className="font-medium text-blue-600 hover:underline flex flex-row">View
+        <button onClick={handleOnClickView} className="font-medium text-blue-600 hover:underline flex flex-row">View
         <BsGraphUpArrow className='ml-1 mt-0.5	' />
-        </Link>
+        </button>
     </td>
     <td className="px-6 py-4 text-right ">
         <button onClick={handleDelete} className="font-medium text-red-600 hover:underline focus:outline-none flex flex-row">Delete

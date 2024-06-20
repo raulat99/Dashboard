@@ -15,12 +15,12 @@ interface Props {
           const { marker, duration } = props
           const { time } = marker
           if (duration) {
-              //console.log("time", time)
-              //console.log("duration", duration)
+              ////console.log("time", time)
+              ////console.log("duration", duration)
               const percent = (time <= duration ? time/duration : 1) * 100
-              //console.log("time/duration",time/duration)
-              //console.log("percent", percent*100)
-              //console.log("calculation", `calc(${percent * 100}% - 2px)` )
+              ////console.log("time/duration",time/duration)
+              ////console.log("percent", percent*100)
+              ////console.log("calculation", `calc(${percent * 100}% - 2px)` )
               //return `${percent * 100}`
               //return `${percent * 100}%`
               return `calc(${percent}% - 14px)`;

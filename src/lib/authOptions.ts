@@ -24,25 +24,25 @@ export const authOptions: NextAuthOptions = {
         await connect();
 
         if(!credentials?.email || !credentials?.password){
-            console.log("El email o password no existen");
+            //console.log("El email o password no existen");
             return null;
         }
         
         const user = await Users.findOne({email: credentials.email})
         
         if(user === null){
-          console.log("El user es nulo");
+          //console.log("El user es nulo");
             return null;
         }
 
         const match = await bcrypt.compare(credentials.password, user.password);
 
         if(!match){
-          console.log("Las contraseñas no coinciden");
+          //console.log("Las contraseñas no coinciden");
           return null;
         }
 
-        console.log("User id: " + user._id.toString());
+        //console.log("User id: " + user._id.toString());
 
         return { _id: user._id.toString() } as User;
       },

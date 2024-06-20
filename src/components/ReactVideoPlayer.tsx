@@ -20,15 +20,17 @@ import { DashboardResponse } from '@/lib/handlers';
 import LinesChartWithInfo from './LinesChartWithInfo';
 import LinesChart from './LinesChart';
 import { SignalConfig } from '@/models/SignalConfig';
+import { signalID } from '@/models/VideoConfig';
 
 //export default function Video(props:any){
+
 
 interface Props {
   url: string;
   videoID: string;
   fps: number;
   signals?: any;
-  signalOnVideo?: number[];
+  signalOnVideo?: signalID[];
 }
 
 const ReactVideoPlayer = (props: Props) => {
@@ -37,9 +39,10 @@ const ReactVideoPlayer = (props: Props) => {
 
   //const [duration, setDuration] = useState<number>(0)
 
+  //console.log(signalOnVideo);
 
   const { percentageX, dataX, updateDataX } = useContext(DashboardGraphsContext);
-  const { videoSync, volume, updateVideoRefs, currentTime, durationVideo, updateDurationVideo } = useContext(VideoContext);
+  const { videoSync, volume, playBackRate, updateVideoRefs, currentTime, durationVideo, updateDurationVideo } = useContext(VideoContext);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const videoRef = useRef<ReactPlayer>(null);
@@ -64,7 +67,7 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
 
   const OnPlayerClick = () => {
     if (videoRef.current) {
-      console.log(videoRef.current?.getCurrentTime());
+      //console.log(videoRef.current?.getCurrentTime());
     }
   };
   
@@ -83,14 +86,14 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
     if (videoRef.current === null) return;
     if (signalOnVideo === undefined) return;
 
-    console.log(state)
+    //console.log(state)
 
     const point: string = ((state.playedSeconds / durationVideo) * signals[0].values.length).toFixed(0);
 
-    console.log(point)
+    //console.log(point)
     updateDataX(parseFloat(point));
     setCurrentTimeNow(state.playedSeconds);
-  }, [signalOnVideo, durationVideo, signals, updateDataX]);
+  }, [signalOnVideo, durationVideo, signals, updateDataX, setCurrentTimeNow]);
 
   const onChangePropertiesClick = () => {
     if (!videoRef.current) return;
@@ -121,7 +124,7 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
   }, [currentTime]);
 
   useEffect(() => {
-    console.log(videoID, videoRef)
+    //console.log(videoID, videoRef)
     updateVideoRefs({ videoID, videoRef });
   }, [updateVideoRefs, videoID]);
 
@@ -152,13 +155,13 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
             volume={volume}
             ref={videoRef}
             //fps={fps}
-           
+            playbackRate={playBackRate}
             progressInterval={100}
             onProgress={OnPlayerProgress}
             onDuration={OnDurationLoaded}
           />
         </div>
-        {signals && signalOnVideo && (
+        {signals && signalOnVideo?.length !== 0 && (
           <div className=' absolute -left-9 -bottom-7 ' style={{width: '690px', height: '420px'}}>
             <LinesChart
               signals={signals}
@@ -175,7 +178,7 @@ const inputPointsGraph = useRef<HTMLInputElement>(null);
         )}
       </div>
 
-      {signals.length !== 0 && signalOnVideo && (
+      {signals.length !== 0 && signalOnVideo?.length !== 0 && (
         <div className='w-50 relative mx-2 pt-6 h-8'>
           <button
             onClick={toggleModal}

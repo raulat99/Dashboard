@@ -25,11 +25,12 @@ export default function CartItemsList() {
 
                 if (res.ok) {
                     const body = await res.json();
+                    //console.log(body.dashboards)
                     setDashboards(body.dashboards);
                 }
             } catch (error) {
-                console.log(session?.user._id);
-                console.log(error);
+                //console.log(session?.user._id);
+                //console.log(error);
             } finally {
                 setLoading(false);
             }
@@ -39,16 +40,15 @@ export default function CartItemsList() {
 
     return (
         <div className="py-8 display flex flex-row place-content-center space-x-8">
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div className="relative overflow-x-auto ">
             {loading ? 
             (
               <div  className="text-center allign-center">
                             <img src={yourImageSrc} alt="Loading" width={250} height={250} />
                           </div>)
                 : 
-                (
-
-                  <table className="w-full text-sm text-left text-gray-500">
+                (dashboards.length !== 0 ? 
+                  <table className="w-full text-sm text-left text-gray-500 shadow-md sm:rounded-lg">
                       <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                           <tr>
                               <th scope="col" className="px-6 py-3">ID</th>
@@ -71,7 +71,7 @@ export default function CartItemsList() {
                       </thead>
                       <tbody>
                           
-                              {dashboards && dashboards.map((dashboard: any, i:number) => (
+                              {dashboards.map((dashboard: any, i:number) => (
                                   <DashboardRow 
                                       key={dashboard._id}
                                       id={i}
@@ -81,7 +81,7 @@ export default function CartItemsList() {
                                   />
                               ))       }
                       </tbody>
-                  </table>)
+                  </table> : <p className="text-xl  text-red-400 bg-gray-200 rounded-xl p-4"><b>These are no the sessions available.</b></p>)
                 
                 }
             </div>

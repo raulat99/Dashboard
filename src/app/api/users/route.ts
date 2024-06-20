@@ -6,7 +6,7 @@ export async function POST(
 ): Promise<NextResponse<CreateUserResponse> | {}> {
   const body = await request.json();
 
-  console.log(body)
+  //console.log(body)
 
   if (!body.email || !body.password || !body.name || !body.surname ) {
     return NextResponse.json({}, { status: 400 });
@@ -14,7 +14,7 @@ export async function POST(
 
   const userId = await createUser(body);
 
-  console.log({ userId })
+  //console.log({ userId })
 
   if (userId === null) {
     return NextResponse.json({}, { status: 400 });

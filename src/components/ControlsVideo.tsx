@@ -25,10 +25,11 @@ import { ValidationResult } from 'joi';
 import { markersValidationSchema } from '../models/import-markers-validation';
 import { VideoContext } from '../providers/VideoProvider';
 import { useSession } from 'next-auth/react';
+import CrudModal from './AddMarkerModal';
 
 export default function ControlsVideo(props: any) {
   const { percentageX, dataX } = useContext(DashboardGraphsContext);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalAddMarkerVisible, setIsModalAddMarkerVisible] = useState(false);
 
   const {
     videoSync,
@@ -37,11 +38,15 @@ export default function ControlsVideo(props: any) {
     currentTime,
     markers,
     durationVideo,
+    playBackRate,
+    updatePlayBackRate,
     updateMarkers,
     updateVolume,
     updateVideoSync,
     updateCurrentTime,
   } = useContext(VideoContext);
+
+  //console.log(markers)
 
   const {
     markersUploaded,
@@ -67,7 +72,7 @@ export default function ControlsVideo(props: any) {
   const { data: session } = useSession({ required: true });
 
   const updateMarkersDatabase = async (markers:  Marker[]) => {
-    console.log(markers)
+    //console.log(markers.length)
     try {
       const res = await fetch(
         `/api/users/${session!.user._id}/dashboards/${dashboardId}`,
@@ -81,11 +86,11 @@ export default function ControlsVideo(props: any) {
 
       if (res.ok) {
         const body = await res.json();
-        console.log(body);
+        //console.log(body);
       }
     }
     catch (error) {
-      console.log(error);
+      //console.log(error);
     } 
   };
 
@@ -115,7 +120,7 @@ export default function ControlsVideo(props: any) {
   };
 
   const toggleModal = () => {
-    setIsModalVisible(!isModalVisible);
+    setIsModalAddMarkerVisible(!isModalAddMarkerVisible);
   };
 
   // const durationTimeCode = getTimeCode(Math.ceil(duration));
@@ -186,6 +191,17 @@ export default function ControlsVideo(props: any) {
     updateVolume(volumeX);
   };
 
+  const onChangePlaybackRate = (e: React.ChangeEvent<HTMLSelectElement>) => {
+
+    console.log(e.target.value)
+
+    if (videoRefs.length === 0) return;
+
+    updatePlayBackRate(parseFloat(e.target.value));
+    
+
+  }
+
   const onMuteClick = () => {
     if (muted) {
       updateVolume(volume);
@@ -197,14 +213,11 @@ export default function ControlsVideo(props: any) {
   };
 
   const getCurrentTime = () => {
-    console.log("hola")
     if (videoRefs.length === 0) return 0;
     if (videoRefs[0].videoRef.current) {
-      console.log("hola")
 
       return videoRefs[0].videoRef.current.getCurrentTime();
     }
-    console.log("hola")
     return 0;
   };
 
@@ -243,7 +256,7 @@ export default function ControlsVideo(props: any) {
     updateMarkers(markers);
     updateMarkersDatabase(markers);
 
-    console.log({ markers: markers });
+    //console.log({ markers: markers });
     toggleModal();
 
 
@@ -256,7 +269,7 @@ export default function ControlsVideo(props: any) {
 
     const videoRef = videoRefs[0]?.videoRef.current;
     if (!videoRef) return;
-    console.log('markerTime', marker['time']);
+    //console.log('markerTime', marker['time']);
     updateCurrentTime(marker['time']);
     handleOnMarkerSelection(marker);
   };
@@ -270,10 +283,12 @@ export default function ControlsVideo(props: any) {
     const remainingMarkers = markers.filter(
       (m) => m.id !== markerToDelete.id //&& m.time !== markerToDelete.time
     );
+
+    //console.log(remainingMarkers.length)
     updateMarkers(remainingMarkers);
     updateMarkersDatabase(remainingMarkers);
 
-    console.log({ remainingMarkers: remainingMarkers });
+    //console.log({ remainingMarkers: remainingMarkers });
   };
 
   const onDeleteMarkerClick = () => {
@@ -282,13 +297,13 @@ export default function ControlsVideo(props: any) {
     } else {
       //const newErrors = this.state.errors.concat('No Marker is selected')
       //this.setState({ errors: newErrors })
-      console.log('No Marker is selected');
+      //console.log('No Marker is selected');
     }
   };
 
   const onDeleteAllMarkersClick = () => {
     updateMarkers([]);
-    updateMarkersDatabase(markers);
+    updateMarkersDatabase([]);
 
   };
 
@@ -317,28 +332,29 @@ export default function ControlsVideo(props: any) {
 
   const onMarkerImported = (importedMarkers: Marker[]) => {
     const completeMarkers = markers.slice().concat(importedMarkers);
-    updateMarkers(completeMarkers);
+    console.log(completeMarkers)
+    updateMarkers(importedMarkers);
+    updateMarkersDatabase(importedMarkers);
   };
 
   const onChangeFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      console.log("aaaaaaaaaaaaaa")
       const updatedJSON = e.target.files[0];
       if (updatedJSON.type === 'application/json') {
+        console.log("aaaaaaaaaaaaaa")
         const fileReader = new FileReader();
         fileReader.readAsText(e.target.files[0]);
         fileReader.onload = (ev: ProgressEvent<FileReader>) => {
           const target = ev.target;
           if (target) {
+            console.log("aaaaaaaaaaaaaa")
             const result: Marker[] = JSON.parse(target.result as any);
-            const { error }: ValidationResult =
-              markersValidationSchema.validate(result);
-            if (error) {
-              //this.setState({ errors: error.details.map((m) => m.message) })
-              console.warn(`Invalid file`);
-            } else {
+
               onMarkerImported(result);
-            }
+            
           } else {
+            console.log("aaaaaaaaaaaaaa")
             console.warn(`Unable to read the uploaded file`);
           }
         };
@@ -362,11 +378,11 @@ export default function ControlsVideo(props: any) {
       (x * progressEl.current.max) / progressEl.current.offsetWidth;
     progressEl.current.value = percentage;
 
-    console.log('percentage', percentage);
+    //console.log('percentage', percentage);
     const percentageInSeconds = durationVideo * (percentage / 100);
     //updatePercentageX((percentage / 100))
 
-    console.log('percentageInSeconds', percentageInSeconds);
+    //console.log('percentageInSeconds', percentageInSeconds);
     updateCurrentTime(percentageInSeconds);
     setCurrentTimeProgressBar(percentageInSeconds);
 
@@ -382,7 +398,7 @@ export default function ControlsVideo(props: any) {
         if (!videoRefs[0].videoRef.current ) return ;    
 
         const timeNow = videoRefs[0].videoRef.current.getCurrentTime();
-        console.log(timeNow)
+        //console.log(timeNow)
         setCurrentTimeProgressBar(timeNow);
 
         if (
@@ -398,7 +414,7 @@ export default function ControlsVideo(props: any) {
           }
         });
         let percentage = (timeNow / durationVideo) * 100;
-        console.log(percentage)
+        //console.log(percentage)
         if (percentage === Infinity || Number.isNaN(percentage)) percentage = 0;
         progressEl.current.value = percentage;
         progressEl.current.innerHTML = percentage + '% played';
@@ -410,12 +426,12 @@ export default function ControlsVideo(props: any) {
   }, [currentTimeProgressBar, videoSync, durationVideo, markers, selectedMarker, dataX, percentageX, videoRefs, onPauseClick]);
 
   useEffect(()=>{
-    console.log(props)
+    //console.log(props)
 
     if(markersUploaded !== undefined)
       updateMarkers(markersUploaded)
 
-  }, [markersUploaded, props, updateMarkers, videoRefs])
+  }, [])
 
 
   return (
@@ -483,7 +499,21 @@ export default function ControlsVideo(props: any) {
           <div className='h-8 w-10'>
             <IoSyncOutline size={24} />
           </div>
-        </button>
+        </button >
+
+        <div className='h-8 w-6 mt-1.5 rounded-lg'>
+          <select className = "rounded-lg p-1 bg-gray-600 text-white" name="playbackRateSelect" id="playbackRateSelect" onChange={onChangePlaybackRate}>
+            <option value="0.25">0.25x</option>
+            <option value="0.50" >0.5x</option>
+            <option value="0.75">0.75x</option>
+            <option value="1" selected>1.00x</option>
+            <option value="1.25">1.25x</option>
+            <option value="1.50">1.50x</option>
+            <option value="1.75">1.75x</option>
+            <option value="2">2.00x</option>
+        </select>
+      </div>
+          
         <div className='ml-auto mt-2 flex flex-row space-x-1'>
           <div className=' relative h-8 w-10'>
             <button
@@ -494,115 +524,15 @@ export default function ControlsVideo(props: any) {
               <IoMdAdd size={24} />
             </button>
 
-            <div
-              id='crud-modal'
-              aria-hidden='true'
-              className={`absolute bottom-full right-0 z-50 mb-2 flex items-center justify-center ${isModalVisible ? '' : 'hidden'}`}
-            >
-              <div className='relative max-h-full w-max	 p-4'>
-                <div className='relative rounded-lg bg-white shadow dark:bg-gray-700'>
-                  <div className='flex items-center justify-between rounded-t border-b p-4 md:p-5 dark:border-gray-600'>
-                    <h3 className='text-lg font-semibold text-gray-900 dark:text-white'>
-                      Create New Marker
-                    </h3>
-                    <button
-                      type='button'
-                      onClick={toggleModal}
-                      className='ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white'
-                    >
-                      <svg
-                        className='h-3 w-3'
-                        aria-hidden='true'
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 14 14'
-                      >
-                        <path
-                          stroke='currentColor'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          strokeWidth='2'
-                          d='m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6'
-                        />
-                      </svg>
-                      <span className='sr-only'>Close modal</span>
-                    </button>
-                  </div>
-                  <div className='p-4 md:p-5'>
-                    <div className='mb-4 grid grid-cols-2 gap-4 '>
-                      <div className='col-span-2'>
-                        <label
-                          htmlFor='name'
-                          className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
-                        >
-                          Name
-                        </label>
-                        <input
-                          type='text'
-                          name='name'
-                          id='name'
-                          ref={inputTitleMarker}
-                          className='focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400'
-                          placeholder='Type marker name'
-                          required
-                        />
-                      </div>
-                      <div className='col-span-2'>
-                        <label
-                          htmlFor='description'
-                          className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'
-                        >
-                          Marker Description
-                        </label>
-                        <textarea
-                          id='description'
-                          rows={4}
-                          ref={inputDescriptionMarker}
-                          className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500'
-                          placeholder='Write marker description here'
-                        ></textarea>
-                      </div>
-                    </div>
-                    <button
-                      type='submit'
-                      className='inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
-                      onClick={onAddMarkerClick}
-                    >
-                      <svg
-                        className='-ms-1 me-1 h-5 w-5'
-                        fill='currentColor'
-                        viewBox='0 0 20 20'
-                        xmlns='http://www.w3.org/2000/svg'
-                      >
-                        <path
-                          fillRule='evenodd'
-                          d='M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z'
-                          clipRule='evenodd'
-                        ></path>
-                      </svg>
-                      Add new marker
-                    </button>
-                </div>
-                </div>
-              </div>
-            </div>
+            <CrudModal
+        isVisible={isModalAddMarkerVisible}
+        toggleModal={toggleModal}
+        onAddMarkerClick={onAddMarkerClick}
+        inputTitleMarker={inputTitleMarker}
+        inputDescriptionMarker={inputDescriptionMarker}
+      />
           </div>
-          {/* <div>
-            <input
-              type='text'
-              ref={inputTitleMarker}
-              id='first_name'
-              className='-mt-1 block h-8 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-white dark:focus:border-blue-500 dark:focus:ring-blue-500'
-              placeholder='Marker title'
-              required
-            />
-          </div> */}
-
-          {/* <button className='add-marker' onClick={onAddMarkerClick}>
-            <div className='h-8 w-10'>
-              <IoMdAdd size={24} />
-            </div>
-          </button> */}
+         
           <button className='delete-marker' onClick={onDeleteMarkerClick}>
             <div className='relative h-8 w-10'>
               <TiDeleteOutline size={24} />
@@ -646,7 +576,12 @@ export default function ControlsVideo(props: any) {
         </div>
 
         <div className="display flex mr-auto">
-        <NavbarMarkers markers={markers} handleMarkerClick={navbarMarkerClick} currentTime={currentTimeProgressBar}  />
+        <NavbarMarkers 
+          markers={markers} 
+          handleMarkerClick={navbarMarkerClick} 
+          currentTime={currentTimeProgressBar}
+          updateMarkersDatabase={updateMarkersDatabase}
+          updateMarkers={updateMarkers}  />
         </div>
 
         
@@ -680,7 +615,3 @@ export default function ControlsVideo(props: any) {
     </div>
   );
 }
-function updateMarkers(markersUploaded: any) {
-  throw new Error('Function not implemented.');
-}
-

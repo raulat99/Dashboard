@@ -6,6 +6,8 @@ import UploadDataButton from '@/components/UploadDataButton';
 import { authOptions } from '@/lib/authOptions';
 import { getUserDashboard } from '@/lib/handlers';
 import { SignalConfig } from '@/models/SignalConfig';
+import { DashboardProvider } from '@/providers/DashboardProvider';
+import { VideoProvider } from '@/providers/VideoProvider';
 import { Session, getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation';
 import { FaFileDownload } from 'react-icons/fa';
@@ -19,7 +21,7 @@ export default async function Dashboard({
   //   notFound();
   // }
 
-  // console.log(params)
+  // //console.log(params)
   const session: Session | null = await getServerSession(authOptions);
 
   if (!session) {
@@ -34,6 +36,8 @@ export default async function Dashboard({
   return (
     <div className='display mt-20 w-full flex-col justify-center '>
       {session ? (
+         <DashboardProvider>
+            <VideoProvider>
         <div>
         <div className='mx-2 '>
             {/* <h2 className='text-center'>{data.dashboard && "session id: " + data.dashboard._id + " -- Descripcion: "  + data.dashboard.description + " -- Date: " + data.dashboard.dateCreation  }</h2> */}
@@ -78,6 +82,8 @@ export default async function Dashboard({
             </div>
           </div>
         </div>
+        </VideoProvider>
+        </DashboardProvider>
       ) : (
         <p className='text-center'> You are not logged in </p>
       )}
